@@ -1,0 +1,7 @@
+# Qt build
+/build-*
+
+# VS build
+/app/release
+/app/debug
+/app/.vs

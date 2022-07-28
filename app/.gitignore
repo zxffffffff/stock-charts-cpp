@@ -1,3 +1,6 @@
+# This file is used to ignore files which are generated
+# ----------------------------------------------------------------------------
+
 *~
 *.autosave
 *.a
@@ -55,9 +58,6 @@ Thumbs.db
 *.opensdf
 *.vcxproj
 *vcxproj.*
-/.vs
-/release
-/debug
 
 # MinGW generated files
 *.Debug
