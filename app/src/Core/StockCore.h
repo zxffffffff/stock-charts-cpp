@@ -1,5 +1,6 @@
 #pragma once
 #include "NumberCore.h"
+#include <memory>
 
 namespace StockCharts
 {

@@ -1,5 +1,4 @@
 #include "NumberCore.h"
-#include <cmath>
 
 using namespace StockCharts;
 

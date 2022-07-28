@@ -10,7 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     src/CandlestickChart/Model/KChartModel.cpp \
-    src/CandlestickChart/VM/KChartVM.cpp \
+    src/CandlestickChart/VM/KChartBodyVM.cpp \
     src/CandlestickChart/View/kchartview.cpp \
     src/Core/NumberCore.cpp \
     src/Core/StockCore.cpp \
@@ -29,13 +29,13 @@ SOURCES += \
 
 HEADERS += \
     src/CandlestickChart/Model/KChartModel.h \
-    src/CandlestickChart/VM/KChartVM.h \
+    src/CandlestickChart/VM/KChartBodyVM.h \
     src/CandlestickChart/View/kchartview.h \
     src/Core/NumberCore.h \
     src/Core/StockCore.h \
     src/Core/Utils.h \
-    src/TechnicalIndicators/Core/ResultExp.h \
-    src/TechnicalIndicators/Core/ResultIndex.h \
+    src/TechnicalIndicators/Core/ExpCore.h \
+    src/TechnicalIndicators/Core/IndexCore.h \
     src/TechnicalIndicators/IndicatorParser.h \
     src/TechnicalIndicators/Parser/ColorParser.h \
     src/TechnicalIndicators/Parser/DrawingParser.h \

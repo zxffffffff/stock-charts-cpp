@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <cmath>
+#include <cfloat>
 
 namespace StockCharts
 {
