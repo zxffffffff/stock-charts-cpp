@@ -30,7 +30,7 @@ void IndicatorParser::setStockCore(const StockCore& p)
 	setStockCore(std::make_shared<StockCore>(p));
 }
 
-void IndicatorParser::setStockCore(SpStockCore p)
+void IndicatorParser::setStockCore(std::shared_ptr<StockCore> p)
 {
 	m_spFunction->setStockCore(p);
 	m_spKeyword->setStockCore(p);

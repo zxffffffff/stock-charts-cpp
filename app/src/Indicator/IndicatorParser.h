@@ -1,4 +1,5 @@
 #pragma once
+#include "../Core/StockCore.h"
 #include "Core/IndexCore.h"
 
 namespace StockCharts
@@ -14,7 +15,7 @@ namespace StockCharts
 
         // [1]
         void setStockCore(const StockCore& p);
-        void setStockCore(SpStockCore p);
+        void setStockCore(std::shared_ptr<StockCore> p);
         void setStockExt(const StockRelyData& p);
         void setStockExt(std::shared_ptr<StockRelyData> p);
 

@@ -2,10 +2,9 @@
 
 namespace StockCharts
 {
-    class TChartVM
+    class ChartTimebarView
     {
     public:
-        TChartVM();
+        ChartTimebarView();
     };
 }
-

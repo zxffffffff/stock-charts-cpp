@@ -3,10 +3,10 @@
 
 #include <QMainWindow>
 #include "ui_mainwindow.h"
-#include "CandlestickChart/View/kchartview.h"
-#include "CandlestickChart/VM/KChartBodyVM.h"
-#include "CandlestickChart/Model/KChartModel.h"
-#include "TechnicalIndicators/IndicatorParser.h"
+#include "Chart/ui/kchartview.h"
+#include "Chart/VM/ChartAreaVM.h"
+#include "Chart/Model/ChartModel.h"
+#include "Indicator/IndicatorParser.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,10 +29,6 @@ public slots:
 private:
     Ui::MainWindow ui;
 
-    KChartView* m_pKChartView = nullptr;
-    StockCharts::SpKChartModel m_spKChartModel = std::make_shared<StockCharts::KChartModel>();
-    StockCharts::SpKChartBodyVM m_spKChartVM = std::make_shared<StockCharts::KChartBodyVM>();
-    StockCharts::SpKChartBodyVM m_spKChartVM_2 = std::make_shared<StockCharts::KChartBodyVM>();
-    StockCharts::SpKChartBodyVM m_spKChartVM_3 = std::make_shared<StockCharts::KChartBodyVM>();
+    KChartView* m_chartWidget = nullptr;
 };
 #endif // MAINWINDOW_H

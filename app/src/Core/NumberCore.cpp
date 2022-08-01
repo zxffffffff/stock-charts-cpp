@@ -175,6 +175,25 @@ void NumberCore::reverse()
     std::reverse(this->data.begin(), this->data.end());
 }
 
+std::pair<Number, Number> NumberCore::getMinMax() const
+{
+    const int len = size();
+    if (len == 0)
+        return { NumberCore::EmptyNumber , NumberCore::EmptyNumber };
+    const auto& n = this->data[0];
+    if (len == 1)
+        return { n , n };
+
+    Number min = n;
+    Number max = n;
+    for (int i = 1; i < len; i += 1) {
+        const auto& n = this->data[0];
+        min = NumberCore::min(min, n);
+        max = NumberCore::max(max, n);
+    }
+    return{ min, max };
+}
+
 Number NumberCore::max(const Number lhs, const Number rhs)
 {
     if (lhs == NumberCore::EmptyNumber)
@@ -233,7 +252,7 @@ NumberCore NumberCore::max(const NumberCore& lhs, const NumberCore& rhs)
 {
     const int lCnt = lhs.size();
     const int rCnt = rhs.size();
-    const int maxCnt = max(lCnt, rCnt);
+    const int maxCnt = std::max(lCnt, rCnt);
 
     if (lCnt == 0) {
         return rhs;
@@ -267,7 +286,7 @@ NumberCore NumberCore::min(const NumberCore& lhs, const NumberCore& rhs)
 {
     const int lCnt = lhs.size();
     const int rCnt = rhs.size();
-    const int maxCnt = max(lCnt, rCnt);
+    const int maxCnt = std::max(lCnt, rCnt);
 
     if (lCnt == 0) {
         return rhs;
@@ -301,7 +320,7 @@ NumberCore NumberCore::operatorFunc(const NumberCore& lhs, const NumberCore& rhs
 {
     const int lCnt = lhs.size();
     const int rCnt = rhs.size();
-    const int maxCnt = max(lCnt, rCnt);
+    const int maxCnt = std::max(lCnt, rCnt);
     Number l = NumberCore::EmptyNumber;
     Number r = NumberCore::EmptyNumber;
 
@@ -421,128 +440,131 @@ NumberCore& NumberCore::operator%=(const NumberCore& rhs)
     return *this;
 }
 
-NumberCore StockCharts::operator+(const NumberCore& lhs, const NumberCore& rhs)
+namespace StockCharts
 {
-    auto comp = [](Number l, Number r) -> Number
+    NumberCore operator+(const NumberCore& lhs, const NumberCore& rhs)
     {
-        return (l + r); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
-}
+        auto comp = [](Number l, Number r) -> Number
+        {
+            return (l + r); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
 
-NumberCore StockCharts::operator-(const NumberCore& lhs, const NumberCore& rhs)
-{
-    auto comp = [](Number l, Number r) -> Number
+    NumberCore operator-(const NumberCore& lhs, const NumberCore& rhs)
     {
-        return (l - r); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
-}
+        auto comp = [](Number l, Number r) -> Number
+        {
+            return (l - r); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
 
-NumberCore StockCharts::operator*(const NumberCore& lhs, const NumberCore& rhs)
-{
-    auto comp = [](Number l, Number r) -> Number
+    NumberCore operator*(const NumberCore& lhs, const NumberCore& rhs)
     {
-        return (l * r); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
-}
+        auto comp = [](Number l, Number r) -> Number
+        {
+            return (l * r); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
 
-NumberCore StockCharts::operator/(const NumberCore& lhs, const NumberCore& rhs)
-{
-    auto comp = [](Number l, Number r) -> Number
+    NumberCore operator/(const NumberCore& lhs, const NumberCore& rhs)
     {
-        if (l == 0.0)
-            return 0.0;
-        if (r == 0.0)
-            return NumberCore::EmptyNumber;
-        return (l / r); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
-}
+        auto comp = [](Number l, Number r) -> Number
+        {
+            if (l == 0.0)
+                return 0.0;
+            if (r == 0.0)
+                return NumberCore::EmptyNumber;
+            return (l / r); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
 
-NumberCore StockCharts::operator%(const NumberCore& lhs, const NumberCore& rhs)
-{
-    auto comp = [](Number l, Number r) -> Number
+    NumberCore operator%(const NumberCore& lhs, const NumberCore& rhs)
     {
-        if (l == 0.0)
-            return 0.0;
-        if (int64_t(r) == 0)
-            return NumberCore::EmptyNumber;
-        return (int64_t(l) % int64_t(r)); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
-}
+        auto comp = [](Number l, Number r) -> Number
+        {
+            if (l == 0.0)
+                return 0.0;
+            if (int64_t(r) == 0)
+                return NumberCore::EmptyNumber;
+            return (int64_t(l) % int64_t(r)); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
 
-NumberCore StockCharts::operator&&(const NumberCore& lhs, const NumberCore& rhs)
-{
-    auto comp = [](Number l, Number r) -> Number
+    NumberCore operator&&(const NumberCore& lhs, const NumberCore& rhs)
     {
-        return (l && r); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
-}
+        auto comp = [](Number l, Number r) -> Number
+        {
+            return (l && r); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
 
-NumberCore StockCharts::operator||(const NumberCore& lhs, const NumberCore& rhs)
-{
-    auto comp = [](Number l, Number r) -> Number
+    NumberCore operator||(const NumberCore& lhs, const NumberCore& rhs)
     {
-        return (l || r); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
-}
+        auto comp = [](Number l, Number r) -> Number
+        {
+            return (l || r); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
 
-NumberCore StockCharts::operator<(const NumberCore& lhs, const NumberCore& rhs)
-{
-    auto comp = [](Number l, Number r) -> Number
+    NumberCore operator<(const NumberCore& lhs, const NumberCore& rhs)
     {
-        return (l < r); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
-}
+        auto comp = [](Number l, Number r) -> Number
+        {
+            return (l < r); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
 
-NumberCore StockCharts::operator<=(const NumberCore& lhs, const NumberCore& rhs)
-{
-    auto comp = [](Number l, Number r) -> Number
+    NumberCore operator<=(const NumberCore& lhs, const NumberCore& rhs)
     {
-        return (l <= r); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
-}
-NumberCore StockCharts::operator>(const NumberCore& lhs, const NumberCore& rhs)
-{
-    auto comp = [](Number l, Number r) -> Number
+        auto comp = [](Number l, Number r) -> Number
+        {
+            return (l <= r); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
+    NumberCore operator>(const NumberCore& lhs, const NumberCore& rhs)
     {
-        return (l > r); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
-}
+        auto comp = [](Number l, Number r) -> Number
+        {
+            return (l > r); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
 
-NumberCore StockCharts::operator>=(const NumberCore& lhs, const NumberCore& rhs)
-{
-    auto comp = [](Number l, Number r) -> Number
+    NumberCore operator>=(const NumberCore& lhs, const NumberCore& rhs)
     {
-        return (l >= r); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
-}
+        auto comp = [](Number l, Number r) -> Number
+        {
+            return (l >= r); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
 
-NumberCore StockCharts::operator==(const NumberCore& lhs, const NumberCore& rhs)
-{
-    auto comp = [](Number l, Number r) -> Number
+    NumberCore operator==(const NumberCore& lhs, const NumberCore& rhs)
     {
-        return (l == r); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
-}
+        auto comp = [](Number l, Number r) -> Number
+        {
+            return (l == r); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
 
-NumberCore StockCharts::operator!=(const NumberCore& lhs, const NumberCore& rhs)
-{
-    auto comp = [](Number l, Number r) -> Number
+    NumberCore operator!=(const NumberCore& lhs, const NumberCore& rhs)
     {
-        return (l != r); //
-    };
-    return NumberCore::operatorFunc(lhs, rhs, comp);
+        auto comp = [](Number l, Number r) -> Number
+        {
+            return (l != r); //
+        };
+        return NumberCore::operatorFunc(lhs, rhs, comp);
+    }
 }
 
 void NumberCore::setOther(int i, const String& other)
@@ -558,7 +580,7 @@ void NumberCore::setOther(int i, const String& other)
 
 String NumberCore::getOther(int i) const
 {
-    int sz = min(this->other.size(), this->data.size());
+    int sz = std::min(this->other.size(), this->data.size());
     if (i < 0 || i >= sz)
         return String();
     return this->other[i];

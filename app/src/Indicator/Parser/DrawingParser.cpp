@@ -91,7 +91,7 @@ std::tuple<bool, ExpDrawing, NumberCore> DrawingParser::stickLine(const std::vec
 	if (cond.isEmpty() || price.isEmpty() || price2.isEmpty() || width == NumberCore::EmptyNumber || empty == NumberCore::EmptyNumber)
 		return emptyRet(true);
 
-	int rates_total = NumberCore::max(price.size(), price2.size());
+	int rates_total = std::max(price.size(), price2.size());
 	NumberCore buffer(rates_total);
 
 	for (int i = 0; i < rates_total; ++i) {

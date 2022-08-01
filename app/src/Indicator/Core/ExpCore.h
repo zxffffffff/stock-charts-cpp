@@ -1,5 +1,5 @@
 #pragma once
-#include "../../Core/StockCore.h"
+#include "../../Core/NumberCore.h"
 
 namespace StockCharts
 {
@@ -41,7 +41,7 @@ namespace StockCharts
 
 	enum class EnDrawingType
 	{
-		None,
+		None, // Line
 		Number,
 		Text,
 		StickLine,

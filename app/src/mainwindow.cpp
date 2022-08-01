@@ -19,6 +19,23 @@ namespace
         stock.close = { 800.0, 800.0, 828.0, 870.0, 874.0, 855.0, 850.0, 812.0, 809.0, 816.5, 801.0, 809.0, 809.5, 814.0, 790.0, 810.0, 860.0, 905.0, 932.0, 943.0, 941.5, 891.0, 860.0, 838.0, 828.0, 818.0, 808.0, 787.0, 729.0, 778.0 };
         return stock;
     }
+
+    IndexFormula GenerateMACD()
+    {
+        IndexFormula formular;
+        formular.name = "MACD";
+        formular.sub = true;
+        formular.expression =
+            "DIF:EMA(CLOSE,SHORT)-EMA(CLOSE,LONG),COLORFF8D1E;\n"
+            "DEA:EMA(DIF,M),COLOR0CAEE6;\n"
+            "MACD:(DIF-DEA)*2,COLORSTICK,COLORE970DC;\n";
+        formular.params = {
+            {"SHORT", 12},
+            {"LONG", 26},
+            {"M", 9}
+        };
+        return formular;
+    }
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -29,15 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     g_stock = GenerateStock();
 
-    m_spKChartModel->setStockCore(std::make_shared<StockCore>(GenerateStock()));
-    m_spKChartVM->setModel(m_spKChartModel);
-    m_spKChartVM_2->setModel(m_spKChartModel);
-    m_spKChartVM_3->setModel(m_spKChartModel);
-    m_pKChartView = new KChartView();
-    ui.verticalLayout_4->addWidget(m_pKChartView);
-    m_pKChartView->setVM(m_spKChartVM);
-    m_pKChartView->setVM_2(m_spKChartVM_2);
-    m_pKChartView->setVM_3(m_spKChartVM_3);
+    m_chartWidget = new KChartView();
+    ui.verticalLayout_4->addWidget(m_chartWidget);
 
     slotBtnRun();
 }

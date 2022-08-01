@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <utility>
 #include <cmath>
 #include <cfloat>
 
@@ -51,6 +52,8 @@ namespace StockCharts
         void	replaceEmptyValue(const Number newVal);
 
         void	reverse();
+
+        std::pair<Number, Number> getMinMax() const;
 
         static Number max(const Number lhs, const Number rhs);
         static Number min(const Number lhs, const Number rhs);

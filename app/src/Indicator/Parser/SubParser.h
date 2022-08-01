@@ -1,4 +1,5 @@
 #pragma once
+#include "../../Core/StockCore.h"
 #include "../Core/IndexCore.h"
 
 namespace StockCharts
@@ -8,7 +9,7 @@ namespace StockCharts
 	public:
 		virtual ~HSLib() {}
 
-		void setStockCore(SpStockCore p)
+		void setStockCore(std::shared_ptr<StockCore> p)
 		{
 			m_spStockCore = p;
 		}
@@ -18,7 +19,7 @@ namespace StockCharts
 		}
 
 	protected:
-		SpStockCore m_spStockCore;
+		std::shared_ptr<StockCore> m_spStockCore;
 		std::shared_ptr<StockRelyData> m_spStockExt;
 	};
 }
