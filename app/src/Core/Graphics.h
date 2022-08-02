@@ -22,8 +22,14 @@ namespace StockCharts
             return *this;
         }
 
-        bool operator==(const Point& rhs) const { return (x == rhs.x && y == rhs.y); }
-        bool operator!=(const Point& rhs) const { return !operator==(rhs); }
+        bool operator==(const Point& rhs) const
+        {
+            return (x == rhs.x && y == rhs.y);
+        }
+        bool operator!=(const Point& rhs) const
+        {
+            return !operator==(rhs);
+        }
     };
 
     struct Size
@@ -44,8 +50,14 @@ namespace StockCharts
             return *this;
         }
 
-        bool operator==(const Size& rhs) const { return (width == rhs.width && height == rhs.height); }
-        bool operator!=(const Size& rhs) const { return !operator==(rhs); }
+        bool operator==(const Size& rhs) const
+        {
+            return (width == rhs.width && height == rhs.height);
+        }
+        bool operator!=(const Size& rhs) const
+        {
+            return !operator==(rhs);
+        }
     };
 
     struct Rect
@@ -84,8 +96,14 @@ namespace StockCharts
         Real centerY() const { return top() + height() / 2; }
         Point center() const { return { centerX(), centerY() }; }
 
-        bool operator==(const Rect& rhs) const { return (point == rhs.point && size == rhs.size); }
-        bool operator!=(const Rect& rhs) const { return !operator==(rhs); }
+        bool operator==(const Rect& rhs) const
+        {
+            return (point == rhs.point && size == rhs.size);
+        }
+        bool operator!=(const Rect& rhs) const
+        {
+            return !operator==(rhs);
+        }
     };
 
     struct Line
@@ -114,8 +132,14 @@ namespace StockCharts
             return *this;
         }
 
-        bool operator==(const Line& rhs) const { return (first == rhs.first && second == rhs.second); }
-        bool operator!=(const Line& rhs) const { return !operator==(rhs); }
+        bool operator==(const Line& rhs) const
+        {
+            return (first == rhs.first && second == rhs.second);
+        }
+        bool operator!=(const Line& rhs) const
+        {
+            return !operator==(rhs);
+        }
     };
 
     struct Stick
@@ -159,7 +183,13 @@ namespace StockCharts
         Real centerY() const { return high() + height2() / 2; }
         Point center() const { return { centerX(),  centerY() }; }
 
-        bool operator==(const Stick& rhs) const { return (rect == rhs.rect && line == rhs.line); }
-        bool operator!=(const Stick& rhs) const { return !operator==(rhs); }
+        bool operator==(const Stick& rhs) const
+        {
+            return (rect == rhs.rect && line == rhs.line);
+        }
+        bool operator!=(const Stick& rhs) const
+        {
+            return !operator==(rhs);
+        }
     };
 }

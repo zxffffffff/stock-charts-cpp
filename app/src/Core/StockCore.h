@@ -14,9 +14,20 @@ namespace StockCharts
         NumberCore timestamp;
 
         // by close
-        int getSize() const;
+        int getSize() const
+        {
+            return close.size();
+        }
 
         // by high, low
-        std::pair<Number, Number> getMinMax() const;
+        std::pair<Number, Number> getMinMax(int beginIndex, int endIndex) const
+        {
+            auto minmax = high.getMinMax(beginIndex, endIndex);
+            auto minmax2 = low.getMinMax(beginIndex, endIndex);
+            return { 
+                NumberCore::min(minmax.first, minmax2.first),
+                NumberCore::max(minmax.second, minmax2.second)
+            };
+        }
     };
 }

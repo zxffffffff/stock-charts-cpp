@@ -7,8 +7,6 @@ using namespace StockCharts;
 
 namespace
 {
-    const int nAreaCount = 2; // body, body_2
-
     StockCore GenerateStock()
     {
         StockCore stock;
@@ -18,6 +16,23 @@ namespace
         stock.close = { 800.0, 800.0, 828.0, 870.0, 874.0, 855.0, 850.0, 812.0, 809.0, 816.5, 801.0, 809.0, 809.5, 814.0, 790.0, 810.0, 860.0, 905.0, 932.0, 943.0, 941.5, 891.0, 860.0, 838.0, 828.0, 818.0, 808.0, 787.0, 729.0, 778.0 };
         return stock;
     }
+
+    IndexFormula GenerateMACD()
+    {
+        IndexFormula formular;
+        formular.name = "MACD";
+        formular.sub = true;
+        formular.expression =
+            "DIF:EMA(CLOSE,SHORT)-EMA(CLOSE,LONG),COLORFF8D1E;\n"
+            "DEA:EMA(DIF,M),COLOR0CAEE6;\n"
+            "MACD:(DIF-DEA)*2,COLORSTICK,COLORE970DC;\n";
+        formular.params = {
+            {"SHORT", 12},
+            {"LONG", 26},
+            {"M", 9}
+        };
+        return formular;
+    }
 }
 
 KChartView::KChartView(QWidget* parent) :
@@ -26,21 +41,29 @@ KChartView::KChartView(QWidget* parent) :
 {
     ui->setupUi(this);
 
-    m_bodyVidgets.push_back(ui->body);
-    m_bodyVidgets.push_back(ui->body_2);
+    m_bodyVidgets[0] = ui->body;
+    m_bodyVidgets[1] = ui->body_2;
     for (int i = 0; i < nAreaCount; i++) {
         QWidget* widget = m_bodyVidgets[i];
         widget->installEventFilter(this);
     }
 
-    auto stockCore = std::make_shared<StockCore>(GenerateStock());
-    m_model = std::make_shared<StockCharts::ChartModel>(stockCore);
-    m_titleViews.resize(nAreaCount);
-    m_areaViews.resize(nAreaCount);
     for (int i = 0; i < nAreaCount; i++) {
+        auto model = std::make_shared<StockCharts::ChartModel>();
+        model->setStockCore(GenerateStock());
+        model->addPlugin<PluginBG>();
+        if (i == 0)
+            model->addPlugin<PluginKLine>();
+        model->addPlugin<PluginIndicator>();
+        if (i == 1)
+            model->getPlugin<PluginIndicator>()->addIndicator(GenerateMACD());
+
+        auto areaVM = std::make_shared<ChartAreaVM>(model);
+        areaVM->setViewSize(0, model->getStockCore()->getSize());
+
+        m_models[i] = model;
         m_titleViews[i]; // todo
-        auto areaVM = std::make_shared<ChartAreaVM>(m_model);
-        areaVM->setMain(i == 0);
+        m_areaVMs[i] = areaVM;
         m_areaViews[i].setVM(areaVM);
     }
     m_timebarView; // todo
@@ -49,6 +72,22 @@ KChartView::KChartView(QWidget* parent) :
 KChartView::~KChartView()
 {
     delete ui;
+}
+
+std::shared_ptr<const StIndicator> KChartView::addIndicator(int areaIndex, const IndexFormula& formula)
+{
+    if (areaIndex < 0 || areaIndex >= nAreaCount)
+        return nullptr;
+    auto model = m_models[areaIndex];
+
+    auto pluginIndicator = model->getPlugin<PluginIndicator>();
+    if (!pluginIndicator)
+        return nullptr;
+    auto indicator = pluginIndicator->addIndicator(formula);
+    m_areaVMs[areaIndex]->calcMinMax();
+    m_areaVMs[areaIndex]->calcCoordinate();
+    m_areaVMs[areaIndex]->calcPlugins();
+    return indicator;
 }
 
 bool KChartView::eventFilter(QObject* obj, QEvent* event)

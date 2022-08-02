@@ -7,3 +7,5 @@
 ### 分时图(timeframe chart, timeshare chart)
 - TChart
 
+### 架构图
+![image](https://github.com/zxffffffff/stock-charts-cpp/tree/dev-v0.0.1-CreateProject/doc/architecture.png)

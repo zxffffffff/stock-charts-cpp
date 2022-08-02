@@ -175,19 +175,16 @@ void NumberCore::reverse()
     std::reverse(this->data.begin(), this->data.end());
 }
 
-std::pair<Number, Number> NumberCore::getMinMax() const
+std::pair<Number, Number> NumberCore::getMinMax(int beginIndex, int endIndex) const
 {
     const int len = size();
-    if (len == 0)
+    if (len == 0 || beginIndex < 0 || endIndex < 0 || beginIndex >= len || endIndex > len)
         return { NumberCore::EmptyNumber , NumberCore::EmptyNumber };
-    const auto& n = this->data[0];
-    if (len == 1)
-        return { n , n };
 
-    Number min = n;
-    Number max = n;
-    for (int i = 1; i < len; i += 1) {
-        const auto& n = this->data[0];
+    Number min = this->data[beginIndex];
+    Number max = min;
+    for (int i = beginIndex + 1; i < endIndex; i += 1) {
+        const auto& n = this->data[i];
         min = NumberCore::min(min, n);
         max = NumberCore::max(max, n);
     }

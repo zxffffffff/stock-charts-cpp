@@ -1,9 +1,9 @@
 #include "IndicatorParser.h"
-#include "../Core/Utils.h"
-#include "Parser/FunctionParser.h"
-#include "Parser/KeywordParser.h"
-#include "Parser/ColorParser.h"
-#include "Parser/DrawingParser.h"
+#include "../../Core/Utils.h"
+#include "FunctionParser.h"
+#include "KeywordParser.h"
+#include "ColorParser.h"
+#include "DrawingParser.h"
 
 using namespace StockCharts;
 
@@ -30,7 +30,7 @@ void IndicatorParser::setStockCore(const StockCore& p)
 	setStockCore(std::make_shared<StockCore>(p));
 }
 
-void IndicatorParser::setStockCore(std::shared_ptr<StockCore> p)
+void IndicatorParser::setStockCore(std::shared_ptr<const StockCore> p)
 {
 	m_spFunction->setStockCore(p);
 	m_spKeyword->setStockCore(p);

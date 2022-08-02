@@ -1,42 +1,10 @@
 #include "mainwindow.h"
+#include "kchartview.h"
+#include "Indicator/Parser/IndicatorParser.h"
 #include <QPainter>
 #include <QRandomGenerator>
 
 using namespace StockCharts;
-
-IndexFormula g_formular;
-StockCore g_stock;
-IndexCore g_result;
-
-namespace
-{
-    StockCore GenerateStock()
-    {
-        StockCore stock;
-        stock.open = { 790.0, 803.5, 811.5, 838.0, 880.0, 830.5, 869.0, 827.5, 808.0, 818.0, 808.0, 800.5, 806.0, 817.0, 783.5, 802.0, 831.5, 900.0, 917.5, 940.0, 947.0, 895.0, 870.0, 837.0, 824.0, 820.0, 811.0, 789.5, 739.0, 758.0 };
-        stock.high = { 800.0, 803.5, 829.5, 879.0, 888.0, 867.5, 869.0, 830.0, 811.0, 821.5, 808.0, 817.5, 814.5, 817.0, 790.0, 812.0, 867.0, 916.0, 940.0, 976.5, 949.0, 895.0, 870.0, 843.0, 835.0, 826.0, 814.5, 790.0, 739.5, 785.0 };
-        stock.low = { 753.0, 790.0, 811.0, 838.0, 871.5, 830.0, 842.0, 811.0, 803.0, 803.0, 799.5, 799.0, 800.0, 808.0, 778.0, 802.0, 831.5, 894.5, 912.0, 932.0, 917.0, 884.0, 856.0, 823.0, 822.0, 816.0, 803.5, 761.5, 716.0, 755.0 };
-        stock.close = { 800.0, 800.0, 828.0, 870.0, 874.0, 855.0, 850.0, 812.0, 809.0, 816.5, 801.0, 809.0, 809.5, 814.0, 790.0, 810.0, 860.0, 905.0, 932.0, 943.0, 941.5, 891.0, 860.0, 838.0, 828.0, 818.0, 808.0, 787.0, 729.0, 778.0 };
-        return stock;
-    }
-
-    IndexFormula GenerateMACD()
-    {
-        IndexFormula formular;
-        formular.name = "MACD";
-        formular.sub = true;
-        formular.expression =
-            "DIF:EMA(CLOSE,SHORT)-EMA(CLOSE,LONG),COLORFF8D1E;\n"
-            "DEA:EMA(DIF,M),COLOR0CAEE6;\n"
-            "MACD:(DIF-DEA)*2,COLORSTICK,COLORE970DC;\n";
-        formular.params = {
-            {"SHORT", 12},
-            {"LONG", 26},
-            {"M", 9}
-        };
-        return formular;
-    }
-}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -44,12 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui.setupUi(this);
     connect(ui.btnRun, &QPushButton::clicked, this, &MainWindow::slotBtnRun);
 
-    g_stock = GenerateStock();
-
     m_chartWidget = new KChartView();
     ui.verticalLayout_4->addWidget(m_chartWidget);
-
-    slotBtnRun();
 }
 
 MainWindow::~MainWindow()
@@ -70,21 +34,20 @@ void MainWindow::slotBtnRun()
         params[key->text().toStdString()] = val->text().toInt();
     }
     bool bSub = ui.radioSub->isChecked();
-    g_formular = { "Index", bSub, expression, params};
+    IndexFormula formular = { "Index", bSub, expression, params};
 
-    IndicatorParser parser;
-    parser.setFormula(g_formular);
-    parser.setStockCore(g_stock);
-    bool ok = parser.run();
-    g_result = parser.getResult();
+    auto indicator = m_chartWidget->addIndicator(bSub ? 1 : 0, formular);
 
     QString tips;
-    if (g_result.err) {
+    if (!indicator) {
+        tips = QString::fromLocal8Bit("Î´Öª´íÎó!\n\n");
+    }
+    else if (indicator->indexCore.err) {
         tips = QString::fromLocal8Bit("error!\n\n");
-        if (!g_result.errExpression.empty())
-            tips += QString::fromLocal8Bit("errExpression: ") + QString::fromStdString(g_result.errExpression) + "\n\n";
-        if (!g_result.errWord.empty())
-            tips += QString::fromLocal8Bit("errWord: ") + QString::fromStdString(g_result.errWord) + "\n\n";
+        if (!indicator->indexCore.errExpression.empty())
+            tips += QString::fromLocal8Bit("errExpression: ") + QString::fromStdString(indicator->indexCore.errExpression) + "\n\n";
+        if (!indicator->indexCore.errWord.empty())
+            tips += QString::fromLocal8Bit("errWord: ") + QString::fromStdString(indicator->indexCore.errWord) + "\n\n";
     }
     else {
         tips = QString::fromLocal8Bit("success!\n\n");
@@ -94,6 +57,7 @@ void MainWindow::slotBtnRun()
     update();
 }
 
+/*
 void MainWindow::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
@@ -242,4 +206,4 @@ void MainWindow::paintEvent(QPaintEvent* event)
     painter.drawText(subRect.topLeft(), QString::number(subMax));
     painter.drawText(subRect.bottomLeft(), QString::number(subMin));
 }
-
+//*/

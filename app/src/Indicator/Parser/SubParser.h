@@ -9,7 +9,7 @@ namespace StockCharts
 	public:
 		virtual ~HSLib() {}
 
-		void setStockCore(std::shared_ptr<StockCore> p)
+		void setStockCore(std::shared_ptr<const StockCore> p)
 		{
 			m_spStockCore = p;
 		}
@@ -19,7 +19,7 @@ namespace StockCharts
 		}
 
 	protected:
-		std::shared_ptr<StockCore> m_spStockCore;
+		std::shared_ptr<const StockCore> m_spStockCore;
 		std::shared_ptr<StockRelyData> m_spStockExt;
 	};
 }

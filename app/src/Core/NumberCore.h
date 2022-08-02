@@ -53,7 +53,7 @@ namespace StockCharts
 
         void	reverse();
 
-        std::pair<Number, Number> getMinMax() const;
+        std::pair<Number, Number> getMinMax(int beginIndex, int endIndex) const;
 
         static Number max(const Number lhs, const Number rhs);
         static Number min(const Number lhs, const Number rhs);

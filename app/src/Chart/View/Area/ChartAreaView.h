@@ -1,6 +1,6 @@
 #pragma once
-#include "../../Core/StockCore.h"
-#include "../../Core/Painter.h"
+#include "../../../Core/StockCore.h"
+#include "../../../Core/Painter.h"
 
 namespace StockCharts
 {
@@ -19,3 +19,4 @@ namespace StockCharts
         std::shared_ptr<ChartAreaVM> m_vm;
     };
 }
+
