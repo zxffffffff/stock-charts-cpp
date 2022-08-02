@@ -8,4 +8,4 @@
 - TChart
 
 ### 架构图
-![image](https://github.com/zxffffffff/stock-charts-cpp/tree/dev-v0.0.1-CreateProject/doc/architecture.png)
+![image](https://github.com/zxffffffff/stock-charts-cpp/blob/dev-v0.0.1-CreateProject/doc/architecture.png)
