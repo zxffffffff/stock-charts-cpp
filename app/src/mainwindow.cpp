@@ -1,3 +1,10 @@
+ï»¿/****************************************************************************
+** MIT License
+** 
+** Author   : xiaofeng.zhu
+** Support  : zxffffffff@outlook.com, 1337328542@qq.com
+** 
+****************************************************************************/
 #include "mainwindow.h"
 #include "kchartview.h"
 #include "Indicator/Parser/IndicatorParser.h"
@@ -41,7 +48,7 @@ void MainWindow::slotBtnRun()
 
     QString tips;
     if (!indicator) {
-        tips = QString::fromLocal8Bit("Î´Öª´íÎó!\n\n");
+        tips = QString::fromLocal8Bit("æœªçŸ¥é”™è¯¯!\n\n");
     }
     else if (indicator->indexCore.err) {
         tips = QString::fromLocal8Bit("error!\n\n");

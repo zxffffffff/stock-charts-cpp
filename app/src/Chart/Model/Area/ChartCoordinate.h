@@ -1,3 +1,10 @@
+ï»¿/****************************************************************************
+** MIT License
+** 
+** Author   : xiaofeng.zhu
+** Support  : zxffffffff@outlook.com, 1337328542@qq.com
+** 
+****************************************************************************/
 #pragma once
 #include "../../../Core/NumberCore.h"
 #include "../../../Core/Graphics.h"
@@ -6,12 +13,12 @@ namespace StockCharts
 {
     enum class EnCoordinateYType
     {
-        Linear,             // µÈ²î
-        Proportional,       // µÈ±È
-        Percentage,         // °Ù·Ö±È
-        LogLinear,          // µÈ²î£¨¶ÔÊý£©
-        LogProportional,    // µÈ±È£¨¶ÔÊý£©
-        LogPercentage,      // °Ù·Ö±È£¨¶ÔÊý£©
+        Linear,             // ç­‰å·®
+        Proportional,       // ç­‰æ¯”
+        Percentage,         // ç™¾åˆ†æ¯”
+        LogLinear,          // ç­‰å·®ï¼ˆå¯¹æ•°ï¼‰
+        LogProportional,    // ç­‰æ¯”ï¼ˆå¯¹æ•°ï¼‰
+        LogPercentage,      // ç™¾åˆ†æ¯”ï¼ˆå¯¹æ•°ï¼‰
     };
 
     class ChartCoordinate

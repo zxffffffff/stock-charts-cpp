@@ -1,3 +1,10 @@
+/****************************************************************************
+** MIT License
+** 
+** Author   : xiaofeng.zhu
+** Support  : zxffffffff@outlook.com, 1337328542@qq.com
+** 
+****************************************************************************/
 #include "PluginIndicator.h"
 #include "../../Chart/Model/Area/ChartAreaContext.h"
 #include "../../Indicator/Parser/IndicatorParser.h"

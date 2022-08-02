@@ -1,3 +1,10 @@
+/****************************************************************************
+** MIT License
+** 
+** Author   : xiaofeng.zhu
+** Support  : zxffffffff@outlook.com, 1337328542@qq.com
+** 
+****************************************************************************/
 #pragma once
 #include "../../Chart/Plugin/PluginLayer.h"
 #include "../../Indicator/Core/IndexCore.h"
