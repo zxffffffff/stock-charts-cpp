@@ -18,9 +18,9 @@ ColorParser::ColorParser()
 	};
 
 	m_types = {
-		{ "DOTLINE",    EnExpColorType::DOTLINE    },
-		{ "STICK",      EnExpColorType::STICK      },
-		{ "COLORSTICK", EnExpColorType::COLORSTICK },
+		{ "DOTLINE",    EnExpLineType::DOTLINE    },
+		{ "STICK",      EnExpLineType::STICK      },
+		{ "COLORSTICK", EnExpLineType::COLORSTICK },
 	};
 	
 	m_thicks = {
@@ -63,10 +63,10 @@ bool ColorParser::check(const String& name)
 	return false;
 }
 
-std::tuple<bool, ExpColor> ColorParser::process(const String& name)
+std::tuple<bool, ExpColorType> ColorParser::process(const String& name)
 {
 	bool ok = false;
-	ExpColor expColor;
+	ExpColorType expColor;
 
 	for (F& f : m_binds) {
 		std::tie(ok, expColor) = f(name);
@@ -94,40 +94,40 @@ bool ColorParser::checkCustomColor(const String& name)
 	return true;
 }
 
-std::tuple<bool, ExpColor> ColorParser::colorType(const String& name)
+std::tuple<bool, ExpColorType> ColorParser::colorType(const String& name)
 {
 	auto ite = m_types.find(name);
 	if (ite == m_types.end())
 		return emptyRet();
 
-	ExpColor expColor;
+	ExpColorType expColor;
 	expColor.type = ite->second;
 	return { true, std::move(expColor) };
 }
 
-std::tuple<bool, ExpColor> ColorParser::lineThick(const String& name)
+std::tuple<bool, ExpColorType> ColorParser::lineThick(const String& name)
 {
 	auto ite = m_thicks.find(name);
 	if (ite == m_thicks.end())
 		return emptyRet();
 
-	ExpColor expColor;
+	ExpColorType expColor;
 	expColor.thick = ite->second;
 	return { true, std::move(expColor) };
 }
 
-std::tuple<bool, ExpColor> ColorParser::colorString(const String& name)
+std::tuple<bool, ExpColorType> ColorParser::colorString(const String& name)
 {
 	auto ite = m_colors.find(name);
 	if (ite == m_colors.end()) {
 		if (checkCustomColor(name)) {
-			ExpColor expColor;
+			ExpColorType expColor;
 			expColor.color = name.substr(5);
 			return { true, std::move(expColor) };
 		}
 		return emptyRet();
 	}
-	ExpColor expColor;
+	ExpColorType expColor;
 	expColor.color = ite->second;
 	return { true, std::move(expColor) };
 }

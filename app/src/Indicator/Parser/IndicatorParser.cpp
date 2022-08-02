@@ -80,7 +80,7 @@ bool IndicatorParser::run()
 		m_dValue = NumberCore::EmptyNumber;
 		m_sValue.clear();
 		m_expInfo = ExpInfo();
-        m_expDrawing = ExpDrawing();
+        m_expDrawing = ExpDrawingType();
 
         try {
             parseTokenValue();
@@ -88,15 +88,15 @@ bool IndicatorParser::run()
             if (m_bParseError)
                 goto RunErr;
 
-            ExpColor expColor = parseColor();
+            ExpColorType expColor = parseColor();
             if (m_bParseError)
                 goto RunErr;
 
             ExpCore exp;
             exp.core = std::move(core);
             exp.info = std::move(m_expInfo);
-            exp.color = std::move(expColor);
-            exp.drawing = std::move(m_expDrawing);
+            exp.colorType = std::move(expColor);
+            exp.drawingType = std::move(m_expDrawing);
             m_result.exps.push_back(std::move(exp));
         }
         catch (...) {
@@ -155,10 +155,10 @@ NumberCore IndicatorParser::parseFormula()
     }
 }
 
-ExpColor IndicatorParser::parseColor()
+ExpColorType IndicatorParser::parseColor()
 {
-	ExpColor expColor;
-	expColor.type = EnExpColorType::LINE;
+	ExpColorType expColor;
+	expColor.type = EnExpLineType::LINE;
 	expColor.thick = EnExpLineThick::LINETHICK1;
 	expColor.color = "8080FF";
 
@@ -175,7 +175,7 @@ ExpColor IndicatorParser::parseColor()
         String name = std::move(m_sValue);
         if (m_spColor->check(name)) {
             bool ok;
-			ExpColor expTemp;
+			ExpColorType expTemp;
 			std::tie(ok, expTemp) = m_spColor->process(name);
 			if (!ok) {
 				m_bParseError = true;
@@ -183,7 +183,7 @@ ExpColor IndicatorParser::parseColor()
 				return expColor;
 			}
 
-			if (expTemp.type != EnExpColorType::None)
+			if (expTemp.type != EnExpLineType::None)
 				expColor.type = expTemp.type;
 			if (expTemp.thick != EnExpLineThick::None)
 				expColor.thick = expTemp.thick;
@@ -424,14 +424,14 @@ NumberCore IndicatorParser::parsePrimTokenOperate()
                 }
 
                 bool ok;
-                ExpDrawing drawing;
-                std::tie(ok, drawing, coreResult) = m_spDrawing->process(name, params);
+                ExpDrawingType drawingType;
+                std::tie(ok, drawingType, coreResult) = m_spDrawing->process(name, params);
                 if (!ok) {
                     m_bParseError = true;
                     m_errWord = name;
                     return coreResult;
                 }
-                m_expDrawing = drawing;
+                m_expDrawing = drawingType;
 
                 if (*m_iteCurrent) {
                     parseTokenValue();

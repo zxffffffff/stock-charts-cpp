@@ -163,11 +163,11 @@ void MainWindow::paintEvent(QPaintEvent* event)
         QColor color(QString::fromStdString('#' + exp.color.color));
         Qt::PenStyle penStyle = Qt::SolidLine;
 
-        if (exp.drawing.type == EnDrawingType::None) {
+        if (exp.drawingType.type == EnDrawingType::None) {
             int lineWidth = int(exp.color.thick);
             switch (exp.color.type)
             {
-            case EnExpColorType::COLORSTICK:
+            case EnExpLineType::COLORSTICK:
                 for (int i = 0; i < size; ++i) {
                     if (exp.core[i] == NumberCore::EmptyNumber)
                         continue;
@@ -178,7 +178,7 @@ void MainWindow::paintEvent(QPaintEvent* event)
                 break;
 
             default:
-                if (exp.color.type == EnExpColorType::DOTLINE)
+                if (exp.color.type == EnExpLineType::DOTLINE)
                     penStyle = Qt::DashLine;
                 painter.setPen(QPen(color, lineWidth, penStyle));
                 for (int i = 1; i < size; ++i) {
@@ -189,7 +189,7 @@ void MainWindow::paintEvent(QPaintEvent* event)
                 break;
             }
         }
-        else if (exp.drawing.type == EnDrawingType::Number) {
+        else if (exp.drawingType.type == EnDrawingType::Number) {
             painter.setPen(color);
             for (int i = 0; i < size; ++i) {
                 std::string str = exp.core.getOther(i);
@@ -198,10 +198,10 @@ void MainWindow::paintEvent(QPaintEvent* event)
                 painter.drawText(vPoints[i], QString::fromStdString(str));
             }
         }
-        else if (exp.drawing.type == EnDrawingType::StickLine) {
-            if(exp.drawing.stickEmpty == -1)
+        else if (exp.drawingType.type == EnDrawingType::StickLine) {
+            if(exp.drawingType.stickEmpty == -1)
                 penStyle = Qt::DashLine;
-            int width = exp.drawing.stickWidth * barW;
+            int width = exp.drawingType.stickWidth * barW;
             painter.setPen(QPen(color, 1, penStyle));
             painter.setBrush(Qt::transparent);
             for (int i = 0; i < size; ++i) {

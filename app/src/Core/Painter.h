@@ -10,14 +10,38 @@
 
 namespace StockCharts
 {
+    using Byte = unsigned char;
+
     struct Color
     {
-        int r;
-        int g;
-        int b;
-        int a;
+        Byte r;
+        Byte g;
+        Byte b;
+        Byte a;
 
-        Color(int _r = 0, int _g = 0, int _b = 0, int _a = 255)
+        Color(const char* hex)
+        {
+            unsigned int _r, _g, _b, _a;
+            const size_t len = strlen(hex);
+            if (len == 6) {
+                sscanf(hex, "%02x%02x%02x", &_r, &_g, &_b);
+                _a = 255;
+            }
+            else if (len == 8) {
+                sscanf(hex, "%02x%02x%02x%02x", &_r, &_g, &_b, &_a);
+            }
+            else {
+                // windows invalid color
+                _r = 0;
+                _g = _b = _a = 255;
+            }
+            r = _r;
+            g = _g;
+            b = _b;
+            a = _a;
+        }
+
+        Color(Byte _r = 0, Byte _g = 255, Byte _b = 255, Byte _a = 255)
             : r(_r)
             , g(_g)
             , b(_b)

@@ -16,24 +16,24 @@ namespace StockCharts
 		ColorParser();
 
 		bool check(const String& name);
-		std::tuple<bool, ExpColor> process(const String& name);
+		std::tuple<bool, ExpColorType> process(const String& name);
 
 	private:
-		std::tuple<bool, ExpColor> emptyRet(bool ok = false)
+		std::tuple<bool, ExpColorType> emptyRet(bool ok = false)
 		{
-			return { ok, ExpColor() };
+			return { ok, ExpColorType() };
 		}
 
 		bool checkCustomColor(const String& name);
 
-		std::tuple<bool, ExpColor> colorType(const String& name);
-		std::tuple<bool, ExpColor> lineThick(const String& name);
-		std::tuple<bool, ExpColor> colorString(const String& name);
+		std::tuple<bool, ExpColorType> colorType(const String& name);
+		std::tuple<bool, ExpColorType> lineThick(const String& name);
+		std::tuple<bool, ExpColorType> colorString(const String& name);
 
 	private:
-		using F = std::function<std::tuple<bool, ExpColor>(const String&)>;
+		using F = std::function<std::tuple<bool, ExpColorType>(const String&)>;
 		std::vector<F>							m_binds;
-		std::map<String, EnExpColorType>	m_types;
+		std::map<String, EnExpLineType>	m_types;
 		std::map<String, EnExpLineThick>	m_thicks;
 		std::map<String, String>		m_colors;
 	};

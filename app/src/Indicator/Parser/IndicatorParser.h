@@ -65,7 +65,7 @@ namespace StockCharts
 
     private:
         NumberCore		parseFormula();
-        ExpColor		parseColor();
+        ExpColorType		parseColor();
 
         NumberCore		parseRelationOperate();
         NumberCore		parseArithLastOperate();
@@ -100,6 +100,6 @@ namespace StockCharts
         Number				m_dValue = NumberCore::EmptyNumber;
         String				m_sValue;
         ExpInfo				m_expInfo;
-        ExpDrawing			m_expDrawing;
+        ExpDrawingType			m_expDrawing;
     };
 }

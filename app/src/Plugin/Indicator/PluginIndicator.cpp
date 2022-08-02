@@ -43,7 +43,7 @@ void PluginIndicator::onCalcArea(std::shared_ptr<const ChartAreaContext> context
         for (int j = 0; j < expCnt; j += 1) {
             auto& exp = areaExps[j];
             auto& indicatorExp = indicator->indexCore.exps[j];
-            switch (indicatorExp.drawing.type)
+            switch (indicatorExp.drawingType.type)
             {
             case EnDrawingType::None:
             case EnDrawingType::Number:

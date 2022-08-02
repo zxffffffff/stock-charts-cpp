@@ -23,7 +23,7 @@ bool DrawingParser::check(const String& name)
 	return (m_binds.find(name) != m_binds.end());
 }
 
-std::tuple<bool, ExpDrawing, NumberCore> DrawingParser::process(const String& name, const std::vector<NumberCore>& inputs)
+std::tuple<bool, ExpDrawingType, NumberCore> DrawingParser::process(const String& name, const std::vector<NumberCore>& inputs)
 {
 	auto ite = m_binds.find(name);
 	if (ite == m_binds.end())
@@ -32,7 +32,7 @@ std::tuple<bool, ExpDrawing, NumberCore> DrawingParser::process(const String& na
 	return f(inputs);
 }
 
-std::tuple<bool, ExpDrawing, NumberCore> DrawingParser::number(const std::vector<NumberCore>& inputs)
+std::tuple<bool, ExpDrawingType, NumberCore> DrawingParser::number(const std::vector<NumberCore>& inputs)
 {
 	if (inputs.size() != 3)
 		return emptyRet();
@@ -58,12 +58,12 @@ std::tuple<bool, ExpDrawing, NumberCore> DrawingParser::number(const std::vector
 		buffer.setOther(i, std::to_string(int64_t(n)));
 	}
 
-	ExpDrawing drawing;
-	drawing.type = EnDrawingType::Number;
-	return { true, std::move(drawing), buffer };
+	ExpDrawingType drawingType;
+	drawingType.type = EnDrawingType::Number;
+	return { true, std::move(drawingType), buffer };
 }
 
-std::tuple<bool, ExpDrawing, NumberCore> DrawingParser::text(const std::vector<NumberCore>& inputs)
+std::tuple<bool, ExpDrawingType, NumberCore> DrawingParser::text(const std::vector<NumberCore>& inputs)
 {
 	if (inputs.size() != 3)
 		return emptyRet();
@@ -79,12 +79,12 @@ std::tuple<bool, ExpDrawing, NumberCore> DrawingParser::text(const std::vector<N
 	int text_total = text.size();
 	NumberCore buffer(rates_total);
 
-	ExpDrawing drawing;
-	drawing.type = EnDrawingType::Text;
-	return { true, std::move(drawing), buffer };
+	ExpDrawingType drawingType;
+	drawingType.type = EnDrawingType::Text;
+	return { true, std::move(drawingType), buffer };
 }
 
-std::tuple<bool, ExpDrawing, NumberCore> DrawingParser::stickLine(const std::vector<NumberCore>& inputs)
+std::tuple<bool, ExpDrawingType, NumberCore> DrawingParser::stickLine(const std::vector<NumberCore>& inputs)
 {
 	if (inputs.size() != 5)
 		return emptyRet();
@@ -109,9 +109,9 @@ std::tuple<bool, ExpDrawing, NumberCore> DrawingParser::stickLine(const std::vec
 		buffer.setOther(i, std::to_string(price2[i]));
 	}
 
-	ExpDrawing drawing;
-	drawing.type = EnDrawingType::StickLine;
-	drawing.stickWidth = width;
-	drawing.stickEmpty = empty;
-	return { true, std::move(drawing), buffer };
+	ExpDrawingType drawingType;
+	drawingType.type = EnDrawingType::StickLine;
+	drawingType.stickWidth = width;
+	drawingType.stickEmpty = empty;
+	return { true, std::move(drawingType), buffer };
 }
