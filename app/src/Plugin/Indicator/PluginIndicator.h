@@ -24,6 +24,7 @@ namespace StockCharts
         std::shared_ptr<const StIndicator> addIndicator(IndexFormula formular);
 
         void delIndicator(std::shared_ptr<const StIndicator> indicator);
+        void delIndicators();
 
         std::vector<std::shared_ptr<const StIndicator>> getIndicators() const;
         std::shared_ptr<const StIndicator> getIndicator(int i) const;

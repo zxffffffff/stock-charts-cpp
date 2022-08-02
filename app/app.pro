@@ -27,6 +27,7 @@ HEADERS += \
     src/Core/Graphics.h \
     src/Core/NumberCore.h \
     src/Core/Painter.h \
+    src/Core/PainterQt.h \
     src/Core/StockCore.h \
     src/Core/Utils.h \
     src/Indicator/Core/ExpCore.h \

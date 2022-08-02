@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui.setupUi(this);
     connect(ui.btnRun, &QPushButton::clicked, this, &MainWindow::slotBtnRun);
+    connect(ui.btnClear, &QPushButton::clicked, this, &MainWindow::slotBtnClear);
 
     m_chartWidget = new KChartView();
     ui.verticalLayout_4->addWidget(m_chartWidget);
@@ -53,7 +54,14 @@ void MainWindow::slotBtnRun()
         tips = QString::fromLocal8Bit("success!\n\n");
     }
     ui.label_err->setText(tips);
+    update();
+}
 
+void MainWindow::slotBtnClear()
+{
+    m_chartWidget->clearIndicators();
+
+    ui.label_err->clear();
     update();
 }
 

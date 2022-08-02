@@ -4,7 +4,7 @@
 namespace StockCharts
 {
     class PluginLayer;
-    class ChartProps;
+    struct ChartProps;
 
     class ChartModel
     {

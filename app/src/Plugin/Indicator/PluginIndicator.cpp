@@ -93,6 +93,11 @@ void PluginIndicator::delIndicator(std::shared_ptr<const StIndicator> indicator)
     m_indicators.erase(ite);
 }
 
+void PluginIndicator::delIndicators()
+{
+    m_indicators.clear();
+}
+
 std::vector<std::shared_ptr<const StIndicator>> PluginIndicator::getIndicators() const
 {
     return std::vector<std::shared_ptr<const StIndicator>>(m_indicators.begin(), m_indicators.end());

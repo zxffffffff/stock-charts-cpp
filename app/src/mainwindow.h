@@ -18,6 +18,7 @@ public:
 
 public slots:
     void slotBtnRun();
+    void slotBtnClear();
 
 private:
     Ui::MainWindow ui;

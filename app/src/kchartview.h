@@ -1,7 +1,6 @@
 #pragma once
 #include <QWidget>
-#include <QPainter>
-#include "Core/Painter.h"
+#include "Core/PainterQt.h"
 #include "Chart/Model/ChartModel.h"
 #include "Chart/View/Title/ChartTitleView.h"
 #include "Chart/View/Area/ChartAreaView.h"
@@ -24,6 +23,7 @@ public:
     ~KChartView();
 
     std::shared_ptr<const StockCharts::StIndicator> addIndicator(int areaIndex, const StockCharts::IndexFormula& formula);
+    void clearIndicators();
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;

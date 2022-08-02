@@ -78,16 +78,32 @@ std::shared_ptr<const StIndicator> KChartView::addIndicator(int areaIndex, const
 {
     if (areaIndex < 0 || areaIndex >= nAreaCount)
         return nullptr;
-    auto model = m_models[areaIndex];
+    auto& model = m_models[areaIndex];
 
     auto pluginIndicator = model->getPlugin<PluginIndicator>();
     if (!pluginIndicator)
         return nullptr;
     auto indicator = pluginIndicator->addIndicator(formula);
+
     m_areaVMs[areaIndex]->calcMinMax();
     m_areaVMs[areaIndex]->calcCoordinate();
     m_areaVMs[areaIndex]->calcPlugins();
     return indicator;
+}
+
+void KChartView::clearIndicators()
+{
+    for (int i = 0; i < nAreaCount; i++) {
+        auto& model = m_models[i];
+        auto pluginIndicator = model->getPlugin<PluginIndicator>();
+        if (!pluginIndicator)
+            continue;
+        pluginIndicator->delIndicators();
+
+        m_areaVMs[i]->calcMinMax();
+        m_areaVMs[i]->calcCoordinate();
+        m_areaVMs[i]->calcPlugins();
+    }
 }
 
 bool KChartView::eventFilter(QObject* obj, QEvent* event)
