@@ -6,11 +6,11 @@
 ** 
 ****************************************************************************/
 #include "IndicatorParser.h"
-#include "../../Core/Utils.h"
-#include "FunctionParser.h"
-#include "KeywordParser.h"
-#include "ColorParser.h"
-#include "DrawingParser.h"
+#include "../Core/Utils.h"
+#include "Parser/FunctionParser.h"
+#include "Parser/KeywordParser.h"
+#include "Parser/ColorParser.h"
+#include "Parser/DrawingParser.h"
 
 using namespace StockCharts;
 
@@ -65,7 +65,7 @@ bool IndicatorParser::run()
 	m_bParseError = false;
 	m_errWord.clear();
 
-	std::vector<String> expressions = Utils::splitStr(m_formula.expression, ';');
+	std::vector<std::string> expressions = Utils::splitStr(m_formula.expression, ';');
 	int i;
 	for (i = 0; i < expressions.size(); ++i) {
 		m_expression = Utils::to8bitStr(expressions[i]);
@@ -77,7 +77,7 @@ bool IndicatorParser::run()
 		m_iteCurrent = m_expression.begin();
 		m_iteEnd = m_expression.end();
 		m_eToken = EnParseToken::ParseInit;
-		m_dValue = NumberCore::EmptyNumber;
+		m_dValue = NumberNull;
 		m_sValue.clear();
 		m_expInfo = ExpInfo();
         m_expDrawing = ExpDrawingType();
@@ -172,7 +172,7 @@ ExpColorType IndicatorParser::parseColor()
             return expColor;
         }
 
-        String name = std::move(m_sValue);
+        std::string name = std::move(m_sValue);
         if (m_spColor->check(name)) {
             bool ok;
 			ExpColorType expTemp;
@@ -335,14 +335,14 @@ NumberCore IndicatorParser::parseArithFirstOperate()
 NumberCore IndicatorParser::parsePrimTokenOperate()
 {
 	NumberCore coreToken;
-	String name = std::move(m_sValue);
+	std::string name = std::move(m_sValue);
 
 	switch (m_eToken)
 	{
 	case EnParseToken::Number:
 		parseTokenValue();
 		coreToken = m_dValue;
-		m_dValue = NumberCore::EmptyNumber;
+		m_dValue = NumberNull;
 		return coreToken;
 
 	case EnParseToken::String:
@@ -630,7 +630,7 @@ Number IndicatorParser::parseNumberValue()
 	return dValue;
 }
 
-bool IndicatorParser::checkAssign(const String& name)
+bool IndicatorParser::checkAssign(const std::string& name)
 {
 	for (auto& result : m_result.exps) {
 		if (result.info.rename == name)
@@ -639,7 +639,7 @@ bool IndicatorParser::checkAssign(const String& name)
 	return false;
 }
 
-NumberCore IndicatorParser::getAssign(const String& name)
+NumberCore IndicatorParser::getAssign(const std::string& name)
 {
 	for (auto& result : m_result.exps) {
 		if (result.info.rename == name)
@@ -648,13 +648,13 @@ NumberCore IndicatorParser::getAssign(const String& name)
 	return NumberCore();
 }
 
-bool IndicatorParser::checkInputParam(const String& name)
+bool IndicatorParser::checkInputParam(const std::string& name)
 {
 	auto ite = m_formula.params.find(name);
 	return (ite != m_formula.params.end());
 }
 
-NumberCore IndicatorParser::getInputParam(const String& name)
+NumberCore IndicatorParser::getInputParam(const std::string& name)
 {
 	NumberCore coreResult;
 	auto ite = m_formula.params.find(name);

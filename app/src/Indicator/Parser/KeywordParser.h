@@ -15,10 +15,10 @@ namespace StockCharts
 	public:
 		KeywordParser();
 
-		std::vector<EnStockRely> stockRely(const String& name);
+		std::vector<EnStockRely> stockRely(const std::string& name);
 
-		bool check(const String& name);
-		std::tuple<bool, NumberCore> process(const String& name);
+		bool check(const std::string& name);
+		std::tuple<bool, NumberCore> process(const std::string& name);
 
 	private:
 		static std::tuple<bool, NumberCore> emptyRet(bool ok = false)
@@ -39,6 +39,6 @@ namespace StockCharts
 
 	private:
 		using F = std::function<std::tuple<bool, NumberCore>()>;
-		std::map<String, F> m_binds;
+		std::map<std::string, F> m_binds;
 	};
 }

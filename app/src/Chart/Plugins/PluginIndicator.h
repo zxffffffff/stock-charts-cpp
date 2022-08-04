@@ -6,15 +6,15 @@
 ** 
 ****************************************************************************/
 #pragma once
-#include "../../Chart/Plugin/PluginLayer.h"
+#include "ChartPlugin.h"
 #include "../../Indicator/Core/IndexCore.h"
 
 namespace StockCharts
 {
-    class PluginIndicator : public PluginLayer
+    class PluginIndicator : public ChartPlugin
     {
     public:
-        PluginIndicator(std::shared_ptr<const StockCore> stockCore, std::shared_ptr<const ChartProps> props);
+        PluginIndicator(std::shared_ptr<const StockCore> stockCore);
 
         // [0]
         virtual void onStockCoreChanged() override;
@@ -24,8 +24,8 @@ namespace StockCharts
         virtual std::pair<Number, Number> getMinMax(int beginIndex, int endIndex) override;
 
         // [2]
-        virtual void onCalcArea(std::shared_ptr<const ChartAreaContext> context) override;
-        virtual void onPaintArea(Painter& painter) override;
+        virtual void onContextChanged(std::shared_ptr<const ChartContext> context) override;
+        virtual void onPaint(Painter& painter) override;
 
     public:
         std::shared_ptr<const StIndicator> addIndicator(IndexFormula formular);

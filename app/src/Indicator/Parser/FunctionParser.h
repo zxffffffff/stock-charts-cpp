@@ -15,8 +15,8 @@ namespace StockCharts
 	public:
 		FunctionParser();
 
-		bool check(const String& name);
-		std::tuple<bool, NumberCore> process(const String& name, const std::vector<NumberCore>& inputs);
+		bool check(const std::string& name);
+		std::tuple<bool, NumberCore> process(const std::string& name, const std::vector<NumberCore>& inputs);
 
 	private:
 		static std::tuple<bool, NumberCore> emptyRet(bool ok = false)
@@ -46,6 +46,6 @@ namespace StockCharts
 
 	private:
 		using F = std::function<std::tuple<bool, NumberCore>(const std::vector<NumberCore>&)>;
-		std::map<String, F> m_binds;
+		std::map<std::string, F> m_binds;
 	};
 }

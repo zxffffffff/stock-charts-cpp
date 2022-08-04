@@ -9,8 +9,7 @@
 #include "../../Core/StockCore.h"
 #include "../../Core/Graphics.h"
 #include "../../Core/Painter.h"
-#include "../Model/ChartProps.h"
-#include "../Model/Area/ChartAreaContext.h"
+#include "../Context/ChartContext.h"
 
 namespace StockCharts
 {
@@ -33,18 +32,12 @@ namespace StockCharts
         std::vector<StChartAreaExp> exps;
     };
 
-    class ChartAreaContext;
-    class PluginLayer
+    class ChartContext;
+    class ChartPlugin
     {
     public:
-        PluginLayer(std::shared_ptr<const StockCore> stockCore, std::shared_ptr<const ChartProps> props)
-            : m_stockCore(stockCore)
-            , m_props(props)
-        {
-        }
-        virtual ~PluginLayer()
-        {
-        }
+        ChartPlugin(std::shared_ptr<const StockCore> stockCore);
+        virtual ~ChartPlugin() = default;
 
         std::shared_ptr<const StockCore> getStockCore() const
         {
@@ -59,15 +52,17 @@ namespace StockCharts
         // [1]
         virtual std::pair<Number, Number> getMinMax(int beginIndex, int endIndex)
         {
-            return { NumberCore::EmptyNumber, NumberCore::EmptyNumber };
+            return { NumberNull, NumberNull };
         }
 
         // [2]
-        virtual void onCalcArea(std::shared_ptr<const ChartAreaContext> context) {}
-        virtual void onPaintArea(Painter& painter) {}
+        virtual void onContextChanged(std::shared_ptr<const ChartContext> context) {}
+        virtual void onMouseMove(std::shared_ptr<const ChartContext> context) {}
+        virtual void onMouseLeave(std::shared_ptr<const ChartContext> context) {}
+        virtual void onPaint(Painter& painter) {}
 
         StChartAreaExp createStickExp(
-            std::shared_ptr<const ChartAreaContext> context,
+            std::shared_ptr<const ChartContext> context,
             const NumberCore& open, 
             const NumberCore& high, 
             const NumberCore& low, 
@@ -75,14 +70,15 @@ namespace StockCharts
         );
 
         StChartAreaExp createLineExp(
-            std::shared_ptr<const ChartAreaContext> context,
+            std::shared_ptr<const ChartContext> context,
             const NumberCore& price
         );
 
     protected:
+        // [0] data
         std::shared_ptr<const StockCore> m_stockCore;
-        std::shared_ptr<const ChartProps> m_props;
 
+        // [1] layers-indexs-exps
         std::vector<StChartAreaIndex> m_areaIndexs;
     };
 }

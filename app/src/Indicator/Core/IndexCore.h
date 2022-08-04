@@ -23,18 +23,17 @@ namespace StockCharts
 
     struct IndexFormula
     {
-        String					name;
-        bool					sub = true;
-        String					expression;
-        std::map<String, int>	params;
+        std::string					name;
+        std::string					expression;
+        std::map<std::string, int>	params;
     };
 
     struct IndexCore
     {
-        std::vector<ExpCore>	exps;
+        std::vector<ExpCore>    exps;
         bool					err = false;
-        String					errExpression;
-        String					errWord;
+        std::string				errExpression;
+        std::string				errWord;
     };
 
     struct StIndicator

@@ -7,29 +7,61 @@
 ****************************************************************************/
 #include "mainwindow.h"
 #include "kchartview.h"
-#include "Indicator/Parser/IndicatorParser.h"
+#include "Indicator/IndicatorParser.h"
 #include <QPainter>
 #include <QRandomGenerator>
 
 using namespace StockCharts;
 
+namespace
+{
+    StockCore GenerateStock()
+    {
+        StockCore stock;
+        stock.open = { 790.0, 803.5, 811.5, 838.0, 880.0, 830.5, 869.0, 827.5, 808.0, 818.0, 808.0, 800.5, 806.0, 817.0, 783.5, 802.0, 831.5, 900.0, 917.5, 940.0, 947.0, 895.0, 870.0, 837.0, 824.0, 820.0, 811.0, 789.5, 739.0, 758.0 };
+        stock.high = { 800.0, 803.5, 829.5, 879.0, 888.0, 867.5, 869.0, 830.0, 811.0, 821.5, 808.0, 817.5, 814.5, 817.0, 790.0, 812.0, 867.0, 916.0, 940.0, 976.5, 949.0, 895.0, 870.0, 843.0, 835.0, 826.0, 814.5, 790.0, 739.5, 785.0 };
+        stock.low = { 753.0, 790.0, 811.0, 838.0, 871.5, 830.0, 842.0, 811.0, 803.0, 803.0, 799.5, 799.0, 800.0, 808.0, 778.0, 802.0, 831.5, 894.5, 912.0, 932.0, 917.0, 884.0, 856.0, 823.0, 822.0, 816.0, 803.5, 761.5, 716.0, 755.0 };
+        stock.close = { 800.0, 800.0, 828.0, 870.0, 874.0, 855.0, 850.0, 812.0, 809.0, 816.5, 801.0, 809.0, 809.5, 814.0, 790.0, 810.0, 860.0, 905.0, 932.0, 943.0, 941.5, 891.0, 860.0, 838.0, 828.0, 818.0, 808.0, 787.0, 729.0, 778.0 };
+        return stock;
+    }
+
+    IndexFormula GenerateMACD()
+    {
+        IndexFormula formular;
+        formular.name = "MACD";
+        formular.expression =
+            "DIF:EMA(CLOSE,SHORT)-EMA(CLOSE,LONG),COLORFF8D1E;\n"
+            "DEA:EMA(DIF,M),COLOR0CAEE6;\n"
+            "MACD:(DIF-DEA)*2,COLORSTICK,COLORE970DC;\n";
+        formular.params = {
+            {"SHORT", 12},
+            {"LONG", 26},
+            {"M", 9}
+        };
+        return formular;
+    }
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
-    connect(ui.btnRun, &QPushButton::clicked, this, &MainWindow::slotBtnRun);
+    setMouseTracking(true);
+
+    connect(ui.btnAdd, &QPushButton::clicked, this, &MainWindow::slotBtnAdd);
     connect(ui.btnClear, &QPushButton::clicked, this, &MainWindow::slotBtnClear);
 
-    m_chartWidget = new KChartView();
-    ui.verticalLayout_4->addWidget(m_chartWidget);
+    auto stock = std::make_shared<StockCore>(GenerateStock());
+    ui.kchart0->init(stock, true);
+    ui.kchart1->init(stock, false);
+    ui.kchart1->addIndicator(GenerateMACD());
 }
 
 MainWindow::~MainWindow()
 {
-
 }
 
-void MainWindow::slotBtnRun()
+void MainWindow::slotBtnAdd()
 {
     QString input = ui.textEdit->toPlainText();
     std::string expression = input.toStdString();
@@ -41,10 +73,10 @@ void MainWindow::slotBtnRun()
             continue;
         params[key->text().toStdString()] = val->text().toInt();
     }
-    bool bSub = ui.radioSub->isChecked();
-    IndexFormula formular = { "Index", bSub, expression, params};
+    IndexFormula formular = { "Index", expression, params};
 
-    auto indicator = m_chartWidget->addIndicator(bSub ? 1 : 0, formular);
+    bool bMain = ui.radioMain->isChecked();
+    auto indicator = bMain ? ui.kchart0->addIndicator(formular) : ui.kchart1->addIndicator(formular);
 
     QString tips;
     if (!indicator) {
@@ -66,7 +98,8 @@ void MainWindow::slotBtnRun()
 
 void MainWindow::slotBtnClear()
 {
-    m_chartWidget->clearIndicators();
+    ui.kchart0->clearIndicators();
+    ui.kchart1->clearIndicators();
 
     ui.label_err->clear();
     update();
@@ -104,7 +137,7 @@ void MainWindow::paintEvent(QPaintEvent* event)
             continue;
         for (int i = 0; i < size; ++i) {
             double val = exp.core[i];
-            if (val == NumberCore::EmptyNumber)
+            if (val == NumberNull)
                 continue;
             if (g_formular.sub) {
                 subMax = std::max(subMax, val);
@@ -123,12 +156,12 @@ void MainWindow::paintEvent(QPaintEvent* event)
     auto get_y = [&](double val, bool main = true) -> qreal
     {
         if (main) {
-            if (val == NumberCore::EmptyNumber)
+            if (val == NumberNull)
                 return mainRect.bottom();
             return mainRect.top() + (mainRect.bottom() - mainRect.top()) * (mainMax - val) / (mainMax - mainMin);
         }
         else {
-            if (val == NumberCore::EmptyNumber)
+            if (val == NumberNull)
                 return subRect.bottom();
             return subRect.top() + (subRect.bottom() - subRect.top()) * (subMax - val) / (subMax - subMin);
         }
@@ -169,7 +202,7 @@ void MainWindow::paintEvent(QPaintEvent* event)
             {
             case EnExpLineType::COLORSTICK:
                 for (int i = 0; i < size; ++i) {
-                    if (exp.core[i] == NumberCore::EmptyNumber)
+                    if (exp.core[i] == NumberNull)
                         continue;
                     bool rise = exp.core[i] >= 0;
                     painter.setPen(rise ? colorRise : colorFall);
@@ -182,7 +215,7 @@ void MainWindow::paintEvent(QPaintEvent* event)
                     penStyle = Qt::DashLine;
                 painter.setPen(QPen(color, lineWidth, penStyle));
                 for (int i = 1; i < size; ++i) {
-                    if (exp.core[i - 1] == NumberCore::EmptyNumber || exp.core[i] == NumberCore::EmptyNumber)
+                    if (exp.core[i - 1] == NumberNull || exp.core[i] == NumberNull)
                         continue;
                     painter.drawLine(vPoints[i - 1], vPoints[i]);
                 }
@@ -193,7 +226,7 @@ void MainWindow::paintEvent(QPaintEvent* event)
             painter.setPen(color);
             for (int i = 0; i < size; ++i) {
                 std::string str = exp.core.getOther(i);
-                if (exp.core[i] == NumberCore::EmptyNumber || str.empty())
+                if (exp.core[i] == NumberNull || str.empty())
                     continue;
                 painter.drawText(vPoints[i], QString::fromStdString(str));
             }
@@ -205,7 +238,7 @@ void MainWindow::paintEvent(QPaintEvent* event)
             painter.setPen(QPen(color, 1, penStyle));
             painter.setBrush(Qt::transparent);
             for (int i = 0; i < size; ++i) {
-                if (exp.core[i] == NumberCore::EmptyNumber || exp.core.getOther(i) == NumberCore::EmptyNumberStr)
+                if (exp.core[i] == NumberNull || exp.core.getOther(i) == NumberNullStr)
                     continue;
                 int y = get_y(std::stod(exp.core.getOther(i)), !g_formular.sub);
                 painter.drawRect(vPoints[i].x() - width / 2, std::min(vPoints[i].y(), y), width, std::abs(vPoints[i].y() - y));

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>567</width>
-    <height>636</height>
+    <width>425</width>
+    <height>269</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,79 +33,31 @@
     <widget class="QWidget" name="title" native="true">
      <property name="minimumSize">
       <size>
-       <width>0</width>
+       <width>100</width>
        <height>25</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>16777215</height>
+       <height>25</height>
       </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(255, 241, 230);</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QWidget" name="body" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="minimumSize">
       <size>
-       <width>50</width>
-       <height>0</height>
+       <width>100</width>
+       <height>100</height>
       </size>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="title_2" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>25</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="body_2" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>50</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QWidget" name="timebar" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>25</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>16777215</height>
-      </size>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(240, 255, 252);</string>
      </property>
     </widget>
    </item>

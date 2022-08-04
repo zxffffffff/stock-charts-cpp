@@ -12,68 +12,17 @@
 
 using namespace StockCharts;
 
-namespace
-{
-    StockCore GenerateStock()
-    {
-        StockCore stock;
-        stock.open = { 790.0, 803.5, 811.5, 838.0, 880.0, 830.5, 869.0, 827.5, 808.0, 818.0, 808.0, 800.5, 806.0, 817.0, 783.5, 802.0, 831.5, 900.0, 917.5, 940.0, 947.0, 895.0, 870.0, 837.0, 824.0, 820.0, 811.0, 789.5, 739.0, 758.0 };
-        stock.high = { 800.0, 803.5, 829.5, 879.0, 888.0, 867.5, 869.0, 830.0, 811.0, 821.5, 808.0, 817.5, 814.5, 817.0, 790.0, 812.0, 867.0, 916.0, 940.0, 976.5, 949.0, 895.0, 870.0, 843.0, 835.0, 826.0, 814.5, 790.0, 739.5, 785.0 };
-        stock.low = { 753.0, 790.0, 811.0, 838.0, 871.5, 830.0, 842.0, 811.0, 803.0, 803.0, 799.5, 799.0, 800.0, 808.0, 778.0, 802.0, 831.5, 894.5, 912.0, 932.0, 917.0, 884.0, 856.0, 823.0, 822.0, 816.0, 803.5, 761.5, 716.0, 755.0 };
-        stock.close = { 800.0, 800.0, 828.0, 870.0, 874.0, 855.0, 850.0, 812.0, 809.0, 816.5, 801.0, 809.0, 809.5, 814.0, 790.0, 810.0, 860.0, 905.0, 932.0, 943.0, 941.5, 891.0, 860.0, 838.0, 828.0, 818.0, 808.0, 787.0, 729.0, 778.0 };
-        return stock;
-    }
-
-    IndexFormula GenerateMACD()
-    {
-        IndexFormula formular;
-        formular.name = "MACD";
-        formular.sub = true;
-        formular.expression =
-            "DIF:EMA(CLOSE,SHORT)-EMA(CLOSE,LONG),COLORFF8D1E;\n"
-            "DEA:EMA(DIF,M),COLOR0CAEE6;\n"
-            "MACD:(DIF-DEA)*2,COLORSTICK,COLORE970DC;\n";
-        formular.params = {
-            {"SHORT", 12},
-            {"LONG", 26},
-            {"M", 9}
-        };
-        return formular;
-    }
-}
-
 KChartView::KChartView(QWidget* parent) :
     QWidget(parent),
     ui(new Ui::KChartView)
 {
     ui->setupUi(this);
-
-    m_bodyVidgets[0] = ui->body;
-    m_bodyVidgets[1] = ui->body_2;
-    for (int i = 0; i < nAreaCount; i++) {
-        QWidget* widget = m_bodyVidgets[i];
-        widget->installEventFilter(this);
+    QWidget* p = ui->body;
+    while (p) {
+        p->setMouseTracking(true);
+        p = p->parentWidget();
     }
-
-    for (int i = 0; i < nAreaCount; i++) {
-        auto model = std::make_shared<StockCharts::ChartModel>();
-        model->setStockCore(GenerateStock());
-        model->addPlugin<PluginBG>();
-        if (i == 0)
-            model->addPlugin<PluginKLine>();
-        model->addPlugin<PluginIndicator>();
-        if (i == 1)
-            model->getPlugin<PluginIndicator>()->addIndicator(GenerateMACD());
-
-        auto areaVM = std::make_shared<ChartAreaVM>(model);
-        areaVM->setViewSize(0, model->getStockCore()->getSize());
-
-        m_models[i] = model;
-        m_titleViews[i]; // todo
-        m_areaVMs[i] = areaVM;
-        m_areaViews[i].setVM(areaVM);
-    }
-    m_timebarView; // todo
+    ui->body->installEventFilter(this);
 }
 
 KChartView::~KChartView()
@@ -81,62 +30,71 @@ KChartView::~KChartView()
     delete ui;
 }
 
-std::shared_ptr<const StIndicator> KChartView::addIndicator(int areaIndex, const IndexFormula& formula)
+void KChartView::init(std::shared_ptr<StockCore> stockCore, bool main)
 {
-    if (areaIndex < 0 || areaIndex >= nAreaCount)
-        return nullptr;
-    auto& model = m_models[areaIndex];
+    m_stockCore = stockCore;
 
-    auto pluginIndicator = model->getPlugin<PluginIndicator>();
+    m_model = std::make_shared<ChartModel>(m_stockCore);
+    m_model->addPlugin<PluginBG>();
+    if (main)
+        m_model->addPlugin<PluginKLine>();
+    m_model->addPlugin<PluginIndicator>();
+    m_model->addPlugin<PluginCrossLine>();
+
+    m_vm = std::make_shared<ChartVM>(m_model);
+}
+
+std::shared_ptr<const StIndicator> KChartView::addIndicator(const IndexFormula& formula)
+{
+    auto pluginIndicator = m_model->getPlugin<PluginIndicator>();
     if (!pluginIndicator)
         return nullptr;
     auto indicator = pluginIndicator->addIndicator(formula);
 
-    m_areaVMs[areaIndex]->calcMinMax();
-    m_areaVMs[areaIndex]->calcCoordinate();
-    m_areaVMs[areaIndex]->calcPlugins();
+    m_vm->calcContext();
     return indicator;
 }
 
 void KChartView::clearIndicators()
 {
-    for (int i = 0; i < nAreaCount; i++) {
-        auto& model = m_models[i];
-        auto pluginIndicator = model->getPlugin<PluginIndicator>();
-        if (!pluginIndicator)
-            continue;
-        pluginIndicator->delIndicators();
+    auto pluginIndicator = m_model->getPlugin<PluginIndicator>();
+    if (!pluginIndicator)
+        return;
+    pluginIndicator->delIndicators();
 
-        m_areaVMs[i]->calcMinMax();
-        m_areaVMs[i]->calcCoordinate();
-        m_areaVMs[i]->calcPlugins();
-    }
+    m_vm->calcContext();
 }
 
 bool KChartView::eventFilter(QObject* obj, QEvent* event)
 {
-    const auto type = event->type();
-    if (type == QEvent::Resize) {
+    if (obj != ui->body)
+        return false;
+
+    switch (event->type())
+    {
+    case QEvent::Resize:
+    {
         QResizeEvent* resizeEvent = static_cast<QResizeEvent*>(event);
-        for (int i = 0; i < nAreaCount; i++) {
-            QWidget* widget = m_bodyVidgets[i];
-            if (widget != obj)
-                continue;
-
-            m_areaViews[i].OnResize(Rect(0, 0, resizeEvent->size().width(), resizeEvent->size().height()));
-        }
-    }
-    else if (type == QEvent::Paint) {
+        m_vm->OnResize(Rect(0, 0, resizeEvent->size().width(), resizeEvent->size().height()));
+    } break;
+    case QEvent::Paint:
+    {
         QPaintEvent* paintEvent = static_cast<QPaintEvent*>(event);
-        for (int i = 0; i < nAreaCount; i++) {
-            QWidget* widget = m_bodyVidgets[i];
-            if (widget != obj)
-                continue;
-
-            PainterQt painter(widget);
-            m_areaViews[i].OnPaint(painter);
-        }
+        PainterQt painter(ui->body);
+        m_vm->OnPaint(painter);
+    } break;
+    case QEvent::MouseMove:
+    {
+        QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+        m_vm->OnMouseMove(Point(mouseEvent->pos().x(), mouseEvent->pos().y()));
+        ui->body->update();
+    } break;
+    case QEvent::Leave:
+    {
+        m_vm->OnMouseLeave();
+        ui->body->update();
+    } break;
     }
-    return false;
+    return __super::eventFilter(obj, event);
 }
 

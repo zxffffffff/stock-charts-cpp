@@ -29,7 +29,7 @@ KeywordParser::KeywordParser()
 	};
 }
 
-std::vector<EnStockRely> KeywordParser::stockRely(const String& name)
+std::vector<EnStockRely> KeywordParser::stockRely(const std::string& name)
 {
 	if (name == "VOLV")
 		return { EnStockRely::VOLV };
@@ -38,12 +38,12 @@ std::vector<EnStockRely> KeywordParser::stockRely(const String& name)
     return {};
 }
 
-bool KeywordParser::check(const String& name)
+bool KeywordParser::check(const std::string& name)
 {
 	return (m_binds.find(name) != m_binds.end());
 }
 
-std::tuple<bool, NumberCore> KeywordParser::process(const String& name)
+std::tuple<bool, NumberCore> KeywordParser::process(const std::string& name)
 {
 	auto ite = m_binds.find(name);
 	if (ite == m_binds.end())

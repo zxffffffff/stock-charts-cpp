@@ -6,18 +6,18 @@
 ** 
 ****************************************************************************/
 #pragma once
-#include "../PluginLayer.h"
+#include "ChartPlugin.h"
 
 namespace StockCharts
 {
-    class PluginBG : public PluginLayer
+    class PluginBG : public ChartPlugin
     {
     public:
-        PluginBG(std::shared_ptr<const StockCore> stockCore, std::shared_ptr<const ChartProps> props);
+        PluginBG(std::shared_ptr<const StockCore> stockCore);
 
         // [2]
-        virtual void onCalcArea(std::shared_ptr<const ChartAreaContext> context) override;
-        virtual void onPaintArea(Painter& painter) override;
+        virtual void onContextChanged(std::shared_ptr<const ChartContext> context) override;
+        virtual void onPaint(Painter& painter) override;
 
     private:
         Rect rectView;

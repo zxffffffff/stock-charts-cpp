@@ -9,9 +9,6 @@
 
 using namespace StockCharts;
 
-const Number NumberCore::EmptyNumber = -DBL_MAX;
-const String NumberCore::EmptyNumberStr = std::to_string(NumberCore::EmptyNumber);
-
 NumberCore::NumberCore()
 {
 
@@ -97,7 +94,7 @@ Number& NumberCore::safeAt(int i)
 {
     if (i < 0 || i >= this->data.size()) {
         static Number d;
-        d = NumberCore::EmptyNumber;
+        d = NumberNull;
         return d;
     }
 
@@ -107,7 +104,7 @@ Number& NumberCore::safeAt(int i)
 Number NumberCore::safeAt(int i) const
 {
     if (i < 0 || i >= this->data.size())
-        return NumberCore::EmptyNumber;
+        return NumberNull;
 
     return this->data[i];
 }
@@ -174,7 +171,7 @@ void NumberCore::replaceNotNumber(const Number newVal)
 
 void NumberCore::replaceEmptyValue(const Number newVal)
 {
-    replace(NumberCore::EmptyNumber, newVal);
+    replace(NumberNull, newVal);
 }
 
 void NumberCore::reverse()
@@ -186,7 +183,7 @@ std::pair<Number, Number> NumberCore::getMinMax(int beginIndex, int endIndex) co
 {
     const int len = size();
     if (len == 0 || beginIndex < 0 || endIndex < 0 || beginIndex >= len || endIndex > len)
-        return { NumberCore::EmptyNumber , NumberCore::EmptyNumber };
+        return { NumberNull , NumberNull };
 
     Number min = this->data[beginIndex];
     Number max = min;
@@ -200,9 +197,9 @@ std::pair<Number, Number> NumberCore::getMinMax(int beginIndex, int endIndex) co
 
 Number NumberCore::max(const Number lhs, const Number rhs)
 {
-    if (lhs == NumberCore::EmptyNumber)
+    if (lhs == NumberNull)
         return rhs;
-    else if (rhs == NumberCore::EmptyNumber)
+    else if (rhs == NumberNull)
         return lhs;
 
     if (lhs > rhs) //
@@ -212,9 +209,9 @@ Number NumberCore::max(const Number lhs, const Number rhs)
 
 Number NumberCore::min(const Number lhs, const Number rhs)
 {
-    if (lhs == NumberCore::EmptyNumber)
+    if (lhs == NumberNull)
         return rhs;
-    else if (rhs == NumberCore::EmptyNumber)
+    else if (rhs == NumberNull)
         return lhs;
 
     if (lhs < rhs) //
@@ -224,7 +221,7 @@ Number NumberCore::min(const Number lhs, const Number rhs)
 
 Number NumberCore::abs(const Number val)
 {
-    if (val == NumberCore::EmptyNumber)
+    if (val == NumberNull)
         return val;
 
     if (val < 0)
@@ -325,8 +322,8 @@ NumberCore NumberCore::operatorFunc(const NumberCore& lhs, const NumberCore& rhs
     const int lCnt = lhs.size();
     const int rCnt = rhs.size();
     const int maxCnt = std::max(lCnt, rCnt);
-    Number l = NumberCore::EmptyNumber;
-    Number r = NumberCore::EmptyNumber;
+    Number l = NumberNull;
+    Number r = NumberNull;
 
     NumberCore buffer(maxCnt);
     if (lCnt == 0) {
@@ -339,7 +336,7 @@ NumberCore NumberCore::operatorFunc(const NumberCore& lhs, const NumberCore& rhs
         l = lhs[0];
         for (int i = 0; i < maxCnt; ++i) {
             r = rhs[i];
-            if (l != NumberCore::EmptyNumber && r != NumberCore::EmptyNumber)
+            if (l != NumberNull && r != NumberNull)
                 buffer[i] = comp(l, r); //
         }
     }
@@ -347,7 +344,7 @@ NumberCore NumberCore::operatorFunc(const NumberCore& lhs, const NumberCore& rhs
         Number r = rhs[0];
         for (int i = 0; i < maxCnt; ++i) {
             l = lhs[i];
-            if (l != NumberCore::EmptyNumber && r != NumberCore::EmptyNumber)
+            if (l != NumberNull && r != NumberNull)
                 buffer[i] = comp(l, r); //
         }
     }
@@ -355,7 +352,7 @@ NumberCore NumberCore::operatorFunc(const NumberCore& lhs, const NumberCore& rhs
         for (int i = 0; i < maxCnt; ++i) {
             l = lhs.safeAt(i);
             r = rhs.safeAt(i);
-            if (i < lCnt && i < rCnt && l != NumberCore::EmptyNumber && r != NumberCore::EmptyNumber)
+            if (i < lCnt && i < rCnt && l != NumberNull && r != NumberNull)
                 buffer[i] = comp(l, r); //
         }
     }
@@ -480,7 +477,7 @@ namespace StockCharts
             if (l == 0.0)
                 return 0.0;
             if (r == 0.0)
-                return NumberCore::EmptyNumber;
+                return NumberNull;
             return (l / r); //
         };
         return NumberCore::operatorFunc(lhs, rhs, comp);
@@ -493,7 +490,7 @@ namespace StockCharts
             if (l == 0.0)
                 return 0.0;
             if (int64_t(r) == 0)
-                return NumberCore::EmptyNumber;
+                return NumberNull;
             return (int64_t(l) % int64_t(r)); //
         };
         return NumberCore::operatorFunc(lhs, rhs, comp);
@@ -571,7 +568,7 @@ namespace StockCharts
     }
 }
 
-void NumberCore::setOther(int i, const String& other)
+void NumberCore::setOther(int i, const std::string& other)
 {
     int sz = this->data.size();
     if (i < 0 || i >= sz)
@@ -582,10 +579,10 @@ void NumberCore::setOther(int i, const String& other)
     this->other[i] = other;
 }
 
-String NumberCore::getOther(int i) const
+std::string NumberCore::getOther(int i) const
 {
     int sz = std::min(this->other.size(), this->data.size());
     if (i < 0 || i >= sz)
-        return String();
+        return std::string();
     return this->other[i];
 }

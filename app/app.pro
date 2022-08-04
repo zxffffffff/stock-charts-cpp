@@ -13,17 +13,15 @@ FORMS += \
     src/mainwindow.ui
 
 HEADERS += \
-    src/Chart/Model/Area/ChartAreaContext.h \
-    src/Chart/Model/Area/ChartCoordinate.h \
-    src/Chart/Model/ChartModel.h \
-    src/Chart/Model/ChartProps.h \
-    src/Chart/Plugin/Background/PluginBG.h \
-    src/Chart/Plugin/CandleStick/PluginKLine.h \
-    src/Chart/Plugin/PluginLayer.h \
-    src/Chart/View/Area/ChartAreaVM.h \
-    src/Chart/View/Area/ChartAreaView.h \
-    src/Chart/View/Timebar/ChartTimebarView.h \
-    src/Chart/View/Title/ChartTitleView.h \
+    src/Chart/ChartModel.h \
+    src/Chart/ChartVM.h \
+    src/Chart/Context/ChartContext.h \
+    src/Chart/Context/ChartCoordinate.h \
+    src/Chart/Plugins/ChartPlugin.h \
+    src/Chart/Plugins/PluginBG.h \
+    src/Chart/Plugins/PluginCrossLine.h \
+    src/Chart/Plugins/PluginIndicator.h \
+    src/Chart/Plugins/PluginKLine.h \
     src/Core/Graphics.h \
     src/Core/NumberCore.h \
     src/Core/Painter.h \
@@ -32,36 +30,32 @@ HEADERS += \
     src/Core/Utils.h \
     src/Indicator/Core/ExpCore.h \
     src/Indicator/Core/IndexCore.h \
+    src/Indicator/IndicatorParser.h \
     src/Indicator/Parser/ColorParser.h \
     src/Indicator/Parser/DrawingParser.h \
     src/Indicator/Parser/FunctionParser.h \
-    src/Indicator/Parser/IndicatorParser.h \
     src/Indicator/Parser/KeywordParser.h \
     src/Indicator/Parser/SubParser.h \
-    src/Plugin/Indicator/PluginIndicator.h \
     src/kchartview.h \
     src/mainwindow.h
 
 SOURCES += \
-    src/Chart/Model/Area/ChartCoordinate.cpp \
-    src/Chart/Model/ChartModel.cpp \
-    src/Chart/Model/ChartProps.cpp \
-    src/Chart/Plugin/Background/PluginBG.cpp \
-    src/Chart/Plugin/CandleStick/PluginKLine.cpp \
-    src/Chart/Plugin/PluginLayer.cpp \
-    src/Chart/View/Area/ChartAreaVM.cpp \
-    src/Chart/View/Area/ChartAreaView.cpp \
-    src/Chart/View/Timebar/ChartTimebarView.cpp \
-    src/Chart/View/Title/ChartTitleView.cpp \
+    src/Chart/ChartModel.cpp \
+    src/Chart/ChartVM.cpp \
+    src/Chart/Context/ChartCoordinate.cpp \
+    src/Chart/Plugins/ChartPlugin.cpp \
+    src/Chart/Plugins/PluginBG.cpp \
+    src/Chart/Plugins/PluginCrossLine.cpp \
+    src/Chart/Plugins/PluginIndicator.cpp \
+    src/Chart/Plugins/PluginKLine.cpp \
     src/Core/NumberCore.cpp \
     src/Core/Utils.cpp \
+    src/Indicator/IndicatorParser.cpp \
     src/Indicator/Parser/ColorParser.cpp \
     src/Indicator/Parser/DrawingParser.cpp \
     src/Indicator/Parser/FunctionParser.cpp \
-    src/Indicator/Parser/IndicatorParser.cpp \
     src/Indicator/Parser/KeywordParser.cpp \
     src/Indicator/Parser/SubParser.cpp \
-    src/Plugin/Indicator/PluginIndicator.cpp \
     src/kchartview.cpp \
     src/main.cpp \
     src/mainwindow.cpp

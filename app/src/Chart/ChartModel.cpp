@@ -5,10 +5,13 @@
 ** Support  : zxffffffff@outlook.com, 1337328542@qq.com
 ** 
 ****************************************************************************/
-#include "ChartTimebarView.h"
+#include "ChartModel.h"
+#include <cassert>
 
 using namespace StockCharts;
 
-ChartTimebarView::ChartTimebarView()
+ChartModel::ChartModel(std::shared_ptr<StockCore> stockCore)
+    : m_stockCore(stockCore)
 {
+    assert(m_stockCore);
 }

@@ -9,12 +9,12 @@
 
 using namespace StockCharts;
 
-PluginBG::PluginBG(std::shared_ptr<const StockCore> stockCore, std::shared_ptr<const ChartProps> props)
-    : PluginLayer(stockCore, props)
+PluginBG::PluginBG(std::shared_ptr<const StockCore> stockCore)
+    : ChartPlugin(stockCore)
 {
 }
 
-void PluginBG::onCalcArea(std::shared_ptr<const ChartAreaContext> context)
+void PluginBG::onContextChanged(std::shared_ptr<const ChartContext> context)
 {
     auto& ctx = *context;
 
@@ -25,7 +25,7 @@ void PluginBG::onCalcArea(std::shared_ptr<const ChartAreaContext> context)
     rectInnerChart = ctx.rectInnerChart;
 }
 
-void PluginBG::onPaintArea(Painter& painter)
+void PluginBG::onPaint(Painter& painter)
 {
     painter.fillRect(rectView, Color(255, 255, 255, 255 * 0.2));
     painter.fillRect(rectXAxis, Color(150, 100, 100, 255 * 0.2));

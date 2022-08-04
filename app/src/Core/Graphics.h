@@ -10,13 +10,14 @@
 namespace StockCharts
 {
     using Real = float;
+    constexpr inline Real RealNull = std::numeric_limits<Real>::lowest();
 
     struct Point
     {
         Real x;
         Real y;
 
-        Point(Real _x = 0, Real _y = 0)
+        Point(Real _x = RealNull, Real _y = RealNull)
             : x(_x)
             , y(_y)
         {
@@ -27,6 +28,11 @@ namespace StockCharts
             x = _x;
             y = _y;
             return *this;
+        }
+
+        bool valid() const
+        {
+            return (x != RealNull && y != RealNull);
         }
 
         bool operator==(const Point& rhs) const
@@ -57,6 +63,11 @@ namespace StockCharts
             return *this;
         }
 
+        bool valid() const
+        {
+            return (width > 0 && height > 0);
+        }
+
         bool operator==(const Size& rhs) const
         {
             return (width == rhs.width && height == rhs.height);
@@ -72,7 +83,7 @@ namespace StockCharts
         Point point;
         Size size;
 
-        Rect(Real _x = 0, Real _y = 0, Real _width = 0, Real _height = 0)
+        Rect(Real _x = RealNull, Real _y = RealNull, Real _width = 0, Real _height = 0)
             : point(_x, _y)
             , size(_width, _height)
         {
@@ -91,6 +102,19 @@ namespace StockCharts
             size.width = _width;
             size.height = _height;
             return *this;
+        }
+
+        bool valid() const
+        {
+            return (point.valid() && size.valid());
+        }
+
+        bool contains(const Point& point) const
+        {
+            if (!valid() || !point.valid())
+                return false;
+            return (point.x >= left() && point.x < right()
+                && point.y >= top() && point.y < bottom());
         }
 
         Real left() const { return point.x; }
@@ -118,7 +142,7 @@ namespace StockCharts
         Point first;
         Point second;
 
-        Line(Real _x1 = 0, Real _y1 = 0, Real _x2 = 0, Real _y2 = 0)
+        Line(Real _x1 = RealNull, Real _y1 = RealNull, Real _x2 = RealNull, Real _y2 = RealNull)
             : first(_x1, _y1)
             , second(_x2, _y2)
         {
@@ -139,6 +163,11 @@ namespace StockCharts
             return *this;
         }
 
+        bool valid() const
+        {
+            return (first.valid() && second.valid());
+        }
+
         bool operator==(const Line& rhs) const
         {
             return (first == rhs.first && second == rhs.second);
@@ -155,7 +184,15 @@ namespace StockCharts
         Line line;
         int flag;
 
-        Stick(Real _x = 0, Real _y = 0, Real _width = 0, Real _height = 0, Real _high = 0, Real _low = 0, int _flag = 0)
+        Stick(
+            Real _x = RealNull,
+            Real _y = RealNull,
+            Real _width = 0,
+            Real _height = 0, 
+            Real _high = RealNull,
+            Real _low = RealNull, 
+            int _flag = RealNull
+        )
             : rect(_x, _y, _width, _height)
             , line(rect.centerX(), _high, rect.centerX(), _low)
             , flag(_flag)
@@ -175,6 +212,11 @@ namespace StockCharts
             line.set(rect.centerX(), _high, rect.centerX(), _low);
             flag = _flag;
             return *this;
+        }
+
+        bool valid() const
+        {
+            return (rect.valid() && line.valid());
         }
 
         Real left() const { return rect.left(); }

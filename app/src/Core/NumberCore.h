@@ -16,18 +16,14 @@
 namespace StockCharts
 {
     using Number = double;
-    using String = std::string;
+    constexpr inline Number NumberNull = std::numeric_limits<Number>::lowest();
 
     class NumberCore
     {
     public:
-        static const Number	EmptyNumber;
-        static const String	EmptyNumberStr;
-
-    public:
         NumberCore();
         NumberCore(const Number val);
-        NumberCore(int cnt, const Number val = EmptyNumber);
+        NumberCore(int cnt, const Number val = NumberNull);
         NumberCore(const NumberCore& rhs);
         NumberCore(NumberCore&& rhs);
         NumberCore(std::initializer_list<Number> list);
@@ -36,7 +32,7 @@ namespace StockCharts
 
         bool	isEmpty() const;
         int		size() const;
-        void	resize(int cnt, const Number val = EmptyNumber);
+        void	resize(int cnt, const Number val = NumberNull);
         void	clear();
 
         Number& at(int i);
@@ -111,10 +107,10 @@ namespace StockCharts
         std::vector<Number> data;
 
     public:
-        void    setOther(int i, const String& other);
-        String  getOther(int i) const;
+        void    setOther(int i, const std::string& other);
+        std::string  getOther(int i) const;
 
     private:
-        std::vector<String> other;
+        std::vector<std::string> other;
     };
 }

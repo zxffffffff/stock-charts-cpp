@@ -47,7 +47,7 @@ ColorParser::ColorParser()
 	};
 }
 
-bool ColorParser::check(const String& name)
+bool ColorParser::check(const std::string& name)
 {
 	if (m_types.find(name) != m_types.end())
 		return true;
@@ -63,7 +63,7 @@ bool ColorParser::check(const String& name)
 	return false;
 }
 
-std::tuple<bool, ExpColorType> ColorParser::process(const String& name)
+std::tuple<bool, ExpColorType> ColorParser::process(const std::string& name)
 {
 	bool ok = false;
 	ExpColorType expColor;
@@ -76,7 +76,7 @@ std::tuple<bool, ExpColorType> ColorParser::process(const String& name)
 	return emptyRet();
 }
 
-bool ColorParser::checkCustomColor(const String& name)
+bool ColorParser::checkCustomColor(const std::string& name)
 {
 	//COLORE123456
 	if (name.length() != 11)
@@ -94,7 +94,7 @@ bool ColorParser::checkCustomColor(const String& name)
 	return true;
 }
 
-std::tuple<bool, ExpColorType> ColorParser::colorType(const String& name)
+std::tuple<bool, ExpColorType> ColorParser::colorType(const std::string& name)
 {
 	auto ite = m_types.find(name);
 	if (ite == m_types.end())
@@ -105,7 +105,7 @@ std::tuple<bool, ExpColorType> ColorParser::colorType(const String& name)
 	return { true, std::move(expColor) };
 }
 
-std::tuple<bool, ExpColorType> ColorParser::lineThick(const String& name)
+std::tuple<bool, ExpColorType> ColorParser::lineThick(const std::string& name)
 {
 	auto ite = m_thicks.find(name);
 	if (ite == m_thicks.end())
@@ -116,7 +116,7 @@ std::tuple<bool, ExpColorType> ColorParser::lineThick(const String& name)
 	return { true, std::move(expColor) };
 }
 
-std::tuple<bool, ExpColorType> ColorParser::colorString(const String& name)
+std::tuple<bool, ExpColorType> ColorParser::colorString(const std::string& name)
 {
 	auto ite = m_colors.find(name);
 	if (ite == m_colors.end()) {

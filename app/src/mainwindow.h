@@ -24,12 +24,10 @@ public:
     ~MainWindow();
 
 public slots:
-    void slotBtnRun();
+    void slotBtnAdd();
     void slotBtnClear();
 
 private:
     Ui::MainWindow ui;
-
-    class KChartView* m_chartWidget = nullptr;
 };
 #endif // MAINWINDOW_H

@@ -34,10 +34,10 @@ namespace StockCharts
         virtual void fillRect(const Rect& rect, const Color& color) override
         {
             painter.fillRect(
-                rect.left(),
-                rect.top(),
-                rect.width(),
-                rect.height(),
+                std::round(rect.left()),
+                std::round(rect.top()),
+                std::round(rect.width()),
+                std::round(rect.height()),
                 QColor(color.r, color.g, color.b, color.a)
             );
         }
@@ -46,10 +46,10 @@ namespace StockCharts
         {
             painter.setPen(QColor(color.r, color.g, color.b, color.a));
             painter.drawLine(
-                line.first.x,
-                line.first.y,
-                line.second.x,
-                line.second.y
+                std::round(line.first.x),
+                std::round(line.first.y),
+                std::round(line.second.x),
+                std::round(line.second.y)
             );
         }
 
@@ -59,9 +59,16 @@ namespace StockCharts
                 return;
             painter.setPen(QColor(color.r, color.g, color.b, color.a));
             QPainterPath path;
-            path.moveTo(points[0].x, points[0].y);
-            for (int i = 1; i < points.size(); i++)
-                path.lineTo(points[i].x, points[i].y);
+            path.moveTo(
+                std::round(points[0].x),
+                std::round(points[0].y)
+            );
+            for (int i = 1; i < points.size(); i++) {
+                path.lineTo(
+                    std::round(points[i].x),
+                    std::round(points[i].y)
+                );
+            }
             painter.drawPath(path);
         }
 

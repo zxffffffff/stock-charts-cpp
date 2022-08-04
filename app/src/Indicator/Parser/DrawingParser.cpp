@@ -18,12 +18,12 @@ DrawingParser::DrawingParser()
 	};
 }
 
-bool DrawingParser::check(const String& name)
+bool DrawingParser::check(const std::string& name)
 {
 	return (m_binds.find(name) != m_binds.end());
 }
 
-std::tuple<bool, ExpDrawingType, NumberCore> DrawingParser::process(const String& name, const std::vector<NumberCore>& inputs)
+std::tuple<bool, ExpDrawingType, NumberCore> DrawingParser::process(const std::string& name, const std::vector<NumberCore>& inputs)
 {
 	auto ite = m_binds.find(name);
 	if (ite == m_binds.end())
@@ -50,7 +50,7 @@ std::tuple<bool, ExpDrawingType, NumberCore> DrawingParser::number(const std::ve
 
 	for (int i = 0; i < rates_total; ++i) {
 		Number b = cond.safeAt(i);
-		if (b == 0.0 || b == NumberCore::EmptyNumber)
+		if (b == 0.0 || b == NumberNull)
 			continue;
 		buffer[i] = price[i];
 
@@ -95,7 +95,7 @@ std::tuple<bool, ExpDrawingType, NumberCore> DrawingParser::stickLine(const std:
 	Number width = inputs[3].safeAt(0);
 	Number empty = inputs[4].safeAt(0);
 
-	if (cond.isEmpty() || price.isEmpty() || price2.isEmpty() || width == NumberCore::EmptyNumber || empty == NumberCore::EmptyNumber)
+	if (cond.isEmpty() || price.isEmpty() || price2.isEmpty() || width == NumberNull || empty == NumberNull)
 		return emptyRet(true);
 
 	int rates_total = std::max(price.size(), price2.size());
@@ -103,7 +103,7 @@ std::tuple<bool, ExpDrawingType, NumberCore> DrawingParser::stickLine(const std:
 
 	for (int i = 0; i < rates_total; ++i) {
 		Number b = cond.safeAt(i);
-		if (!b || b == NumberCore::EmptyNumber)
+		if (!b || b == NumberNull)
 			continue;
 		buffer[i] = price.safeAt(i);
 		buffer.setOther(i, std::to_string(price2[i]));

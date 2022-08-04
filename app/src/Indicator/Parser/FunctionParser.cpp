@@ -33,12 +33,12 @@ FunctionParser::FunctionParser()
 	};
 }
 
-bool FunctionParser::check(const String& name)
+bool FunctionParser::check(const std::string& name)
 {
 	return (m_binds.find(name) != m_binds.end());
 }
 
-std::tuple<bool, NumberCore> FunctionParser::process(const String& name, const std::vector<NumberCore>& inputs)
+std::tuple<bool, NumberCore> FunctionParser::process(const std::string& name, const std::vector<NumberCore>& inputs)
 {
 	auto ite = m_binds.find(name);
 	if (ite == m_binds.end())
@@ -75,7 +75,7 @@ std::tuple<bool, NumberCore> FunctionParser::MA(const std::vector<NumberCore>& i
             start_position = period + begin;
 
             for (int i = 0; i < start_position - 1; i++)
-                buffer[i] = NumberCore::EmptyNumber;
+                buffer[i] = NumberNull;
 
             Number first_value = 0;
             for (int i = begin; i < start_position; i++)
@@ -159,7 +159,7 @@ std::tuple<bool, NumberCore> FunctionParser::SMA(const std::vector<NumberCore>& 
     for (long idx = nStar; idx < rates_total; idx++) {
         if (nStar == idx) {
             Y = price[nStar];
-            if (Y == NumberCore::EmptyNumber)
+            if (Y == NumberNull)
                 Y = 0.0;
             Ypre = Y;
             buffer[idx] = Y;
@@ -393,7 +393,7 @@ std::tuple<bool, NumberCore> FunctionParser::processABS(const std::vector<Number
 	for (int i = 0; i < buffer.size(); ++i) {
 		const Number d = buffer[i];
 
-		if (d != NumberCore::EmptyNumber)
+		if (d != NumberNull)
 			buffer[i] = std::abs(d);
 	}
     return { true, buffer };

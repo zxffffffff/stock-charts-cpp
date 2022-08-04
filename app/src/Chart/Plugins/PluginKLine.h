@@ -6,7 +6,7 @@
 ** 
 ****************************************************************************/
 #pragma once
-#include "../PluginLayer.h"
+#include "ChartPlugin.h"
 
 namespace StockCharts
 {
@@ -21,10 +21,10 @@ namespace StockCharts
         EnKLineType klineType = EnKLineType::CandleStick;
     };
 
-    class PluginKLine : public PluginLayer
+    class PluginKLine : public ChartPlugin
     {
     public:
-        PluginKLine(std::shared_ptr<const StockCore> stockCore, std::shared_ptr<const ChartProps> props);
+        PluginKLine(std::shared_ptr<const StockCore> stockCore);
 
         // [0]
         virtual void onStockCoreChanged() override;
@@ -34,8 +34,8 @@ namespace StockCharts
         virtual std::pair<Number, Number> getMinMax(int beginIndex, int endIndex) override;
 
         // [2]
-        virtual void onCalcArea(std::shared_ptr<const ChartAreaContext> context) override;
-        virtual void onPaintArea(Painter& painter) override;
+        virtual void onContextChanged(std::shared_ptr<const ChartContext> context) override;
+        virtual void onPaint(Painter& painter) override;
 
     public:
         void setKLineType(EnKLineType type);

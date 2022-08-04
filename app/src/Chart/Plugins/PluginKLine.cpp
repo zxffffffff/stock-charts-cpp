@@ -9,8 +9,8 @@
 
 using namespace StockCharts;
 
-PluginKLine::PluginKLine(std::shared_ptr<const StockCore> stockCore, std::shared_ptr<const ChartProps> props)
-    : PluginLayer(stockCore, props)
+PluginKLine::PluginKLine(std::shared_ptr<const StockCore> stockCore)
+    : ChartPlugin(stockCore)
 {
 }
 
@@ -19,7 +19,7 @@ std::pair<Number, Number> PluginKLine::getMinMax(int beginIndex, int endIndex)
     return m_stockCore->getMinMax(beginIndex, endIndex);
 }
 
-void PluginKLine::onCalcArea(std::shared_ptr<const ChartAreaContext> context)
+void PluginKLine::onContextChanged(std::shared_ptr<const ChartContext> context)
 {
     m_areaIndexs.resize(1);
     m_areaIndexs[0].exps.resize(1);
@@ -46,7 +46,7 @@ void PluginKLine::onCalcArea(std::shared_ptr<const ChartAreaContext> context)
     }
 }
 
-void PluginKLine::onPaintArea(Painter& painter)
+void PluginKLine::onPaint(Painter& painter)
 {
     if (m_areaIndexs.size() != 1 || m_areaIndexs[0].exps.size() != 1)
         return;

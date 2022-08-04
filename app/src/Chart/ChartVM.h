@@ -6,34 +6,36 @@
 ** 
 ****************************************************************************/
 #pragma once
-#include "../../../Core/StockCore.h"
-#include "../../../Core/Graphics.h"
-#include "../../../Core/Painter.h"
-#include "../../Model/Area/ChartAreaContext.h"
+#include "../Core/StockCore.h"
+#include "../Core/Graphics.h"
+#include "../Core/Painter.h"
+#include "Context/ChartContext.h"
 
 namespace StockCharts
 {
     class ChartModel;
-    class ChartAreaVM
+    class ChartVM
     {
     public:
-        ChartAreaVM(std::shared_ptr<ChartModel> model);
+        ChartVM(std::shared_ptr<ChartModel> model);
 
         // [0]
-        void setViewSize(int beginIndex, int endIndex);
 
         // [1]
-        void calcContext(Rect rectView);
-        void calcMinMax();
-        void calcCoordinate();
+        void calcContext();
         void calcPlugins();
 
         // [2]
+        void OnResize(const Rect& rect);
+        void OnPaint(Painter& painter);
+        void OnMouseMove(const Point& point);
+        void OnMouseLeave();
+
         void paintPlugins(Painter& painter);
 
     private:
         std::shared_ptr<ChartModel> m_model;
-        std::shared_ptr<ChartAreaContext> m_context;
+        std::shared_ptr<ChartContext> m_context;
     };
 }
 

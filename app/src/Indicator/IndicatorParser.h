@@ -6,8 +6,8 @@
 ** 
 ****************************************************************************/
 #pragma once
-#include "../../Core/StockCore.h"
-#include "../Core/IndexCore.h"
+#include "../Core/StockCore.h"
+#include "Core/IndexCore.h"
 
 namespace StockCharts
 {
@@ -75,11 +75,11 @@ namespace StockCharts
         EnParseToken	parseTokenValue();
         Number			parseNumberValue();
 
-        bool			checkAssign(const String& name);
-        NumberCore		getAssign(const String& name);
+        bool			checkAssign(const std::string& name);
+        NumberCore		getAssign(const std::string& name);
 
-        bool			checkInputParam(const String& name);
-        NumberCore		getInputParam(const String& name);
+        bool			checkInputParam(const std::string& name);
+        NumberCore		getInputParam(const std::string& name);
 
     private:
         IndexFormula    m_formula;
@@ -92,14 +92,14 @@ namespace StockCharts
         IndexCore				m_result;
         std::set<EnStockRely>	m_stockRely;
         bool					m_bParseError = false;
-        String					m_errWord;
+        std::string				m_errWord;
 
-        String				m_expression;
-        String::iterator	m_iteCurrent, m_iteEnd;
-        EnParseToken		m_eToken = EnParseToken::ParseInit;
-        Number				m_dValue = NumberCore::EmptyNumber;
-        String				m_sValue;
-        ExpInfo				m_expInfo;
+        std::string				m_expression;
+        std::string::iterator	m_iteCurrent, m_iteEnd;
+        EnParseToken		    m_eToken = EnParseToken::ParseInit;
+        Number				    m_dValue = NumberNull;
+        std::string				m_sValue;
+        ExpInfo				    m_expInfo;
         ExpDrawingType			m_expDrawing;
     };
 }

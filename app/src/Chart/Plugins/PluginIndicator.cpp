@@ -6,19 +6,18 @@
 ** 
 ****************************************************************************/
 #include "PluginIndicator.h"
-#include "../../Chart/Model/Area/ChartAreaContext.h"
-#include "../../Indicator/Parser/IndicatorParser.h"
+#include "../../Indicator/IndicatorParser.h"
 
 using namespace StockCharts;
 
-PluginIndicator::PluginIndicator(std::shared_ptr<const StockCore> stockCore, std::shared_ptr<const ChartProps> props)
-    : PluginLayer(stockCore, props)
+PluginIndicator::PluginIndicator(std::shared_ptr<const StockCore> stockCore)
+    : ChartPlugin(stockCore)
 {
 }
 
 std::pair<Number, Number> PluginIndicator::getMinMax(int beginIndex, int endIndex)
 {
-    auto minmax = std::pair<Number, Number>{ NumberCore::EmptyNumber, NumberCore::EmptyNumber };
+    auto minmax = std::pair<Number, Number>{ NumberNull, NumberNull };
     for (auto& indicator : m_indicators) {
         for (auto& exp : indicator->indexCore.exps) {
             auto minmax2 = exp.core.getMinMax(beginIndex, endIndex);
@@ -29,7 +28,7 @@ std::pair<Number, Number> PluginIndicator::getMinMax(int beginIndex, int endInde
     return minmax;
 }
 
-void PluginIndicator::onCalcArea(std::shared_ptr<const ChartAreaContext> context)
+void PluginIndicator::onContextChanged(std::shared_ptr<const ChartContext> context)
 {
     auto& ctx = *context;
 
@@ -61,7 +60,7 @@ void PluginIndicator::onCalcArea(std::shared_ptr<const ChartAreaContext> context
     }
 }
 
-void PluginIndicator::onPaintArea(Painter& painter)
+void PluginIndicator::onPaint(Painter& painter)
 {
     for (auto& index : m_areaIndexs) {
         for (auto& exp : index.exps) {

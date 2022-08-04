@@ -297,7 +297,7 @@ hr { height: 1px; border-width: 0; }
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="btnRun">
+             <widget class="QPushButton" name="btnAdd">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -305,7 +305,7 @@ hr { height: 1px; border-width: 0; }
                </sizepolicy>
               </property>
               <property name="text">
-               <string>run</string>
+               <string>add</string>
               </property>
              </widget>
             </item>
@@ -338,12 +338,27 @@ hr { height: 1px; border-width: 0; }
         <height>0</height>
        </size>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_4"/>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="KChartView" name="kchart0" native="true"/>
+       </item>
+       <item>
+        <widget class="KChartView" name="kchart1" native="true"/>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KChartView</class>
+   <extends>QWidget</extends>
+   <header location="global">src/kchartview.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
