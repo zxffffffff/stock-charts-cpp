@@ -29,8 +29,22 @@ public:
 
     void init(std::shared_ptr<StockCharts::StockCore> stockCore, bool main);
 
+    // indicator
     std::shared_ptr<const StockCharts::StIndicator> addIndicator(const StockCharts::IndexFormula& formula);
     void clearIndicators();
+
+public slots:
+    // general
+    void slotDrawingType(int i);
+    void slotCorrdinate(int i);
+    void slotYLWidth(int i);
+    void slotYRWidth(int i);
+    void slotXHeight(int i);
+    void slotPaddingLeft(int i);
+    void slotPaddingTop(int i);
+    void slotPaddingRight(int i);
+    void slotPaddingBottom(int i);
+    void slotNodeStickWidth(int nodeWidth, int stickWidth);
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;

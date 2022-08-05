@@ -51,7 +51,7 @@ namespace StockCharts
 		None, // Line
 		Number,
 		Text,
-		StickLine,
+		CandleStick,
 	};
 
 	struct ExpDrawingType

@@ -110,7 +110,7 @@ std::tuple<bool, ExpDrawingType, NumberCore> DrawingParser::stickLine(const std:
 	}
 
 	ExpDrawingType drawingType;
-	drawingType.type = EnDrawingType::StickLine;
+	drawingType.type = EnDrawingType::CandleStick;
 	drawingType.stickWidth = width;
 	drawingType.stickEmpty = empty;
 	return { true, std::move(drawingType), buffer };

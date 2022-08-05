@@ -11,13 +11,15 @@
 
 namespace StockCharts
 {
-    enum class EnKChartDrawingType
+    enum class EnKLineType
     {
-        StickLine,          // 蜡烛图
+        CandleStickHollow,  // 蜡烛图（空心）
+        CandleStick,        // 蜡烛图
+        BAR,                // 美国线
         CloseLine,          // 收盘价线
     };
 
-    enum class EnCoordinateYType
+    enum class EnCoordinateType
     {
         Linear,             // 等差
         Proportional,       // 等比
@@ -29,13 +31,14 @@ namespace StockCharts
 
     struct ChartProps
     {
-        EnKChartDrawingType klineType = EnKChartDrawingType::StickLine;
+        EnKLineType klineType = EnKLineType::CandleStick;
 
-        EnCoordinateYType type = EnCoordinateYType::Linear;
+        EnCoordinateType coordinateType = EnCoordinateType::Linear;
 
         // border
-        Real xAxisHeight = 10; // timebar
-        Real yAxisWidth = 50;
+        Real xAxisHeight = 30;
+        Real ylAxisWidth = 50;
+        Real yrAxisWidth = 50;
 
         // padding
         Real topPadding = 10;
@@ -44,8 +47,8 @@ namespace StockCharts
         Real rightPadding = 10;
 
         // stick
-        Real initNodeWidth = 7;
-        Real initStickWidth = 5;
+        Real nodeWidth = 7;
+        Real stickWidth = 5;
     };
 
     struct ChartContext
@@ -55,13 +58,12 @@ namespace StockCharts
         // [0] content
         Rect rectView;
         Rect rectXAxis;
-        Rect rectYAxis;
+        Rect rectYLAxis;
+        Rect rectYRAxis;
         Rect rectChart;
         Rect rectInnerChart;
 
         // [1] x
-        Real nodeWidth = props.initNodeWidth;
-        Real stickWidth = props.initStickWidth;
         int viewCount = 0;
         int endIndex = 0; // lastIndex = (endIndex - 1)
         int beginIndex = endIndex - viewCount;

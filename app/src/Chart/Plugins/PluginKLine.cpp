@@ -21,10 +21,11 @@ std::pair<Number, Number> PluginKLine::getMinMax(int beginIndex, int endIndex)
 
 void PluginKLine::onContextChanged(std::shared_ptr<const ChartContext> context)
 {
+    auto& ctx = *context;
     m_areaIndexs.resize(1);
     m_areaIndexs[0].exps.resize(1);
 
-    switch (m_config.klineType)
+    switch (ctx.props.klineType)
     {
     case EnKLineType::CandleStick:
     {
@@ -61,11 +62,6 @@ void PluginKLine::onPaint(Painter& painter)
         painter.drawLines(exp.lines, Color(100, 100, 200));
         break;
     }
-}
-
-void PluginKLine::setKLineType(EnKLineType type)
-{
-    m_config.klineType = type;
 }
 
 void PluginKLine::onStockCoreChanged()

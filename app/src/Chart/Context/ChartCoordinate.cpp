@@ -13,7 +13,7 @@ bool ChartCoordinate::validX() const
 {
     const auto& ctx = *context;
     return (
-        ctx.rectInnerChart.valid() && ctx.viewCount > 0 && ctx.nodeWidth > 0);
+        ctx.rectInnerChart.valid() && ctx.viewCount > 0 && ctx.props.nodeWidth > 0);
 }
 
 bool ChartCoordinate::validY() const
@@ -28,15 +28,15 @@ Real ChartCoordinate::price2pos(Number price) const
         return 0;
 
     const auto& ctx = *context;
-    switch (ctx.props.type)
+    switch (ctx.props.coordinateType)
     {
-    case EnCoordinateYType::Linear:
-    case EnCoordinateYType::Proportional:
-    case EnCoordinateYType::Percentage:
+    case EnCoordinateType::Linear:
+    case EnCoordinateType::Proportional:
+    case EnCoordinateType::Percentage:
         return ctx.rectInnerChart.bottom() - (price - ctx.minPrice) * (ctx.rectInnerChart.height() / (ctx.maxPrice - ctx.minPrice));
-    case EnCoordinateYType::LogLinear:
-    case EnCoordinateYType::LogProportional:
-    case EnCoordinateYType::LogPercentage:
+    case EnCoordinateType::LogLinear:
+    case EnCoordinateType::LogProportional:
+    case EnCoordinateType::LogPercentage:
         return ctx.rectInnerChart.bottom() - (std::log(price) - ctx.minPrice) * (ctx.rectInnerChart.height() / (ctx.maxPrice - ctx.minPrice));
     default:
         return 0;
@@ -50,15 +50,15 @@ Number ChartCoordinate::pos2price(Real pos) const
 
     const auto& ctx = *context;
     Number cache;
-    switch (ctx.props.type)
+    switch (ctx.props.coordinateType)
     {
-    case EnCoordinateYType::Linear:
-    case EnCoordinateYType::Proportional:
-    case EnCoordinateYType::Percentage:
+    case EnCoordinateType::Linear:
+    case EnCoordinateType::Proportional:
+    case EnCoordinateType::Percentage:
         return ctx.minPrice + (ctx.rectInnerChart.bottom() - pos) / (ctx.rectInnerChart.height() / (ctx.maxPrice - ctx.minPrice));
-    case EnCoordinateYType::LogLinear:
-    case EnCoordinateYType::LogProportional:
-    case EnCoordinateYType::LogPercentage:
+    case EnCoordinateType::LogLinear:
+    case EnCoordinateType::LogProportional:
+    case EnCoordinateType::LogPercentage:
         cache = (ctx.rectInnerChart.bottom() - pos) / (ctx.rectInnerChart.height() / (ctx.maxPrice - ctx.minPrice));
         cache = std::exp(cache + ctx.minPrice);
         cache -= std::exp(ctx.minPrice);
@@ -75,7 +75,7 @@ Real ChartCoordinate::index2pos(int index) const
 
     const auto& ctx = *context;
     int viewIndex = index - ctx.beginIndex;
-    return ctx.rectInnerChart.left() + (viewIndex * ctx.nodeWidth) + (ctx.nodeWidth / 2.0 - 0.5);
+    return ctx.rectInnerChart.left() + (viewIndex * ctx.props.nodeWidth) + (ctx.props.nodeWidth / 2.0 - 0.5);
 }
 
 int ChartCoordinate::pos2index(Real pos) const
@@ -84,6 +84,6 @@ int ChartCoordinate::pos2index(Real pos) const
         return -1;
 
     const auto& ctx = *context;
-    int viewIndex = std::round((pos - ctx.rectInnerChart.left() - (ctx.nodeWidth / 2.0 - 0.5)) / ctx.nodeWidth);
+    int viewIndex = std::round((pos - ctx.rectInnerChart.left() - (ctx.props.nodeWidth / 2.0 - 0.5)) / ctx.props.nodeWidth);
     return ctx.beginIndex + viewIndex;
 }

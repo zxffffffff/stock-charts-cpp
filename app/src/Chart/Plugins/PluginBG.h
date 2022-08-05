@@ -22,7 +22,8 @@ namespace StockCharts
     private:
         Rect rectView;
         Rect rectXAxis;
-        Rect rectYAxis;
+        Rect rectYLAxis;
+        Rect rectYRAxis;
         Rect rectChart;
         Rect rectInnerChart;
     };

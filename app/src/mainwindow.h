@@ -24,8 +24,13 @@ public:
     ~MainWindow();
 
 public slots:
-    void slotBtnAdd();
-    void slotBtnClear();
+    // general
+    void slotNodeWidth(int i);
+    void slotStickWidth(int i);
+
+    // indicator
+    void slotIndicatorBtnAdd();
+    void slotIndicatorBtnClear();
 
 private:
     Ui::MainWindow ui;

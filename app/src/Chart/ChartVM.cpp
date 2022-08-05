@@ -19,6 +19,77 @@ ChartVM::ChartVM(std::shared_ptr<ChartModel> model)
 {
 }
 
+void ChartVM::setDrawingType(EnKLineType type)
+{
+    auto& ctx = *m_context;
+    ctx.props.klineType = type;
+    calcContext();
+}
+
+void ChartVM::setCorrdinate(EnCoordinateType type)
+{
+    auto& ctx = *m_context;
+    ctx.props.coordinateType = type;
+    calcContext();
+}
+
+void ChartVM::setYLWidth(Real i)
+{
+    auto& ctx = *m_context;
+    ctx.props.ylAxisWidth = i;
+    calcContext();
+}
+
+void ChartVM::setYRWidth(Real i)
+{
+    auto& ctx = *m_context;
+    ctx.props.yrAxisWidth = i;
+    calcContext();
+}
+
+void ChartVM::setXHeight(Real i)
+{
+    auto& ctx = *m_context;
+    ctx.props.xAxisHeight = i;
+    calcContext();
+}
+
+void ChartVM::setPaddingLeft(Real i)
+{
+    auto& ctx = *m_context;
+    ctx.props.leftPadding = i;
+    calcContext();
+}
+
+void ChartVM::setPaddingTop(Real i)
+{
+    auto& ctx = *m_context;
+    ctx.props.topPadding = i;
+    calcContext();
+}
+
+void ChartVM::setPaddingRight(Real i)
+{
+    auto& ctx = *m_context;
+    ctx.props.rightPadding= i;
+    calcContext();
+}
+
+void ChartVM::setPaddingBottom(Real i)
+{
+    auto& ctx = *m_context;
+    ctx.props.btmPadding = i;
+    calcContext();
+}
+
+void ChartVM::setNodeStickWidth(Real nodeWidth, Real stickWidth)
+{
+    auto& ctx = *m_context;
+    ctx.props.nodeWidth = nodeWidth;
+    ctx.props.stickWidth = stickWidth;
+    calcContext();
+}
+
 void ChartVM::calcContext()
 {
     const auto& stockCore = m_model->getStockCore();
@@ -26,19 +97,35 @@ void ChartVM::calcContext()
     auto& ctx = *m_context;
 
     // [0] content
-    ctx.rectXAxis.set(ctx.rectView.left(), ctx.rectView.height() - ctx.props.xAxisHeight, ctx.rectView.width(), ctx.props.xAxisHeight);
-    ctx.rectYAxis.set(ctx.rectView.width() - ctx.props.yAxisWidth, ctx.rectView.top(), ctx.props.yAxisWidth, ctx.rectView.height());
-    ctx.rectChart.set(
+    ctx.rectXAxis.set(
         ctx.rectView.left(),
+        ctx.rectView.bottom() - ctx.props.xAxisHeight, 
+        ctx.rectView.width(),
+        ctx.props.xAxisHeight
+    );
+    ctx.rectYLAxis.set(
+        ctx.rectView.left(), 
+        ctx.rectView.top(), 
+        ctx.props.ylAxisWidth,
+        ctx.rectView.height()
+    );
+    ctx.rectYRAxis.set(
+        ctx.rectView.right() - ctx.props.yrAxisWidth,
         ctx.rectView.top(),
-        ctx.rectView.width() - ctx.props.yAxisWidth,
+        ctx.props.yrAxisWidth,
+        ctx.rectView.height()
+    );
+    ctx.rectChart.set(
+        ctx.rectView.left() + ctx.props.ylAxisWidth,
+        ctx.rectView.top(),
+        ctx.rectView.width() - ctx.props.ylAxisWidth - ctx.props.yrAxisWidth,
         ctx.rectView.height() - ctx.props.xAxisHeight
     );
     ctx.rectInnerChart.set(
-        ctx.props.leftPadding,
-        ctx.props.topPadding,
-        ctx.rectView.width() - ctx.props.yAxisWidth - ctx.props.leftPadding - ctx.props.rightPadding,
-        ctx.rectView.height() - ctx.props.xAxisHeight - ctx.props.topPadding - ctx.props.btmPadding
+        ctx.rectChart.left() + ctx.props.leftPadding,
+        ctx.rectChart.top() + ctx.props.topPadding,
+        ctx.rectChart.width() - ctx.props.leftPadding - ctx.props.rightPadding,
+        ctx.rectChart.height() - ctx.props.topPadding - ctx.props.btmPadding
     );
 
     // invalid size
@@ -49,14 +136,14 @@ void ChartVM::calcContext()
 
     // [1] x
     const int stockCnt = stockCore->getSize();
-    const Real stockWidth = stockCnt * ctx.nodeWidth;
+    const Real stockWidth = stockCnt * ctx.props.nodeWidth;
     const Real viewWidth = ctx.rectInnerChart.width();
     if (stockWidth <= viewWidth) {
         ctx.viewCount = stockCnt;
         ctx.endIndex = stockCnt;
     }
     else {
-        ctx.viewCount = std::floor(viewWidth / ctx.nodeWidth);
+        ctx.viewCount = std::floor(viewWidth / ctx.props.nodeWidth);
         if (ctx.endIndex < 0 || ctx.endIndex > stockCnt)
             ctx.endIndex = ctx.viewCount;
     }

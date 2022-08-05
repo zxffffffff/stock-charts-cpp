@@ -10,17 +10,6 @@
 
 namespace StockCharts
 {
-    enum class EnKLineType
-    {
-        CandleStick,
-        CloseLine,
-    };
-
-    struct StKLineConfig
-    {
-        EnKLineType klineType = EnKLineType::CandleStick;
-    };
-
     class PluginKLine : public ChartPlugin
     {
     public:
@@ -36,16 +25,6 @@ namespace StockCharts
         // [2]
         virtual void onContextChanged(std::shared_ptr<const ChartContext> context) override;
         virtual void onPaint(Painter& painter) override;
-
-    public:
-        void setKLineType(EnKLineType type);
-        EnKLineType getKLineType() const
-        {
-            return m_config.klineType;
-        }
-
-    private:
-        StKLineConfig m_config;
     };
 }
 

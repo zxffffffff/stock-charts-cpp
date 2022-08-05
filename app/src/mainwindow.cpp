@@ -48,34 +48,93 @@ MainWindow::MainWindow(QWidget *parent)
     ui.setupUi(this);
     setMouseTracking(true);
 
-    connect(ui.btnAdd, &QPushButton::clicked, this, &MainWindow::slotBtnAdd);
-    connect(ui.btnClear, &QPushButton::clicked, this, &MainWindow::slotBtnClear);
-
     auto stock = std::make_shared<StockCore>(GenerateStock());
     ui.kchart0->init(stock, true);
     ui.kchart1->init(stock, false);
     ui.kchart1->addIndicator(GenerateMACD());
+
+    // general
+    connect(ui.generalDrawingType, &QComboBox::currentIndexChanged, ui.kchart0, &KChartView::slotDrawingType);
+    // connect(ui.generalDrawingType, &QComboBox::currentIndexChanged, ui.kchart1, &KChartView::slotDrawingType);
+    connect(ui.generalCorrdinate, &QComboBox::currentIndexChanged, ui.kchart0, &KChartView::slotCorrdinate);
+    // connect(ui.generalCorrdinate, &QComboBox::currentIndexChanged, ui.kchart1, &KChartView::slotCorrdinate);
+    connect(ui.generalYLWidth, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotYLWidth);
+    connect(ui.generalYLWidth, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotYLWidth);
+    connect(ui.generalYRWidth, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotYRWidth);
+    connect(ui.generalYRWidth, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotYRWidth);
+    connect(ui.generalXHeight, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotXHeight);
+    connect(ui.generalXHeight, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotXHeight);
+    connect(ui.generalPaddingLeft, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotPaddingLeft);
+    connect(ui.generalPaddingLeft, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotPaddingLeft);
+    connect(ui.generalPaddingTop, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotPaddingTop);
+    connect(ui.generalPaddingTop, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotPaddingTop);
+    connect(ui.generalPaddingRight, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotPaddingRight);
+    connect(ui.generalPaddingRight, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotPaddingRight);
+    connect(ui.generalPaddingBottom, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotPaddingBottom);
+    connect(ui.generalPaddingBottom, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotPaddingBottom);
+    connect(ui.generalNodeWidth, &QSpinBox::valueChanged, this, &MainWindow::slotNodeWidth);
+    connect(ui.generalStickWidth, &QSpinBox::valueChanged, this, &MainWindow::slotStickWidth);
+
+    // indicator
+    connect(ui.indicatorBtnAdd, &QPushButton::clicked, this, &MainWindow::slotIndicatorBtnAdd);
+    connect(ui.indicatorBtnClear, &QPushButton::clicked, this, &MainWindow::slotIndicatorBtnClear);
 }
 
 MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::slotBtnAdd()
+void MainWindow::slotNodeWidth(int node)
 {
-    QString input = ui.textEdit->toPlainText();
+    int odd = (node % 2 ? node : node + 1);
+    if (odd != node) {
+        ui.generalNodeWidth->setValue(odd);
+        return;
+    }
+
+    int stick = ui.generalStickWidth->value();
+    if (stick > node) {
+        ui.generalStickWidth->setValue(node);
+        return;
+    }
+
+    ui.kchart0->slotNodeStickWidth(node, stick);
+    ui.kchart1->slotNodeStickWidth(node, stick);
+}
+
+void MainWindow::slotStickWidth(int stick)
+{
+    int odd = (stick % 2 ? stick : stick + 1);
+    if (odd != stick) {
+        ui.generalStickWidth->setValue(odd);
+        return;
+    }
+
+    int node = ui.generalNodeWidth->value();
+    if (stick > node) {
+        ui.generalNodeWidth->setValue(stick);
+        return;
+    }
+
+    ui.kchart0->slotNodeStickWidth(node, stick);
+    ui.kchart1->slotNodeStickWidth(node, stick);
+}
+
+void MainWindow::slotIndicatorBtnAdd()
+{
+    QString input = ui.indicatorFormularEdit->toPlainText();
     std::string expression = input.toStdString();
     std::map<std::string, int> params;
-    for (int row = 0; row < ui.tableWidget->rowCount(); ++row) {
-        auto key = ui.tableWidget->item(row, 0);
-        auto val = ui.tableWidget->item(row, 1);
+    for (int row = 0; row < ui.indicatorParamTable->rowCount(); ++row) {
+        auto key = ui.indicatorParamTable->item(row, 0);
+        auto val = ui.indicatorParamTable->item(row, 1);
         if (!key || !val)
             continue;
         params[key->text().toStdString()] = val->text().toInt();
     }
     IndexFormula formular = { "Index", expression, params};
 
-    bool bMain = ui.radioMain->isChecked();
+    bool bMain = ui.indicatorRadioMain->isChecked();
     auto indicator = bMain ? ui.kchart0->addIndicator(formular) : ui.kchart1->addIndicator(formular);
 
     QString tips;
@@ -92,17 +151,15 @@ void MainWindow::slotBtnAdd()
     else {
         tips = QString::fromLocal8Bit("success!\n\n");
     }
-    ui.label_err->setText(tips);
-    update();
+    ui.indicatorLabel->setText(tips);
 }
 
-void MainWindow::slotBtnClear()
+void MainWindow::slotIndicatorBtnClear()
 {
     ui.kchart0->clearIndicators();
     ui.kchart1->clearIndicators();
 
-    ui.label_err->clear();
-    update();
+    ui.indicatorLabel->clear();
 }
 
 /*
@@ -231,7 +288,7 @@ void MainWindow::paintEvent(QPaintEvent* event)
                 painter.drawText(vPoints[i], QString::fromStdString(str));
             }
         }
-        else if (exp.drawingType.type == EnDrawingType::StickLine) {
+        else if (exp.drawingType.type == EnDrawingType::CandleStick) {
             if(exp.drawingType.stickEmpty == -1)
                 penStyle = Qt::DashLine;
             int width = exp.drawingType.stickWidth * barW;

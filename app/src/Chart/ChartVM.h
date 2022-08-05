@@ -20,6 +20,16 @@ namespace StockCharts
         ChartVM(std::shared_ptr<ChartModel> model);
 
         // [0]
+        void setDrawingType(EnKLineType type);
+        void setCorrdinate(EnCoordinateType type);
+        void setYLWidth(Real i);
+        void setYRWidth(Real i);
+        void setXHeight(Real i);
+        void setPaddingLeft(Real i);
+        void setPaddingTop(Real i);
+        void setPaddingRight(Real i);
+        void setPaddingBottom(Real i);
+        void setNodeStickWidth(Real nodeWidth, Real stickWidth);
 
         // [1]
         void calcContext();

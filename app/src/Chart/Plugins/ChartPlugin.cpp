@@ -40,9 +40,9 @@ StChartAreaExp ChartPlugin::createStickExp(
         const Real cPos = coordinate.price2pos(c);
 
         exp.sticks[i].set(
-            xPos - ctx.stickWidth / 2,
+            xPos - ctx.props.stickWidth / 2,
             std::min(oPos, cPos),
-            ctx.stickWidth,
+            ctx.props.stickWidth,
             std::abs(oPos - cPos),
             hPos,
             lPos,

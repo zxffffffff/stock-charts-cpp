@@ -52,7 +52,7 @@ void PluginIndicator::onContextChanged(std::shared_ptr<const ChartContext> conte
                     indicatorExp.core
                 );
                 break;
-            case EnDrawingType::StickLine:
+            case EnDrawingType::CandleStick:
                 // todo
                 break;
             }

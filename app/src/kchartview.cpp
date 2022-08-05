@@ -42,6 +42,7 @@ void KChartView::init(std::shared_ptr<StockCore> stockCore, bool main)
     m_model->addPlugin<PluginCrossLine>();
 
     m_vm = std::make_shared<ChartVM>(m_model);
+    ui->body->update();
 }
 
 std::shared_ptr<const StIndicator> KChartView::addIndicator(const IndexFormula& formula)
@@ -52,6 +53,7 @@ std::shared_ptr<const StIndicator> KChartView::addIndicator(const IndexFormula& 
     auto indicator = pluginIndicator->addIndicator(formula);
 
     m_vm->calcContext();
+    ui->body->update();
     return indicator;
 }
 
@@ -63,6 +65,67 @@ void KChartView::clearIndicators()
     pluginIndicator->delIndicators();
 
     m_vm->calcContext();
+    ui->body->update();
+}
+
+void KChartView::slotDrawingType(int i)
+{
+    m_vm->setDrawingType((EnKLineType)i);
+    ui->body->update();
+}
+
+void KChartView::slotCorrdinate(int i)
+{
+    m_vm->setCorrdinate((EnCoordinateType)i);
+    ui->body->update();
+}
+
+void KChartView::slotYLWidth(int i)
+{
+    m_vm->setYLWidth(i);
+    ui->body->update();
+}
+
+void KChartView::slotYRWidth(int i)
+{
+    m_vm->setYRWidth(i);
+    ui->body->update();
+}
+
+void KChartView::slotXHeight(int i)
+{
+    m_vm->setXHeight(i);
+    ui->body->update();
+}
+
+void KChartView::slotPaddingLeft(int i)
+{
+    m_vm->setPaddingLeft(i);
+    ui->body->update();
+}
+
+void KChartView::slotPaddingTop(int i)
+{
+    m_vm->setPaddingTop(i);
+    ui->body->update();
+}
+
+void KChartView::slotPaddingRight(int i)
+{
+    m_vm->setPaddingRight(i);
+    ui->body->update();
+}
+
+void KChartView::slotPaddingBottom(int i)
+{
+    m_vm->setPaddingBottom(i);
+    ui->body->update();
+}
+
+void KChartView::slotNodeStickWidth(int nodeWidth, int stickWidth)
+{
+    m_vm->setNodeStickWidth(nodeWidth, stickWidth);
+    ui->body->update();
 }
 
 bool KChartView::eventFilter(QObject* obj, QEvent* event)
@@ -95,6 +158,6 @@ bool KChartView::eventFilter(QObject* obj, QEvent* event)
         ui->body->update();
     } break;
     }
-    return __super::eventFilter(obj, event);
+    return false;
 }
 

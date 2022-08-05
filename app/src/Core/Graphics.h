@@ -65,7 +65,7 @@ namespace StockCharts
 
         bool valid() const
         {
-            return (width > 0 && height > 0);
+            return (width >= 0 && height >= 0);
         }
 
         bool operator==(const Size& rhs) const
