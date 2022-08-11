@@ -23,7 +23,7 @@ namespace StockCharts
         // x
         std::vector<Real> xAxis;
         // y
-        std::vector<Real> lyAxis;
-        std::vector<Real> ryAxis;
+        std::vector<Real> yAxisPos;
+        std::vector<Real> yAxisPrice;
     };
 }

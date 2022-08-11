@@ -7,8 +7,6 @@
 ****************************************************************************/
 #pragma once
 #include "../Core/StockCore.h"
-#include "../Core/Graphics.h"
-#include "../Core/Painter.h"
 #include "Context/ChartContext.h"
 
 namespace StockCharts

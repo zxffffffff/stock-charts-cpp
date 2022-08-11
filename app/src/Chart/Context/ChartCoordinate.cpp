@@ -37,7 +37,7 @@ Real ChartCoordinate::price2pos(Number price) const
     case EnCoordinateType::LogLinear:
     case EnCoordinateType::LogProportional:
     case EnCoordinateType::LogPercentage:
-        return ctx.rectInnerChart.bottom() - (std::log(price) - ctx.minPrice) * (ctx.rectInnerChart.height() / (ctx.maxPrice - ctx.minPrice));
+        return ctx.rectInnerChart.bottom() - (std::log(price) - std::log(ctx.minPrice)) * (ctx.rectInnerChart.height() / (std::log(ctx.maxPrice) - std::log(ctx.minPrice)));
     default:
         return 0;
     }
@@ -49,19 +49,21 @@ Number ChartCoordinate::pos2price(Real pos) const
         return NumberNull;
 
     const auto& ctx = *context;
+
     Number cache;
     switch (ctx.props.coordinateType)
     {
     case EnCoordinateType::Linear:
     case EnCoordinateType::Proportional:
     case EnCoordinateType::Percentage:
-        return ctx.minPrice + (ctx.rectInnerChart.bottom() - pos) / (ctx.rectInnerChart.height() / (ctx.maxPrice - ctx.minPrice));
+        cache = (ctx.rectInnerChart.bottom() - pos) / (ctx.rectInnerChart.height() / (ctx.maxPrice - ctx.minPrice));
+        return ctx.minPrice + cache;
     case EnCoordinateType::LogLinear:
     case EnCoordinateType::LogProportional:
     case EnCoordinateType::LogPercentage:
-        cache = (ctx.rectInnerChart.bottom() - pos) / (ctx.rectInnerChart.height() / (ctx.maxPrice - ctx.minPrice));
-        cache = std::exp(cache + ctx.minPrice);
-        cache -= std::exp(ctx.minPrice);
+        cache = (ctx.rectInnerChart.bottom() - pos) / (ctx.rectInnerChart.height() / (std::log(ctx.maxPrice) - std::log(ctx.minPrice)));
+        cache = std::exp(cache + std::log(ctx.minPrice));
+        cache -= std::exp(std::log(ctx.minPrice));
         return ctx.minPrice + cache;
     default:
         return NumberNull;

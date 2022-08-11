@@ -22,6 +22,33 @@ namespace StockCharts
         {
         }
 
+        static int parsePaintDirection(PaintDirection dir)
+        {
+            switch (dir)
+            {
+            case StockCharts::PaintDirection::TopLeft:
+                return (Qt::AlignTop | Qt::AlignLeft);
+            case StockCharts::PaintDirection::TopCenter:
+                return (Qt::AlignTop | Qt::AlignHCenter);
+            case StockCharts::PaintDirection::TopRight:
+                return (Qt::AlignTop | Qt::AlignRight);
+            case StockCharts::PaintDirection::CenterLeft:
+                return (Qt::AlignVCenter | Qt::AlignLeft);
+            case StockCharts::PaintDirection::Center:
+                return (Qt::AlignVCenter | Qt::AlignHCenter);
+            case StockCharts::PaintDirection::CenterRight:
+                return (Qt::AlignVCenter | Qt::AlignRight);
+            case StockCharts::PaintDirection::BottomLeft:
+                return (Qt::AlignBottom | Qt::AlignLeft);
+            case StockCharts::PaintDirection::BottomCenter:
+                return (Qt::AlignBottom | Qt::AlignHCenter);
+            case StockCharts::PaintDirection::BottomRight:
+                return (Qt::AlignBottom | Qt::AlignRight);
+            default:
+                return 0;
+            }
+        }
+
         virtual void save() override
         {
             painter.save();
@@ -29,6 +56,18 @@ namespace StockCharts
         virtual void restore() override
         {
             painter.restore();
+        }
+
+        virtual void drawString(const Rect& rect, PaintDirection dir, const std::string& text) override
+        {
+            painter.drawText(
+                std::round(rect.left()),
+                std::round(rect.top()),
+                std::round(rect.width()),
+                std::round(rect.height()),
+                parsePaintDirection(dir),
+                QString::fromLocal8Bit(text)
+            );
         }
 
         virtual void drawRect(const Rect& rect, const Color& color) override
@@ -80,7 +119,7 @@ namespace StockCharts
                     std::round(points[i].y)
                 );
             }
-            painter.drawPath(path);
+            painter.drawPath(path); // ÐÔÄÜ²»¼Ñ
         }
 
         virtual void drawStick(const std::vector<Stick>& sticks, const Color& rise, const Color& fall) override

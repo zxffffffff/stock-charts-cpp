@@ -126,6 +126,10 @@ namespace StockCharts
         Real centerX() const { return left() + width() / 2; }
         Real centerY() const { return top() + height() / 2; }
         Point center() const { return { centerX(), centerY() }; }
+        Point topLeft() const { return { left(), top() }; }
+        Point topRight() const { return { right(), top() }; }
+        Point bottomLeft() const { return { left(), bottom() }; }
+        Point bottomRight() const { return { right(), bottom() }; }
 
         bool operator==(const Rect& rhs) const
         {

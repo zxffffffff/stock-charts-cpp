@@ -59,6 +59,19 @@ namespace StockCharts
         }
     };
 
+    enum class PaintDirection
+    {
+        TopLeft,
+        TopCenter,
+        TopRight,
+        CenterLeft,
+        Center,
+        CenterRight,
+        BottomLeft,
+        BottomCenter,
+        BottomRight,
+    };
+
     class Painter
     {
     public:
@@ -68,6 +81,7 @@ namespace StockCharts
         virtual void save() = 0;
         virtual void restore() = 0;
 
+        virtual void drawString(const Rect& rect, PaintDirection dir, const std::string& text) = 0;
         virtual void drawRect(const Rect& rect, const Color& color) = 0;
         virtual void fillRect(const Rect& rect, const Color& color) = 0;
         virtual void drawLine(const Line& line, const Color& color) = 0;

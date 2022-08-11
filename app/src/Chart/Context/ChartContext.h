@@ -7,7 +7,7 @@
 ****************************************************************************/
 #pragma once
 #include "../../Core/NumberCore.h"
-#include "../../Core/Graphics.h"
+#include "../../Core/Painter.h"
 
 namespace StockCharts
 {
@@ -58,11 +58,20 @@ namespace StockCharts
         Real nodeWidth = 7;
         Real stickWidth = 5;
 
+        // axis
+        Color axisLineColor = Color(0, 0, 0);
+        Color crossLineColor = Color(100, 100, 100);
+        Color crossLineBGColor = Color(200, 200, 200);
+
         // x-axis
         EnXAxisType xAxisType;
         EnXAxisType xAxisHoverType;
 
         // y-axis
+        Real yAxisGridStep = 26;
+
+        // stock
+        int precision = 2;
     };
 
     struct ChartContext

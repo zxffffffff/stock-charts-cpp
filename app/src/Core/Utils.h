@@ -6,6 +6,7 @@
 ** 
 ****************************************************************************/
 #pragma once
+#include "NumberCore.h"
 #include <string>
 #include <vector>
 #include <sstream>
@@ -22,5 +23,10 @@ namespace StockCharts
         std::vector<std::string> splitStr(const std::string str, const char separator);
 
         bool			checkEmpty(const std::string& str);
+    }
+
+    namespace NumberUtils
+    {
+        std::string     toString(Number price, int precision = 2);
     }
 }

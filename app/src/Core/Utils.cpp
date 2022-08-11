@@ -8,6 +8,7 @@
 #include "Utils.h"
 #include <locale>
 #include <codecvt>
+#include <iomanip>
 
 using namespace StockCharts;
 
@@ -80,4 +81,13 @@ bool Utils::checkEmpty(const::std::string& str)
 		}
 	}
 	return true;
+}
+
+std::string StockCharts::NumberUtils::toString(Number price, int precision)
+{
+	std::stringstream ss;
+	ss.precision(precision);
+	ss.setf(std::ios::fixed);
+    ss << price;
+	return ss.str();
 }

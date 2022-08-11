@@ -23,6 +23,7 @@ namespace StockCharts
 
     private:
         std::array<Line, 2> crossLine;
+        std::array<Rect, 2> crossText;
     };
 }
 
