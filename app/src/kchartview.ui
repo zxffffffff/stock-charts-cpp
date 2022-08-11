@@ -10,6 +10,9 @@
     <height>269</height>
    </rect>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::NoFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -43,6 +46,9 @@
        <height>25</height>
       </size>
      </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 241, 230);</string>
      </property>
@@ -55,6 +61,12 @@
        <width>100</width>
        <height>100</height>
       </size>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(240, 255, 252);</string>

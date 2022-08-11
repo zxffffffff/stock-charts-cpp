@@ -139,15 +139,26 @@ void ChartVM::calcContext()
     const Real stockWidth = stockCnt * ctx.props.nodeWidth;
     const Real viewWidth = ctx.rectInnerChart.width();
     if (stockWidth <= viewWidth) {
-        ctx.viewCount = stockCnt;
-        ctx.endIndex = stockCnt;
+        if (ctx.viewCount != stockCnt) {
+            ctx.viewCount = stockCnt;
+            ctx.endIndex = stockCnt;
+            ctx.beginIndex = ctx.endIndex - ctx.viewCount;
+        }
     }
     else {
-        ctx.viewCount = std::floor(viewWidth / ctx.props.nodeWidth);
-        if (ctx.endIndex < 0 || ctx.endIndex > stockCnt)
-            ctx.endIndex = ctx.viewCount;
+        int viewCount = std::floor(viewWidth / ctx.props.nodeWidth);
+        if (ctx.viewCount != viewCount) {
+            ctx.viewCount = viewCount;
+            ctx.endIndex = stockCnt;
+            ctx.beginIndex = ctx.endIndex - ctx.viewCount;
+        }
     }
-    ctx.beginIndex = ctx.endIndex - ctx.viewCount;
+    assert(ctx.viewCount >= 0);
+    assert(ctx.endIndex >= 0);
+    assert(ctx.beginIndex >= 0);
+    assert(ctx.beginIndex <= ctx.endIndex);
+    assert(ctx.endIndex <= stockCnt);
+    assert(ctx.endIndex - ctx.beginIndex <= ctx.viewCount);
 
     // [2] y
     ctx.minPrice = NumberNull;
@@ -214,6 +225,80 @@ void ChartVM::OnMouseLeave()
     for (const auto& plugin : plugins) {
         plugin->onMouseLeave(m_context);
     }
+}
+
+void ChartVM::OnScrollX(int step)
+{
+    if (step == 0)
+        return;
+
+    const auto& stockCore = m_model->getStockCore();
+    auto& ctx = *m_context;
+
+    // [1] x
+    const int stockCnt = stockCore->getSize();
+    if (step > 0) {
+        if (ctx.beginIndex == stockCnt - 1)
+            return;
+        ctx.beginIndex += 1;
+    }
+    else {
+        if (ctx.beginIndex == 0)
+            return;
+        ctx.beginIndex -= 1;
+    }
+    ctx.endIndex = std::min(ctx.beginIndex + ctx.viewCount, stockCnt);
+
+    calcContext();
+}
+
+void ChartVM::OnWheelY(int step)
+{
+    if (step == 0)
+        return;
+
+    const auto& stockCore = m_model->getStockCore();
+    auto& ctx = *m_context;
+
+    int stepWidth = 2 * std::abs(step);
+    if (step > 0) {
+        ctx.props.nodeWidth = std::min(ctx.props.nodeWidth + stepWidth, Real(99));
+        ctx.props.stickWidth = std::min(ctx.props.stickWidth + stepWidth, Real(99));
+    }
+    else {
+        ctx.props.nodeWidth = std::max(ctx.props.nodeWidth - stepWidth, Real(1));
+        ctx.props.stickWidth = std::max(ctx.props.stickWidth - stepWidth, Real(1));
+    }
+
+    // [1] x
+    const int stockCnt = stockCore->getSize();
+    const Real stockWidth = stockCnt * ctx.props.nodeWidth;
+    const Real viewWidth = ctx.rectInnerChart.width();
+    if (stockWidth <= viewWidth) {
+        ctx.viewCount = stockCnt;
+        ctx.endIndex = stockCnt;
+        ctx.beginIndex = ctx.endIndex - ctx.viewCount;
+    }
+    else {
+        int viewCount = std::floor(viewWidth / ctx.props.nodeWidth);
+        if (ctx.hoverIndex < 0) {
+            ctx.viewCount = viewCount;
+            ctx.endIndex = stockCnt;
+            ctx.beginIndex = ctx.endIndex - ctx.viewCount;
+        }
+        else {
+            double percent = double(ctx.hoverIndex - ctx.beginIndex) / ctx.viewCount;
+            ctx.viewCount = viewCount;
+            ctx.beginIndex = ctx.hoverIndex - std::round(percent * viewCount);
+            if (ctx.beginIndex >= stockCnt)
+                ctx.beginIndex = stockCnt - 1;
+            if (ctx.beginIndex < 0)
+                ctx.beginIndex = 0;
+            ctx.endIndex = std::min(ctx.beginIndex + ctx.viewCount, stockCnt);
+        }
+    }
+
+    calcContext();
 }
 
 void ChartVM::paintPlugins(Painter& painter)

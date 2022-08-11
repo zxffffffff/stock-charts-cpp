@@ -83,11 +83,62 @@ bool Utils::checkEmpty(const::std::string& str)
 	return true;
 }
 
-std::string StockCharts::NumberUtils::toString(Number price, int precision)
+std::string NumberUtils::toString(Number price, int precision)
 {
 	std::stringstream ss;
 	ss.precision(precision);
 	ss.setf(std::ios::fixed);
     ss << price;
 	return ss.str();
+}
+
+std::string NumberUtils::toTimestamp(Number n, const char* format /*= "%Y-%m-%d %H:%M:%S"*/)
+{
+	time_t t = static_cast<time_t>(n);
+	tm p;
+	localtime_s(&p, &t);
+	char ch[256] = { 0 };
+	strftime(ch, 256, format, &p);
+	return ch;
+}
+
+Number NumberUtils::toTimestamp(const std::string s)
+{
+	bool compact = true;
+	for (auto c : s) {
+		if (c < '0' || '9' < c) {
+			compact = false;
+			break;
+		}
+	}
+
+    int len = s.length();
+    if (compact) {
+        //yyyyMMdd
+        tm p = { 0 };
+        if (len >= 4)
+            p.tm_year = std::stoi(s.substr(0, 4)) - 1990;
+        if (len >= 6)
+            p.tm_mon = std::stoi(s.substr(4, 2)) - 1;
+        if (len >= 8)
+            p.tm_mday = std::stoi(s.substr(6, 2));
+        return mktime(&p);
+    }
+    else {
+        //yyyy-MM/dd hh:mm:ss
+        tm p = { 0 };
+        if (len >= 4)
+            p.tm_year = std::stoi(s.substr(0, 4)) - 1990;
+        if (len >= 7)
+            p.tm_mon = std::stoi(s.substr(5, 2)) - 1;
+        if (len >= 10)
+            p.tm_mday = std::stoi(s.substr(8, 2));
+        if (len >= 13)
+            p.tm_hour = std::stoi(s.substr(11, 2));
+        if (len >= 16)
+            p.tm_min = std::stoi(s.substr(14, 2));
+        if (len >= 19)
+            p.tm_sec = std::stoi(s.substr(17, 2));
+        return mktime(&p);
+    }
 }

@@ -29,6 +29,7 @@ namespace StockCharts
         NumberCore(std::initializer_list<Number> list);
         NumberCore(const std::vector<Number>& v, bool reverse = false);
         NumberCore(std::vector<Number>&& v);
+        NumberCore(std::vector<Number>&& v, std::vector<std::string>&& other);
 
         bool	isEmpty() const;
         int		size() const;
@@ -54,6 +55,7 @@ namespace StockCharts
         void	replaceNotNumber(const Number newVal);
         void	replaceEmptyValue(const Number newVal);
 
+        void	swap(NumberCore& rhs);
         void	reverse();
 
         std::pair<Number, Number> getMinMax(int beginIndex, int endIndex) const;

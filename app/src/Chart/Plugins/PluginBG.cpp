@@ -63,40 +63,47 @@ void PluginBG::onPaint(std::shared_ptr<const ChartContext> context, Painter& pai
     // x
     painter.drawLine(
         Line(ctx.rectXAxis.topLeft(), ctx.rectXAxis.topRight()),
-        ctx.props.axisLineColor
+        ctx.props.axisLineStyle
     );
 
     // y
     const Real stepHeight = ctx.props.yAxisGridStep;
     const Real halfStepHeight = stepHeight / 2;
+    for (int i = 0; i < yAxisPos.size(); i++) {
+        const auto& y = yAxisPos[i];
+        painter.drawLine(
+            Line(ctx.rectChart.left(), y, ctx.rectChart.right(), y),
+            ctx.props.axisGridStyle
+        );
+    }
 
     // yl
     painter.drawLine(
         Line(ctx.rectYLAxis.topRight(), ctx.rectYLAxis.bottomRight()),
-        ctx.props.axisLineColor
+        ctx.props.axisLineStyle
     );
     for (int i = 0; i < yAxisPos.size(); i++) {
         const auto& y = yAxisPos[i];
         const auto& price = yAxisPrice[i];
         painter.drawString(
             Rect(ctx.rectYLAxis.left() + 1, y - halfStepHeight, ctx.rectYLAxis.width() - 2, stepHeight),
-            PaintDirection::CenterRight,
-            NumberUtils::toString(price, ctx.props.precision)
+            NumberUtils::toString(price, ctx.props.precision),
+            ctx.props.ylAxisTextFont
         );
     }
 
     // yr
     painter.drawLine(
         Line(ctx.rectYRAxis.topLeft(), ctx.rectYRAxis.bottomLeft()),
-        ctx.props.axisLineColor
+        ctx.props.axisLineStyle
     );
     for (int i = 0; i < yAxisPos.size(); i++) {
         const auto& y = yAxisPos[i];
         const auto& price = yAxisPrice[i];
         painter.drawString(
             Rect(ctx.rectYRAxis.left() + 1, y - halfStepHeight, ctx.rectYRAxis.width() - 2, stepHeight),
-            PaintDirection::CenterLeft,
-            NumberUtils::toString(price, ctx.props.precision)
+            NumberUtils::toString(price, ctx.props.precision),
+            ctx.props.yrAxisTextFont
         );
     }
 }

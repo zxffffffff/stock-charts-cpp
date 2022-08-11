@@ -28,5 +28,7 @@ namespace StockCharts
     namespace NumberUtils
     {
         std::string     toString(Number price, int precision = 2);
+        std::string     toTimestamp(Number n, const char* format = "%Y-%m-%d %H:%M:%S");
+        Number          toTimestamp(const std::string s);
     }
 }

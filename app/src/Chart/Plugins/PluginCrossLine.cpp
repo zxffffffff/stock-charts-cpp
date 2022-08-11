@@ -68,24 +68,24 @@ void PluginCrossLine::onPaint(std::shared_ptr<const ChartContext> context, Paint
     const auto& ctx = *context;
 
     // x
-    painter.drawLine(crossLine[0], ctx.props.crossLineColor);
+    painter.drawLine(crossLine[0], ctx.props.crossLineStyle);
 
     // y
-    painter.drawLine(crossLine[1], ctx.props.crossLineColor);
+    painter.drawLine(crossLine[1], ctx.props.crossLineStyle);
 
     // yl
-    painter.fillRect(crossText[0], ctx.props.crossLineBGColor);
+    painter.fillRect(crossText[0], ctx.props.crossTextBGStyle);
     painter.drawString(
         crossText[0],
-        PaintDirection::CenterRight,
-        NumberUtils::toString(ctx.hoverPrice, ctx.props.precision)
+        NumberUtils::toString(ctx.hoverPrice, ctx.props.precision),
+        ctx.props.ylAxisHoverTextFont
     );
 
     // yr
-    painter.fillRect(crossText[1], ctx.props.crossLineBGColor);
+    painter.fillRect(crossText[1], ctx.props.crossTextBGStyle);
     painter.drawString(
         crossText[1],
-        PaintDirection::CenterLeft,
-        NumberUtils::toString(ctx.hoverPrice, ctx.props.precision)
+        NumberUtils::toString(ctx.hoverPrice, ctx.props.precision),
+        ctx.props.yrAxisHoverTextFont
     );
 }

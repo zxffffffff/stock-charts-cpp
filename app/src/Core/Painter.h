@@ -59,6 +59,28 @@ namespace StockCharts
         }
     };
 
+    enum class LineType
+    {
+        SolidLine,      // _____
+        DashLine,       // _ _ _
+        DotLine,        // . . .
+        DashDotLine,    // _ . _
+    };
+
+    struct Pen
+    {
+        Color       color;
+        Real        lineWidth;
+        LineType    lineType;
+
+        Pen(const Color& _color, Real _lineWidth = 1, LineType _lineType = LineType::SolidLine)
+            : color(_color)
+            , lineWidth(_lineWidth)
+            , lineType(_lineType)
+        {
+        }
+    };
+
     enum class PaintDirection
     {
         TopLeft,
@@ -72,6 +94,20 @@ namespace StockCharts
         BottomRight,
     };
 
+    struct Font
+    {
+        Color           color;
+        int             fontSize;
+        PaintDirection  dir;
+
+        Font(const Color& _color, int _fontSize = 12, PaintDirection _dir = PaintDirection::Center)
+            : color(_color)
+            , fontSize(_fontSize)
+            , dir(_dir)
+        {
+        }
+    };
+
     class Painter
     {
     public:
@@ -81,11 +117,11 @@ namespace StockCharts
         virtual void save() = 0;
         virtual void restore() = 0;
 
-        virtual void drawString(const Rect& rect, PaintDirection dir, const std::string& text) = 0;
-        virtual void drawRect(const Rect& rect, const Color& color) = 0;
-        virtual void fillRect(const Rect& rect, const Color& color) = 0;
-        virtual void drawLine(const Line& line, const Color& color) = 0;
-        virtual void drawPath(const std::vector<Point>& points, const Color& color) = 0;
+        virtual void drawString(const Rect& rect, const std::string& text, const Font& font) = 0;
+        virtual void drawRect(const Rect& rect, const Pen& pen) = 0;
+        virtual void fillRect(const Rect& rect, const Pen& pen) = 0;
+        virtual void drawLine(const Line& line, const Pen& pen) = 0;
+        virtual void drawPath(const std::vector<Point>& points, const Pen& pen) = 0;
 
         virtual void drawStick(const std::vector<Stick>& sticks, const Color& rise, const Color& fall) = 0;
         virtual void drawStickHollow(const std::vector<Stick>& sticks, const Color& rise, const Color& fall) = 0;

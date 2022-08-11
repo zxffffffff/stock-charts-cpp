@@ -18,6 +18,7 @@ namespace StockCharts
         NumberCore low;		// necessary
         NumberCore close;	// necessary
         NumberCore vol;
+        NumberCore amount;
         NumberCore timestamp;
 
         // by close

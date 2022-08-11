@@ -22,6 +22,33 @@ namespace StockCharts
         {
         }
 
+        static QColor parseColor(const Color& color)
+        {
+            return QColor(color.r, color.g, color.b, color.a);
+        }
+
+        static Qt::PenStyle parsePenStyle(LineType lineStyle)
+        {
+            switch (lineStyle)
+            {
+            case StockCharts::LineType::SolidLine:
+                return Qt::SolidLine;
+            case StockCharts::LineType::DashLine:
+                return Qt::DashLine;
+            case StockCharts::LineType::DotLine:
+                return Qt::DotLine;
+            case StockCharts::LineType::DashDotLine:
+                return Qt::DashDotLine;
+            default:
+                return Qt::SolidLine;
+            }
+        }
+
+        static QPen parsePen(const Pen& pen)
+        {
+            return QPen(parseColor(pen.color), pen.lineWidth, parsePenStyle(pen.lineType));
+        }
+
         static int parsePaintDirection(PaintDirection dir)
         {
             switch (dir)
@@ -58,43 +85,49 @@ namespace StockCharts
             painter.restore();
         }
 
-        virtual void drawString(const Rect& rect, PaintDirection dir, const std::string& text) override
+        virtual void drawString(const Rect& rect, const std::string& text, const Font& font) override
         {
+            if (painter.font().pixelSize() != font.fontSize) {
+                QFont qfont = painter.font();
+                qfont.setPixelSize(font.fontSize);
+                painter.setFont(qfont);
+            }
+            painter.setPen(parseColor(font.color));
             painter.drawText(
                 std::round(rect.left()),
                 std::round(rect.top()),
                 std::round(rect.width()),
                 std::round(rect.height()),
-                parsePaintDirection(dir),
+                parsePaintDirection(font.dir),
                 QString::fromLocal8Bit(text)
             );
         }
 
-        virtual void drawRect(const Rect& rect, const Color& color) override
+        virtual void drawRect(const Rect& rect, const Pen& pen) override
         {
-            painter.setPen(QColor(color.r, color.g, color.b, color.a));
+            painter.setPen(parsePen(pen));
             painter.drawRect(
                 std::round(rect.left()),
                 std::round(rect.top()),
-                std::round(rect.width() - 1), // ºÊ»›
+                std::round(rect.width() - 1),
                 std::round(rect.height())
             );
         }
 
-        virtual void fillRect(const Rect& rect, const Color& color) override
+        virtual void fillRect(const Rect& rect, const Pen& pen) override
         {
             painter.fillRect(
                 std::round(rect.left()),
                 std::round(rect.top()),
                 std::round(rect.width()),
                 std::round(rect.height()),
-                QColor(color.r, color.g, color.b, color.a)
+                QColor(parseColor(pen.color))
             );
         }
 
-        virtual void drawLine(const Line& line, const Color& color) override
+        virtual void drawLine(const Line& line, const Pen& pen) override
         {
-            painter.setPen(QColor(color.r, color.g, color.b, color.a));
+            painter.setPen(parsePen(pen));
             painter.drawLine(
                 std::round(line.first.x),
                 std::round(line.first.y),
@@ -103,11 +136,11 @@ namespace StockCharts
             );
         }
 
-        virtual void drawPath(const std::vector<Point>& points, const Color& color) override
+        virtual void drawPath(const std::vector<Point>& points, const Pen& pen) override
         {
             if (points.empty())
                 return;
-            painter.setPen(QColor(color.r, color.g, color.b, color.a));
+            painter.setPen(parsePen(pen));
             QPainterPath path;
             path.moveTo(
                 std::round(points[0].x),

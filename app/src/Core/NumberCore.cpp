@@ -59,6 +59,12 @@ NumberCore::NumberCore(std::vector<Number>&& v)
 
 }
 
+NumberCore::NumberCore(std::vector<Number>&& v, std::vector<std::string>&& other)
+    : data(std::move(v))
+    , other(std::move(other))
+{
+}
+
 bool NumberCore::isEmpty() const
 {
     return this->data.empty();
@@ -174,9 +180,16 @@ void NumberCore::replaceEmptyValue(const Number newVal)
     replace(NumberNull, newVal);
 }
 
+void NumberCore::swap(NumberCore& rhs)
+{
+    std::swap(this->data, rhs.data);
+    std::swap(this->other, rhs.other);
+}
+
 void NumberCore::reverse()
 {
     std::reverse(this->data.begin(), this->data.end());
+    std::reverse(this->other.begin(), this->other.end());
 }
 
 std::pair<Number, Number> NumberCore::getMinMax(int beginIndex, int endIndex) const

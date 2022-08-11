@@ -28,8 +28,8 @@ StChartAreaExp ChartPlugin::createStickExp(
     StChartAreaExp exp;
     exp.type = EnChartAreaExpType::Stick;
     exp.sticks.resize(ctx.viewCount);
-    for (int i = 0; i < ctx.viewCount; i++) {
-        int index = ctx.beginIndex + i;
+    for (int index = ctx.beginIndex; index < ctx.endIndex; index++) {
+        int i = index - ctx.beginIndex;
 
         const Real xPos = coordinate.index2pos(index);
         const Number o = open[index];
@@ -61,8 +61,8 @@ StChartAreaExp ChartPlugin::createLineExp(std::shared_ptr<const ChartContext> co
     StChartAreaExp exp;
     exp.type = EnChartAreaExpType::Line;
     exp.lines.resize(ctx.viewCount);
-    for (int i = 0; i < ctx.viewCount; i++) {
-        int index = ctx.beginIndex + i;
+    for (int index = ctx.beginIndex; index < ctx.endIndex; index++) {
+        int i = index - ctx.beginIndex;
 
         const Real xPos = coordinate.index2pos(index);
         const Real yPos = coordinate.price2pos(price[index]);

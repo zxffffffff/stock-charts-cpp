@@ -152,6 +152,37 @@ bool KChartView::eventFilter(QObject* obj, QEvent* event)
         m_vm->OnMouseMove(Point(mouseEvent->pos().x(), mouseEvent->pos().y()));
         ui->body->update();
     } break;
+    case QEvent::KeyPress:
+    {
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+        switch (keyEvent->key())
+        {
+        case Qt::Key_Left:
+            m_vm->OnScrollX(-1);
+            break;
+        case Qt::Key_Right:
+            m_vm->OnScrollX(1);
+            break;
+        case Qt::Key_Up:
+            m_vm->OnWheelY(1);
+            break;
+        case Qt::Key_Down:
+            m_vm->OnWheelY(-1);
+            break;
+        }
+        ui->body->update();
+    } break;
+    case QEvent::Wheel:
+    {
+        QWheelEvent* wheelEvent = static_cast<QWheelEvent*>(event);
+        int yStep = wheelEvent->angleDelta().y() / 120;
+        int xStep = wheelEvent->angleDelta().x() / 120;
+        if (yStep != 0)
+            m_vm->OnWheelY(yStep);
+        if (xStep != 0)
+            m_vm->OnScrollX(xStep);
+        ui->body->update();
+    } break;
     case QEvent::Leave:
     {
         m_vm->OnMouseLeave();

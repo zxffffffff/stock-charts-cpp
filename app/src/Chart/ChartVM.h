@@ -38,6 +38,8 @@ namespace StockCharts
         void OnPaint(Painter& painter);
         void OnMouseMove(const Point& point);
         void OnMouseLeave();
+        void OnScrollX(int step);
+        void OnWheelY(int step);
 
         void paintPlugins(Painter& painter);
 
