@@ -29,6 +29,14 @@ namespace StockCharts
         LogPercentage,      // 百分比（对数）
     };
 
+    enum class EnXAxisType
+    {
+        yyyyMMdd_HHmm,
+        yyyyMMdd,
+        yyyyMM,
+        yyyy,
+    };
+
     struct ChartProps
     {
         EnKLineType klineType = EnKLineType::CandleStick;
@@ -49,6 +57,12 @@ namespace StockCharts
         // stick
         Real nodeWidth = 7;
         Real stickWidth = 5;
+
+        // x-axis
+        EnXAxisType xAxisType;
+        EnXAxisType xAxisHoverType;
+
+        // y-axis
     };
 
     struct ChartContext

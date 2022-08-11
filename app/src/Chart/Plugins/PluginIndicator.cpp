@@ -53,14 +53,14 @@ void PluginIndicator::onContextChanged(std::shared_ptr<const ChartContext> conte
                 );
                 break;
             case EnDrawingType::CandleStick:
-                // todo
+                // zxf todo
                 break;
             }
         }
     }
 }
 
-void PluginIndicator::onPaint(Painter& painter)
+void PluginIndicator::onPaint(std::shared_ptr<const ChartContext> context, Painter& painter)
 {
     for (auto& index : m_areaIndexs) {
         for (auto& exp : index.exps) {
@@ -70,7 +70,7 @@ void PluginIndicator::onPaint(Painter& painter)
                 painter.drawStick(exp.sticks, Color(200, 0, 0), Color(0, 200, 0));
                 break;
             case EnChartAreaExpType::Line:
-                painter.drawLines(exp.lines, Color(100, 100, 200));
+                painter.drawPath(exp.lines, Color(100, 100, 200));
                 break;
             }
         }

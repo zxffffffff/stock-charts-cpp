@@ -68,10 +68,14 @@ namespace StockCharts
         virtual void save() = 0;
         virtual void restore() = 0;
 
+        virtual void drawRect(const Rect& rect, const Color& color) = 0;
         virtual void fillRect(const Rect& rect, const Color& color) = 0;
         virtual void drawLine(const Line& line, const Color& color) = 0;
-        virtual void drawLines(const std::vector<Point>& points, const Color& color) = 0;
+        virtual void drawPath(const std::vector<Point>& points, const Color& color) = 0;
+
         virtual void drawStick(const std::vector<Stick>& sticks, const Color& rise, const Color& fall) = 0;
+        virtual void drawStickHollow(const std::vector<Stick>& sticks, const Color& rise, const Color& fall) = 0;
+        virtual void drawBAR(const std::vector<Stick>& sticks, const Color& rise, const Color& fall) = 0;
     };
 }
 

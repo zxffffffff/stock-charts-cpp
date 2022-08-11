@@ -59,7 +59,7 @@ namespace StockCharts
         virtual void onContextChanged(std::shared_ptr<const ChartContext> context) {}
         virtual void onMouseMove(std::shared_ptr<const ChartContext> context) {}
         virtual void onMouseLeave(std::shared_ptr<const ChartContext> context) {}
-        virtual void onPaint(Painter& painter) {}
+        virtual void onPaint(std::shared_ptr<const ChartContext> context, Painter& painter) {}
 
         StChartAreaExp createStickExp(
             std::shared_ptr<const ChartContext> context,

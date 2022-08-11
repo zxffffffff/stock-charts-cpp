@@ -25,9 +25,12 @@ void PluginKLine::onContextChanged(std::shared_ptr<const ChartContext> context)
     m_areaIndexs.resize(1);
     m_areaIndexs[0].exps.resize(1);
 
-    switch (ctx.props.klineType)
+    m_klineType = ctx.props.klineType;
+    switch (m_klineType)
     {
+    case EnKLineType::CandleStickHollow:
     case EnKLineType::CandleStick:
+    case EnKLineType::BAR:
     {
         m_areaIndexs[0].exps[0] = createStickExp(
             context,
@@ -47,19 +50,25 @@ void PluginKLine::onContextChanged(std::shared_ptr<const ChartContext> context)
     }
 }
 
-void PluginKLine::onPaint(Painter& painter)
+void PluginKLine::onPaint(std::shared_ptr<const ChartContext> context, Painter& painter)
 {
     if (m_areaIndexs.size() != 1 || m_areaIndexs[0].exps.size() != 1)
         return;
     auto& exp = m_areaIndexs[0].exps[0];
 
-    switch (exp.type)
+    switch (m_klineType)
     {
-    case EnChartAreaExpType::Stick:
+    case EnKLineType::CandleStickHollow:
+        painter.drawStickHollow(exp.sticks, Color(200, 0, 0), Color(0, 200, 0));
+        break;
+    case EnKLineType::CandleStick:
         painter.drawStick(exp.sticks, Color(200, 0, 0), Color(0, 200, 0));
         break;
-    case EnChartAreaExpType::Line:
-        painter.drawLines(exp.lines, Color(100, 100, 200));
+    case EnKLineType::BAR:
+        painter.drawBAR(exp.sticks, Color(200, 0, 0), Color(0, 200, 0));
+        break;
+    case EnKLineType::CloseLine:
+        painter.drawPath(exp.lines, Color(100, 100, 200));
         break;
     }
 }

@@ -45,7 +45,7 @@ void PluginCrossLine::onMouseMove(std::shared_ptr<const ChartContext> context)
     }
 }
 
-void PluginCrossLine::onPaint(Painter& painter)
+void PluginCrossLine::onPaint(std::shared_ptr<const ChartContext> context, Painter& painter)
 {
     painter.drawLine(crossLine[0], Color("888888"));
     painter.drawLine(crossLine[1], Color("888888"));

@@ -222,7 +222,7 @@ void ChartVM::paintPlugins(Painter& painter)
 
     for (const auto& plugin : plugins) {
         painter.save();
-        plugin->onPaint(painter);
+        plugin->onPaint(m_context, painter);
         painter.restore();
     }
 }

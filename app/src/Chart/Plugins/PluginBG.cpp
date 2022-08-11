@@ -6,6 +6,7 @@
 ** 
 ****************************************************************************/
 #include "PluginBG.h"
+#include "../Context/ChartCoordinate.h"
 
 using namespace StockCharts;
 
@@ -17,21 +18,32 @@ PluginBG::PluginBG(std::shared_ptr<const StockCore> stockCore)
 void PluginBG::onContextChanged(std::shared_ptr<const ChartContext> context)
 {
     auto& ctx = *context;
+    ChartCoordinate coordinate(context);
 
-    rectView = ctx.rectView;
-    rectXAxis = ctx.rectXAxis;
-    rectYLAxis = ctx.rectYLAxis;
-    rectYRAxis = ctx.rectYRAxis;
-    rectChart = ctx.rectChart;
-    rectInnerChart = ctx.rectInnerChart;
+    // x
+    xAxis.resize(ctx.viewCount);
+    for (int i = 0; i < ctx.viewCount; i++) {
+        int index = ctx.beginIndex + i;
+        xAxis[i] = coordinate.index2pos(index);
+    }
+
+    //y
+    auto minmax = m_stockCore->getMinMax(ctx.beginIndex, ctx.endIndex);
+    
 }
 
-void PluginBG::onPaint(Painter& painter)
+void PluginBG::onPaint(std::shared_ptr<const ChartContext> context, Painter& painter)
 {
-    painter.fillRect(rectView, Color(255, 255, 255, 255 * 0.2));
-    painter.fillRect(rectXAxis, Color(150, 100, 100, 255 * 0.2));
-    painter.fillRect(rectYLAxis, Color(100, 150, 100, 255 * 0.2));
-    painter.fillRect(rectYRAxis, Color(100, 150, 100, 255 * 0.2));
-    painter.fillRect(rectChart, Color(100, 100, 150, 255 * 0.2));
-    painter.fillRect(rectInnerChart, Color(100, 100, 200, 255 * 0.2));
+    auto& ctx = *context;
+
+    painter.fillRect(ctx.rectView, Color(255, 255, 255, 255 * 0.2));
+    painter.fillRect(ctx.rectChart, Color(100, 100, 150, 255 * 0.2));
+    painter.fillRect(ctx.rectInnerChart, Color(100, 100, 200, 255 * 0.2));
+
+    // x
+    painter.fillRect(ctx.rectXAxis, Color(150, 100, 100, 255 * 0.2));
+
+    // y
+    painter.fillRect(ctx.rectYLAxis, Color(100, 150, 100, 255 * 0.2));
+    painter.fillRect(ctx.rectYRAxis, Color(100, 150, 100, 255 * 0.2));
 }

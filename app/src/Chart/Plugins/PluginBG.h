@@ -17,14 +17,13 @@ namespace StockCharts
 
         // [2]
         virtual void onContextChanged(std::shared_ptr<const ChartContext> context) override;
-        virtual void onPaint(Painter& painter) override;
+        virtual void onPaint(std::shared_ptr<const ChartContext> context, Painter& painter) override;
 
     private:
-        Rect rectView;
-        Rect rectXAxis;
-        Rect rectYLAxis;
-        Rect rectYRAxis;
-        Rect rectChart;
-        Rect rectInnerChart;
+        // x
+        std::vector<Real> xAxis;
+        // y
+        std::vector<Real> lyAxis;
+        std::vector<Real> ryAxis;
     };
 }
