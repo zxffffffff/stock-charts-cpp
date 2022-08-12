@@ -122,13 +122,15 @@ namespace StockCharts
         {
             if (!rect.valid())
                 return;
-            painter.fillRect(
-                std::round(rect.left()),
-                std::round(rect.top()),
-                std::round(rect.width()),
-                std::round(rect.height()),
-                QColor(parseColor(pen.color))
-            );
+            int x = std::round(rect.left());
+            int y = std::round(rect.top());
+            int w = std::round(rect.width());
+            int h = std::round(rect.height());
+            if (w < 1)
+                w = 1;
+            if (h < 1)
+                h = 1;
+            painter.fillRect(x, y, w, h, QColor(parseColor(pen.color)));
         }
 
         virtual void drawLine(const Line& line, const Pen& pen) override
@@ -169,6 +171,10 @@ namespace StockCharts
                 if (!stick.valid())
                     break;
                 const Color& color = stick.flag >= 0 ? rise : fall;
+                if (stick.width() == 1) {
+                    drawLine(stick.line, color);
+                    continue;
+                }
                 fillRect(stick.rect, color);
                 drawLine(stick.line, color);
             }
@@ -180,6 +186,10 @@ namespace StockCharts
                 if (!stick.valid())
                     break;
                 const Color& color = stick.flag >= 0 ? rise : fall;
+                if (stick.width() == 1) {
+                    drawLine(stick.line, color);
+                    continue;
+                }
                 if (stick.flag >= 0) {
                     drawRect(stick.rect, color);
                     drawLine(Line(stick.centerX(), stick.top() - 1, stick.centerX(), stick.line.first.y), color);
@@ -198,6 +208,10 @@ namespace StockCharts
                 if (!stick.valid())
                     break;
                 const Color& color = stick.flag >= 0 ? rise : fall;
+                if (stick.width() == 1) {
+                    drawLine(stick.line, color);
+                    continue;
+                }
                 int openY;
                 int closeY;
                 if (stick.flag >= 0) {

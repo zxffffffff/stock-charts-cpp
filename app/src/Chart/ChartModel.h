@@ -27,12 +27,13 @@ namespace StockCharts
         template<typename T = ChartPlugin, typename... Args>
         std::shared_ptr<T> addPlugin(Args&&... args)
         {
+            assert(!getPlugin<T>());
             auto plugin = std::make_shared<T>(getStockCore(), args...);
-            m_plugins.insert(plugin);
+            m_plugins.push_back(plugin);
             return getPlugin<T>();
         }
 
-        const std::set<std::shared_ptr<ChartPlugin>>& getPlugins()
+        const std::vector<std::shared_ptr<ChartPlugin>>& getPlugins()
         {
             return m_plugins;
         }
@@ -51,7 +52,7 @@ namespace StockCharts
 
     private:
         std::shared_ptr<StockCore>  m_stockCore;
-        std::set<std::shared_ptr<ChartPlugin>> m_plugins;
+        std::vector<std::shared_ptr<ChartPlugin>> m_plugins;
     };
 }
 
