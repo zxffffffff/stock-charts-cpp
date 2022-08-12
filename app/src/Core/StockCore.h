@@ -13,21 +13,31 @@ namespace StockCharts
 {
     struct StockCore
     {
-        NumberCore open;	// necessary
-        NumberCore high;	// necessary
-        NumberCore low;		// necessary
-        NumberCore close;	// necessary
+        NumberCore open;
+        NumberCore high;
+        NumberCore low;
+        NumberCore close;
         NumberCore vol;
         NumberCore amount;
         NumberCore timestamp;
 
-        // by close
+        StockCore& reverse()
+        {
+            open.reverse();
+            high.reverse();
+            low.reverse();
+            close.reverse();
+            vol.reverse();
+            amount.reverse();
+            timestamp.reverse();
+            return *this;
+        }
+
         int getSize() const
         {
             return close.size();
         }
 
-        // by high, low
         std::pair<Number, Number> getMinMax(int beginIndex, int endIndex) const
         {
             auto minmax = high.getMinMax(beginIndex, endIndex);

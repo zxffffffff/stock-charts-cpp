@@ -7,6 +7,7 @@
 ****************************************************************************/
 #pragma once
 #include "../../Core/StockCore.h"
+#include "../../Core/DataBinding.h"
 #include "../Context/ChartContext.h"
 
 namespace StockCharts
@@ -30,8 +31,7 @@ namespace StockCharts
         std::vector<StChartAreaExp> exps;
     };
 
-    class ChartContext;
-    class ChartPlugin
+    class ChartPlugin : public DataBinding
     {
     public:
         ChartPlugin(std::shared_ptr<const StockCore> stockCore);

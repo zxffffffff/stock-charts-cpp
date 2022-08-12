@@ -22,8 +22,15 @@ namespace StockCharts
         virtual void onPaint(std::shared_ptr<const ChartContext> context, Painter& painter) override;
 
     private:
-        std::array<Line, 2> crossLine;
-        std::array<Rect, 2> crossText;
+        Line crossLineX;
+        Rect crossXBG;
+        std::string crossXText;
+
+        Line crossLineY;
+        Rect crossYLBG;
+        Rect crossYRBG;
+        std::string crossYLText;
+        std::string crossYRText;
     };
 }
 

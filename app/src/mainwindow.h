@@ -10,12 +10,13 @@
 
 #include <QMainWindow>
 #include "ui_mainwindow.h"
+#include "Core/DataBinding.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public StockCharts::DataBinding
 {
     Q_OBJECT
 
@@ -23,16 +24,15 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-public slots:
-    // general
-    void slotNodeWidth(int i);
-    void slotStickWidth(int i);
+    virtual void on(DataBinding* sender, const std::string& id) override;
 
+public slots:
     // indicator
     void slotIndicatorBtnAdd();
     void slotIndicatorBtnClear();
 
 private:
     Ui::MainWindow ui;
+    std::vector<KChart*> m_kcharts;
 };
 #endif // MAINWINDOW_H

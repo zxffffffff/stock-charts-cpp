@@ -87,6 +87,8 @@ namespace StockCharts
 
         virtual void drawString(const Rect& rect, const std::string& text, const Font& font) override
         {
+            if (!rect.valid())
+                return;
             if (painter.font().pixelSize() != font.fontSize) {
                 QFont qfont = painter.font();
                 qfont.setPixelSize(font.fontSize);
@@ -105,6 +107,8 @@ namespace StockCharts
 
         virtual void drawRect(const Rect& rect, const Pen& pen) override
         {
+            if (!rect.valid())
+                return;
             painter.setPen(parsePen(pen));
             painter.drawRect(
                 std::round(rect.left()),
@@ -116,6 +120,8 @@ namespace StockCharts
 
         virtual void fillRect(const Rect& rect, const Pen& pen) override
         {
+            if (!rect.valid())
+                return;
             painter.fillRect(
                 std::round(rect.left()),
                 std::round(rect.top()),
@@ -127,6 +133,8 @@ namespace StockCharts
 
         virtual void drawLine(const Line& line, const Pen& pen) override
         {
+            if (!line.valid())
+                return;
             painter.setPen(parsePen(pen));
             painter.drawLine(
                 std::round(line.first.x),
@@ -138,8 +146,6 @@ namespace StockCharts
 
         virtual void drawPath(const std::vector<Point>& points, const Pen& pen) override
         {
-            if (points.empty())
-                return;
             painter.setPen(parsePen(pen));
             QPainterPath path;
             path.moveTo(
@@ -147,6 +153,8 @@ namespace StockCharts
                 std::round(points[0].y)
             );
             for (int i = 1; i < points.size(); i++) {
+                if (!points[i].valid())
+                    break;
                 path.lineTo(
                     std::round(points[i].x),
                     std::round(points[i].y)
@@ -157,9 +165,9 @@ namespace StockCharts
 
         virtual void drawStick(const std::vector<Stick>& sticks, const Color& rise, const Color& fall) override
         {
-            if (sticks.empty())
-                return;
             for (auto& stick : sticks) {
+                if (!stick.valid())
+                    break;
                 const Color& color = stick.flag >= 0 ? rise : fall;
                 fillRect(stick.rect, color);
                 drawLine(stick.line, color);
@@ -168,9 +176,9 @@ namespace StockCharts
 
         virtual void drawStickHollow(const std::vector<Stick>& sticks, const Color& rise, const Color& fall) override
         {
-            if (sticks.empty())
-                return;
             for (auto& stick : sticks) {
+                if (!stick.valid())
+                    break;
                 const Color& color = stick.flag >= 0 ? rise : fall;
                 if (stick.flag >= 0) {
                     drawRect(stick.rect, color);
@@ -186,9 +194,9 @@ namespace StockCharts
 
         virtual void drawBAR(const std::vector<Stick>& sticks, const Color& rise, const Color& fall) override
         {
-            if (sticks.empty())
-                return;
             for (auto& stick : sticks) {
+                if (!stick.valid())
+                    break;
                 const Color& color = stick.flag >= 0 ? rise : fall;
                 int openY;
                 int closeY;

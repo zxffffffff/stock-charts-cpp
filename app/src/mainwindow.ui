@@ -10,10 +10,16 @@
     <height>646</height>
    </rect>
   </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
      <widget class="QWidget" name="widget_2" native="true">
@@ -158,6 +164,9 @@
            </item>
            <item row="3" column="1">
             <widget class="QSpinBox" name="generalYLWidth">
+             <property name="minimum">
+              <number>0</number>
+             </property>
              <property name="value">
               <number>50</number>
              </property>
@@ -187,7 +196,7 @@
            <item row="5" column="1">
             <widget class="QSpinBox" name="generalXHeight">
              <property name="value">
-              <number>30</number>
+              <number>20</number>
              </property>
             </widget>
            </item>
@@ -234,6 +243,9 @@
               </item>
               <item row="0" column="1">
                <widget class="QSpinBox" name="generalPaddingTop">
+                <property name="minimum">
+                 <number>-99</number>
+                </property>
                 <property name="value">
                  <number>10</number>
                 </property>
@@ -257,6 +269,9 @@
               </item>
               <item row="1" column="0">
                <widget class="QSpinBox" name="generalPaddingLeft">
+                <property name="minimum">
+                 <number>-99</number>
+                </property>
                 <property name="value">
                  <number>10</number>
                 </property>
@@ -280,6 +295,9 @@
               </item>
               <item row="1" column="2">
                <widget class="QSpinBox" name="generalPaddingRight">
+                <property name="minimum">
+                 <number>-99</number>
+                </property>
                 <property name="value">
                  <number>10</number>
                 </property>
@@ -303,6 +321,9 @@
               </item>
               <item row="2" column="1">
                <widget class="QSpinBox" name="generalPaddingBottom">
+                <property name="minimum">
+                 <number>-99</number>
+                </property>
                 <property name="value">
                  <number>10</number>
                 </property>
@@ -715,6 +736,9 @@ hr { height: 1px; border-width: 0; }
         <height>0</height>
        </size>
       </property>
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="spacing">
         <number>0</number>
@@ -732,10 +756,18 @@ hr { height: 1px; border-width: 0; }
         <number>0</number>
        </property>
        <item>
-        <widget class="KChartView" name="kchart0" native="true"/>
+        <widget class="KChart" name="kchart0" native="true">
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
-        <widget class="KChartView" name="kchart1" native="true"/>
+        <widget class="KChart" name="kchart1" native="true">
+         <property name="mouseTracking">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -745,9 +777,9 @@ hr { height: 1px; border-width: 0; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KChartView</class>
+   <class>KChart</class>
    <extends>QWidget</extends>
-   <header location="global">src/kchartview.h</header>
+   <header location="global">src/KChart/kchart.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

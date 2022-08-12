@@ -44,7 +44,7 @@ namespace StockCharts
         EnCoordinateType coordinateType = EnCoordinateType::Linear;
 
         // border
-        Real xAxisHeight = 30;
+        Real xAxisHeight = 20;
         Real ylAxisWidth = 50;
         Real yrAxisWidth = 50;
 
@@ -63,14 +63,18 @@ namespace StockCharts
         Pen axisGridStyle = Color(150, 150, 150);
         Pen crossLineStyle = Pen(Color(100, 100, 100), 1, LineType::DashLine);
         Pen crossTextBGStyle = Color(200, 200, 200);
+        Size crossTextBGSize = Size(80, 20);
 
         // x-axis
-        EnXAxisType xAxisType = EnXAxisType::yyyyMMdd;
-        EnXAxisType xAxisHoverType = EnXAxisType::yyyyMMdd_HHmm;
+        EnXAxisType xAxisType = EnXAxisType::yyyyMM;
+        EnXAxisType xAxisHoverType = EnXAxisType::yyyyMMdd;
+        Real xAxisTextWidth = 80;
         Font xAxisTextFont = Font(Color(0, 0, 0), 12, PaintDirection::Center);
+        Font xAxisHoverTextFont = Font(Color(50, 0, 0), 12, PaintDirection::Center);
 
         // y-axis
-        Real yAxisGridStep = 26;
+        Real yAxisGridStepHeight = 26;
+        Real yAxisGridStart = 26;
         Font ylAxisTextFont = Font(Color(0, 0, 0), 12, PaintDirection::CenterRight);
         Font yrAxisTextFont = Font(Color(0, 0, 0), 12, PaintDirection::CenterLeft);
         Font ylAxisHoverTextFont = Font(Color(50, 0, 0), 12, PaintDirection::CenterRight);
@@ -102,6 +106,7 @@ namespace StockCharts
         Number maxPrice = NumberNull;
 
         // mouse event
+        bool syncHover = false;
         Point pointHover;
         int hoverIndex = -1;
         Number hoverPrice = NumberNull;

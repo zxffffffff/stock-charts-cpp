@@ -7,12 +7,13 @@
 ****************************************************************************/
 #pragma once
 #include "../Core/StockCore.h"
+#include "../Core/DataBinding.h"
 #include "Plugins/ChartPlugin.h"
-#include <set>
+
 
 namespace StockCharts
 {
-    class ChartModel
+    class ChartModel : public DataBinding
     {
     public:
         ChartModel(std::shared_ptr<StockCore> stockCore);

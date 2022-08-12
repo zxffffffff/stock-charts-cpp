@@ -6,6 +6,7 @@
 ** 
 ****************************************************************************/
 #pragma once
+#include <array>
 
 namespace StockCharts
 {
@@ -28,6 +29,11 @@ namespace StockCharts
             x = _x;
             y = _y;
             return *this;
+        }
+        void clear()
+        {
+            x = RealNull;
+            y = RealNull;
         }
 
         bool valid() const
@@ -61,6 +67,11 @@ namespace StockCharts
             width = _width;
             height = _height;
             return *this;
+        }
+        void clear()
+        {
+            width = 0;
+            height = 0;
         }
 
         bool valid() const
@@ -101,6 +112,24 @@ namespace StockCharts
             point.y = _y;
             size.width = _width;
             size.height = _height;
+            return *this;
+        }
+        void clear()
+        {
+            point.clear();
+            size.clear();
+        }
+
+        Rect& moveInside(const Rect& parent, std::array<int, 4> padding = { 1, 1, 0, 0 })
+        {
+            if (left() < parent.left() + padding[0])
+                point.x = parent.left() + padding[0];
+            if (top() < parent.top() + padding[1])
+                point.y = parent.top() + padding[1];
+            if (right() > parent.right() - padding[2])
+                point.x = parent.right() - padding[2] - width();
+            if (bottom() > parent.bottom() - padding[3])
+                point.y = parent.bottom() - padding[3] - height();
             return *this;
         }
 
@@ -166,6 +195,11 @@ namespace StockCharts
             second.y = _y2;
             return *this;
         }
+        void clear()
+        {
+            first.clear();
+            second.clear();
+        }
 
         bool valid() const
         {
@@ -195,7 +229,7 @@ namespace StockCharts
             Real _height = 0, 
             Real _high = RealNull,
             Real _low = RealNull, 
-            int _flag = RealNull
+            int _flag = 0
         )
             : rect(_x, _y, _width, _height)
             , line(rect.centerX(), _high, rect.centerX(), _low)
@@ -216,6 +250,12 @@ namespace StockCharts
             line.set(rect.centerX(), _high, rect.centerX(), _low);
             flag = _flag;
             return *this;
+        }
+        void clear()
+        {
+            rect.clear();
+            line.clear();
+            flag = 0;
         }
 
         bool valid() const

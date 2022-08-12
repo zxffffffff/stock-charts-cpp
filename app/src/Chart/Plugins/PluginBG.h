@@ -21,9 +21,14 @@ namespace StockCharts
 
     private:
         // x
-        std::vector<Real> xAxis;
+        std::vector<Real> xAxisPos;
+        std::vector<Rect> xAxisRect;
+        std::vector<std::string> xAxisDate;
         // y
         std::vector<Real> yAxisPos;
-        std::vector<Real> yAxisPrice;
+        std::vector<Rect> ylAxisRect;
+        std::vector<Rect> yrAxisRect;
+        std::vector<std::string> ylAxisPrice;
+        std::vector<std::string> yrAxisPrice;
     };
 }

@@ -27,39 +27,78 @@ void PluginCrossLine::onMouseMove(std::shared_ptr<const ChartContext> context)
     ChartCoordinate coordinate(context);
 
     Real x = coordinate.index2pos(ctx.hoverIndex);
-    const Real stepHeight = ctx.props.yAxisGridStep;
-    const Real halfStepHeight = stepHeight / 2;
+    const Real bgWidth = ctx.props.crossTextBGSize.width;
+    const Real bgHalfWidth = bgWidth / 2;
+    const Real bgHeight = ctx.props.crossTextBGSize.height;
+    const Real bgHalfHeight = bgHeight / 2;
 
-    if (context->rectInnerChart.contains(context->pointHover)) {
-        crossLine[0].set(
+    crossLineX.clear();
+    crossLineY.clear();
+    crossXBG.clear();
+    crossYLBG.clear();
+    crossYRBG.clear();
+    crossXText.clear();
+    crossYLText.clear();
+    crossYRText.clear();
+    bool xCross = false;
+    bool yCross = false;
+
+    if (!ctx.syncHover) {
+        if (ctx.rectInnerChart.contains(ctx.pointHover))
+            xCross = true, yCross = true;
+    }
+    else {
+        if (ctx.pointHover.x >= ctx.rectInnerChart.left() && ctx.pointHover.x < ctx.rectInnerChart.right())
+            xCross = true;
+        if (ctx.pointHover.y >= ctx.rectInnerChart.top() && ctx.pointHover.y < ctx.rectInnerChart.bottom())
+            yCross = true;
+    }
+
+    if (xCross) {
+        crossLineX.set(
             x,
             ctx.rectChart.top() + 1,
             x,
             ctx.rectChart.bottom() - 1
         );
-        crossLine[1].set(
+
+        crossXBG.set(
+            x - bgHalfWidth,
+            ctx.rectXAxis.top() + 1,
+            bgWidth,
+            ctx.rectXAxis.height() - 2
+        ).moveInside(ctx.rectXAxis);
+        switch (ctx.props.xAxisHoverType)
+        {
+        case EnXAxisType::yyyyMMdd:
+        default:
+            crossXText = NumberUtils::toTimestamp(m_stockCore->timestamp[ctx.hoverIndex], "%Y-%m-%d");
+            break;
+        }
+    }
+    if (yCross) {
+        crossLineY.set(
             ctx.rectChart.left() + 1,
             ctx.pointHover.y,
             ctx.rectChart.right() - 1,
             ctx.pointHover.y
         );
 
-        crossText[0].set(
+        crossYLBG.set(
             ctx.rectYLAxis.left() + 1,
-            ctx.pointHover.y - halfStepHeight,
+            ctx.pointHover.y - bgHalfHeight,
             ctx.rectYLAxis.width() - 2,
-            stepHeight
-        );
-        crossText[1].set(
+            bgHeight
+        ).moveInside(ctx.rectYLAxis);
+        crossYLText = NumberUtils::toString(ctx.hoverPrice, ctx.props.precision);
+
+        crossYRBG.set(
             ctx.rectYRAxis.left() + 1,
-            ctx.pointHover.y - halfStepHeight,
+            ctx.pointHover.y - bgHalfHeight,
             ctx.rectYRAxis.width() - 2,
-            stepHeight
-        );
-    }
-    else {
-        crossLine = {};
-        crossText = {};
+            bgHeight
+        ).moveInside(ctx.rectYRAxis);
+        crossYRText = NumberUtils::toString(ctx.hoverPrice, ctx.props.precision);
     }
 }
 
@@ -68,24 +107,29 @@ void PluginCrossLine::onPaint(std::shared_ptr<const ChartContext> context, Paint
     const auto& ctx = *context;
 
     // x
-    painter.drawLine(crossLine[0], ctx.props.crossLineStyle);
+    painter.drawLine(crossLineX, ctx.props.crossLineStyle);
+
+    painter.fillRect(crossXBG, ctx.props.crossTextBGStyle);
+    painter.drawString(
+        crossXBG,
+        crossXText,
+        ctx.props.xAxisHoverTextFont
+    );
 
     // y
-    painter.drawLine(crossLine[1], ctx.props.crossLineStyle);
+    painter.drawLine(crossLineY, ctx.props.crossLineStyle);
 
-    // yl
-    painter.fillRect(crossText[0], ctx.props.crossTextBGStyle);
+    painter.fillRect(crossYLBG, ctx.props.crossTextBGStyle);
     painter.drawString(
-        crossText[0],
-        NumberUtils::toString(ctx.hoverPrice, ctx.props.precision),
+        crossYLBG,
+        crossYLText,
         ctx.props.ylAxisHoverTextFont
     );
 
-    // yr
-    painter.fillRect(crossText[1], ctx.props.crossTextBGStyle);
+    painter.fillRect(crossYRBG, ctx.props.crossTextBGStyle);
     painter.drawString(
-        crossText[1],
-        NumberUtils::toString(ctx.hoverPrice, ctx.props.precision),
+        crossYRBG,
+        crossYRText,
         ctx.props.yrAxisHoverTextFont
     );
 }

@@ -6,7 +6,7 @@
 ** 
 ****************************************************************************/
 #include "mainwindow.h"
-#include "kchartview.h"
+#include "KChart/kchartview.h"
 #include "Indicator/IndicatorParser.h"
 #include "Core/Utils.h"
 #include <QPainter>
@@ -41,7 +41,7 @@ namespace
             close[i] = std::stod(c[i]);
             vol[i] = std::stod(v[i]);
             amount[i] = std::stod(a[i]);
-            timestamp[i] = NumberUtils::toTimestamp(d[i]);
+            timestamp[i] = NumberUtils::toTimestamp(d[i], "%Y-%m-%d");
         }
 
         StockCore stock;
@@ -52,6 +52,7 @@ namespace
         stock.vol = NumberCore(std::move(vol), std::move(v));
         stock.amount = NumberCore(std::move(amount), std::move(a));
         stock.timestamp = NumberCore(std::move(timestamp), std::move(d));
+        stock.reverse();
         return stock;
     }
 
@@ -81,73 +82,59 @@ MainWindow::MainWindow(QWidget *parent)
     auto stock = std::make_shared<StockCore>(GenerateStock());
     ui.kchart0->init(stock, true);
     ui.kchart1->init(stock, false);
+    
+    m_kcharts.push_back(ui.kchart0);
+    m_kcharts.push_back(ui.kchart1);
+
     ui.kchart1->addIndicator(GenerateMACD());
 
     // general
-    connect(ui.generalDrawingType, &QComboBox::currentIndexChanged, ui.kchart0, &KChartView::slotDrawingType);
-    // connect(ui.generalDrawingType, &QComboBox::currentIndexChanged, ui.kchart1, &KChartView::slotDrawingType);
-    connect(ui.generalCorrdinate, &QComboBox::currentIndexChanged, ui.kchart0, &KChartView::slotCorrdinate);
-    // connect(ui.generalCorrdinate, &QComboBox::currentIndexChanged, ui.kchart1, &KChartView::slotCorrdinate);
-    connect(ui.generalYLWidth, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotYLWidth);
-    connect(ui.generalYLWidth, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotYLWidth);
-    connect(ui.generalYRWidth, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotYRWidth);
-    connect(ui.generalYRWidth, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotYRWidth);
-    connect(ui.generalXHeight, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotXHeight);
-    connect(ui.generalXHeight, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotXHeight);
-    connect(ui.generalPaddingLeft, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotPaddingLeft);
-    connect(ui.generalPaddingLeft, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotPaddingLeft);
-    connect(ui.generalPaddingTop, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotPaddingTop);
-    connect(ui.generalPaddingTop, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotPaddingTop);
-    connect(ui.generalPaddingRight, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotPaddingRight);
-    connect(ui.generalPaddingRight, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotPaddingRight);
-    connect(ui.generalPaddingBottom, &QSpinBox::valueChanged, ui.kchart0, &KChartView::slotPaddingBottom);
-    connect(ui.generalPaddingBottom, &QSpinBox::valueChanged, ui.kchart1, &KChartView::slotPaddingBottom);
-    connect(ui.generalNodeWidth, &QSpinBox::valueChanged, this, &MainWindow::slotNodeWidth);
-    connect(ui.generalStickWidth, &QSpinBox::valueChanged, this, &MainWindow::slotStickWidth);
+    connect(ui.generalDrawingType, &QComboBox::currentIndexChanged, ui.kchart0->getChart(), &KChartView::slotDrawingType);
+    connect(ui.generalCorrdinate, &QComboBox::currentIndexChanged, ui.kchart0->getChart(), &KChartView::slotCorrdinate);
+    for (KChart* kchart : m_kcharts) {
+        connect(ui.generalYLWidth, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotYLWidth);
+        connect(ui.generalYRWidth, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotYRWidth);
+        connect(ui.generalXHeight, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotXHeight);
+        connect(ui.generalPaddingLeft, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotPaddingLeft);
+        connect(ui.generalPaddingTop, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotPaddingTop);
+        connect(ui.generalPaddingRight, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotPaddingRight);
+        connect(ui.generalPaddingBottom, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotPaddingBottom);
+        connect(ui.generalNodeWidth, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotNodeWidth);
+        connect(ui.generalStickWidth, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotStickWidth);
+    }
 
     // indicator
     connect(ui.indicatorBtnAdd, &QPushButton::clicked, this, &MainWindow::slotIndicatorBtnAdd);
     connect(ui.indicatorBtnClear, &QPushButton::clicked, this, &MainWindow::slotIndicatorBtnClear);
+
+    for (KChart* kchart : m_kcharts)
+        bind(kchart);
 }
 
 MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::slotNodeWidth(int node)
+void MainWindow::on(DataBinding* sender, const std::string& id)
 {
-    int odd = (node % 2 ? node : node + 1);
-    if (odd != node) {
-        ui.generalNodeWidth->setValue(odd);
+    auto ite = std::find(m_kcharts.begin(), m_kcharts.end(), sender);
+    if (ite == m_kcharts.end())
         return;
+    auto& ctx = *((*ite)->getContext());
+
+    if (id == ID_ChartContextChanged) {
+        if (ui.generalStickWidth->value() != ctx.props.stickWidth)
+            ui.generalStickWidth->setValue(ctx.props.stickWidth);
+        if (ui.generalNodeWidth->value() != ctx.props.nodeWidth)
+            ui.generalNodeWidth->setValue(ctx.props.nodeWidth);
+
+        for (KChart* kchart : m_kcharts) {
+            if (kchart == sender)
+                continue;
+            kchart->getChart()->slotSyncMouseMove(ctx.hoverIndex, ctx.hoverPrice);
+            kchart->getChart()->slotSyncViewCount(ctx.viewCount, ctx.beginIndex, ctx.endIndex);
+        }
     }
-
-    int stick = ui.generalStickWidth->value();
-    if (stick > node) {
-        ui.generalStickWidth->setValue(node);
-        return;
-    }
-
-    ui.kchart0->slotNodeStickWidth(node, stick);
-    ui.kchart1->slotNodeStickWidth(node, stick);
-}
-
-void MainWindow::slotStickWidth(int stick)
-{
-    int odd = (stick % 2 ? stick : stick + 1);
-    if (odd != stick) {
-        ui.generalStickWidth->setValue(odd);
-        return;
-    }
-
-    int node = ui.generalNodeWidth->value();
-    if (stick > node) {
-        ui.generalNodeWidth->setValue(stick);
-        return;
-    }
-
-    ui.kchart0->slotNodeStickWidth(node, stick);
-    ui.kchart1->slotNodeStickWidth(node, stick);
 }
 
 void MainWindow::slotIndicatorBtnAdd()
@@ -191,154 +178,3 @@ void MainWindow::slotIndicatorBtnClear()
 
     ui.indicatorLabel->clear();
 }
-
-/*
-void MainWindow::paintEvent(QPaintEvent* event)
-{
-    QPainter painter(this);
-
-    QColor colorBg(Qt::white);
-    QColor colorText(Qt::black);
-    QColor colorRise(241, 62, 58);
-    QColor colorFall(0, 168, 67);
-
-    QRect mainRect(ui.label->pos(), ui.label->size());
-    QRect subRect(ui.label_2->pos(), ui.label_2->size());
-    painter.fillRect(mainRect, colorBg);
-    painter.fillRect(subRect, colorBg);
-
-    // x, y
-    const int size = g_stock.close.size();
-    const int barW = mainRect.width() / size / 2 * 2 - 2;
-    const int barW2 = barW / 2;
-    double mainMax = -DBL_MAX;
-    double mainMin = DBL_MAX;
-    double subMax = -DBL_MAX;
-    double subMin = DBL_MAX;
-    for (int i = 0; i < size; ++i) {
-        mainMax = std::max(mainMax, g_stock.high[i]);
-        mainMin = std::min(mainMin, g_stock.low[i]);
-    }
-    for (auto exp : g_result.exps) {
-        if (exp.info.renameAssign || exp.core.size() != size)
-            continue;
-        for (int i = 0; i < size; ++i) {
-            double val = exp.core[i];
-            if (val == NumberNull)
-                continue;
-            if (g_formular.sub) {
-                subMax = std::max(subMax, val);
-                subMin = std::min(subMin, val);
-            }
-            else {
-                mainMax = std::max(mainMax, val);
-                mainMin = std::min(mainMin, val);
-            }
-        }
-    }
-    auto get_x = [&](int i) -> qreal
-    {
-        return mainRect.left() + (mainRect.width() * i / size) + barW2;
-    };
-    auto get_y = [&](double val, bool main = true) -> qreal
-    {
-        if (main) {
-            if (val == NumberNull)
-                return mainRect.bottom();
-            return mainRect.top() + (mainRect.bottom() - mainRect.top()) * (mainMax - val) / (mainMax - mainMin);
-        }
-        else {
-            if (val == NumberNull)
-                return subRect.bottom();
-            return subRect.top() + (subRect.bottom() - subRect.top()) * (subMax - val) / (subMax - subMin);
-        }
-    };
-
-    // kline
-    for (int i = 0; i < size; ++i) {
-        int x = get_x(i);
-        qreal h = get_y(g_stock.high[i]);
-        qreal l = get_y(g_stock.low[i]);
-        qreal o = get_y(g_stock.open[i]);
-        qreal c = get_y(g_stock.close[i]);
-        bool rise = g_stock.close[i] >= g_stock.open[i];
-        QColor color = rise ? colorRise : colorFall;
-        painter.setPen(color);
-        painter.setBrush(color);
-        painter.drawLine(x, h, x, l);
-        painter.fillRect(x - barW2, std::min(o, c), barW, std::abs(o - c), color);
-    }
-
-    // index
-    for (auto exp : g_result.exps) {
-        if (exp.info.renameAssign || exp.core.size() != size)
-            continue;
-        QVector<QPoint> vPoints;
-        qreal zero = get_y(0, !g_formular.sub);
-        for (int i = 0; i < size; ++i) {
-            int x = get_x(i);
-            qreal y = get_y(exp.core[i], !g_formular.sub);
-            vPoints.emplace_back(x, y);
-        }
-        QColor color(QString::fromStdString('#' + exp.color.color));
-        Qt::PenStyle penStyle = Qt::SolidLine;
-
-        if (exp.drawingType.type == EnDrawingType::None) {
-            int lineWidth = int(exp.color.thick);
-            switch (exp.color.type)
-            {
-            case EnExpLineType::COLORSTICK:
-                for (int i = 0; i < size; ++i) {
-                    if (exp.core[i] == NumberNull)
-                        continue;
-                    bool rise = exp.core[i] >= 0;
-                    painter.setPen(rise ? colorRise : colorFall);
-                    painter.drawLine(vPoints[i].x(), zero, vPoints[i].x(), vPoints[i].y());
-                }
-                break;
-
-            default:
-                if (exp.color.type == EnExpLineType::DOTLINE)
-                    penStyle = Qt::DashLine;
-                painter.setPen(QPen(color, lineWidth, penStyle));
-                for (int i = 1; i < size; ++i) {
-                    if (exp.core[i - 1] == NumberNull || exp.core[i] == NumberNull)
-                        continue;
-                    painter.drawLine(vPoints[i - 1], vPoints[i]);
-                }
-                break;
-            }
-        }
-        else if (exp.drawingType.type == EnDrawingType::Number) {
-            painter.setPen(color);
-            for (int i = 0; i < size; ++i) {
-                std::string str = exp.core.getOther(i);
-                if (exp.core[i] == NumberNull || str.empty())
-                    continue;
-                painter.drawText(vPoints[i], QString::fromStdString(str));
-            }
-        }
-        else if (exp.drawingType.type == EnDrawingType::CandleStick) {
-            if(exp.drawingType.stickEmpty == -1)
-                penStyle = Qt::DashLine;
-            int width = exp.drawingType.stickWidth * barW;
-            painter.setPen(QPen(color, 1, penStyle));
-            painter.setBrush(Qt::transparent);
-            for (int i = 0; i < size; ++i) {
-                if (exp.core[i] == NumberNull || exp.core.getOther(i) == NumberNullStr)
-                    continue;
-                int y = get_y(std::stod(exp.core.getOther(i)), !g_formular.sub);
-                painter.drawRect(vPoints[i].x() - width / 2, std::min(vPoints[i].y(), y), width, std::abs(vPoints[i].y() - y));
-            }
-            break;
-        }
-    }
-
-    //text
-    painter.setPen(colorText);
-    painter.drawText(mainRect.topLeft(), QString::number(mainMax));
-    painter.drawText(mainRect.bottomLeft(), QString::number(mainMin));
-    painter.drawText(subRect.topLeft(), QString::number(subMax));
-    painter.drawText(subRect.bottomLeft(), QString::number(subMin));
-}
-//*/

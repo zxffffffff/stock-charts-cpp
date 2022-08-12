@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>KChartView</class>
- <widget class="QWidget" name="KChartView">
+ <class>KChart</class>
+ <widget class="QWidget" name="KChart">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -9,6 +9,9 @@
     <width>425</width>
     <height>269</height>
    </rect>
+  </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
   </property>
   <property name="focusPolicy">
    <enum>Qt::NoFocus</enum>
@@ -55,7 +58,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="body" native="true">
+    <widget class="KChartView" name="chart" native="true">
      <property name="minimumSize">
       <size>
        <width>100</width>
@@ -63,7 +66,7 @@
       </size>
      </property>
      <property name="mouseTracking">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
@@ -75,6 +78,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KChartView</class>
+   <extends>QWidget</extends>
+   <header location="global">src/KChart/kchartview.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

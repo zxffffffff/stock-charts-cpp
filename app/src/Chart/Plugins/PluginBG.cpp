@@ -22,30 +22,57 @@ void PluginBG::onContextChanged(std::shared_ptr<const ChartContext> context)
     ChartCoordinate coordinate(context);
 
     // x
-    xAxis.resize(ctx.viewCount);
-    for (int i = 0; i < ctx.viewCount; i++) {
-        int index = ctx.beginIndex + i;
-        xAxis[i] = coordinate.index2pos(index);
+    xAxisPos.clear();
+    xAxisRect.clear();
+    xAxisDate.clear();
+    const Real textWidth = ctx.props.xAxisTextWidth;
+    const Real textHalfWidth = textWidth / 2;
+    switch (ctx.props.xAxisType)
+    {
+    case EnXAxisType::yyyyMM:
+    default:
+        for (int index = ctx.beginIndex; index < ctx.endIndex; index++) {
+            std::string dt = NumberUtils::toTimestamp(m_stockCore->timestamp[index], "%Y-%m");
+            if (!xAxisPos.empty()) {
+                if (dt == xAxisDate.back())
+                    continue;
+            }
+            Real x = coordinate.index2pos(index);
+            xAxisPos.push_back(x);
+            xAxisRect.push_back(Rect(x - textHalfWidth, ctx.rectXAxis.top() + 1, textWidth, ctx.rectXAxis.height() - 2));
+            xAxisRect.back().moveInside(ctx.rectXAxis);
+            xAxisDate.push_back(dt);
+        }
+        if (xAxisPos.size() >= 2) {
+            xAxisPos.erase(xAxisPos.begin());
+            xAxisRect.erase(xAxisRect.begin());
+            xAxisDate.erase(xAxisDate.begin());
+        }
+        for (int i = xAxisPos.size() - 1; i >= 1; i--) {
+            auto& pre = xAxisDate[i - 1];
+            auto& cur = xAxisDate[i];
+            if (cur.substr(0, 4) == pre.substr(0, 4))
+                cur = cur.substr(5);
+        }
+        break;
     }
 
     //y
-    const Real stepHeight = ctx.props.yAxisGridStep;
-    const Real halfStepHeight = stepHeight / 2;
-
-    auto minmax = m_stockCore->getMinMax(ctx.beginIndex, ctx.endIndex);
-    Number basePrice = m_stockCore->open.safeAt(ctx.beginIndex);
-    Real basePos = coordinate.price2pos(basePrice);
     yAxisPos.clear();
-    yAxisPrice.clear();
-    yAxisPos.push_back(basePos);
-    yAxisPrice.push_back(basePrice);
-    for (Real y = basePos - stepHeight; y >= ctx.rectChart.top() + halfStepHeight; y -= stepHeight) {
-        yAxisPos.insert(yAxisPos.begin(), y);
-        yAxisPrice.insert(yAxisPrice.begin(), coordinate.pos2price(y));
-    }
-    for (Real y = basePos + stepHeight; y < ctx.rectChart.bottom() - halfStepHeight; y += stepHeight) {
+    ylAxisRect.clear();
+    yrAxisRect.clear();
+    ylAxisPrice.clear();
+    yrAxisPrice.clear();
+    const Real stepHeight = ctx.props.yAxisGridStepHeight;
+    const Real stepHalfHeight = stepHeight / 2;
+    for (Real y = ctx.rectChart.bottom() - ctx.props.yAxisGridStart; y >= ctx.rectChart.top() + stepHalfHeight; y -= stepHeight) {
         yAxisPos.push_back(y);
-        yAxisPrice.push_back(coordinate.pos2price(y));
+        ylAxisRect.push_back(Rect(ctx.rectYLAxis.left() + 1, y - stepHalfHeight, ctx.rectYLAxis.width() - 2, stepHeight));
+        yrAxisRect.push_back(Rect(ctx.rectYRAxis.left() + 1, y - stepHalfHeight, ctx.rectYRAxis.width() - 2, stepHeight));
+        ylAxisRect.back().moveInside(ctx.rectYLAxis);
+        yrAxisRect.back().moveInside(ctx.rectYRAxis);
+        ylAxisPrice.push_back(NumberUtils::toString(coordinate.pos2price(y), ctx.props.precision));
+        yrAxisPrice.push_back(NumberUtils::toString(coordinate.pos2price(y), ctx.props.precision));
     }
 }
 
@@ -61,14 +88,26 @@ void PluginBG::onPaint(std::shared_ptr<const ChartContext> context, Painter& pai
     painter.fillRect(ctx.rectInnerChart, Color(100, 100, 200, 255 * 0.2));
 
     // x
+    for (int i = 0; i < xAxisPos.size(); i++) {
+        const auto& x = xAxisPos[i];
+        painter.drawLine(
+            Line(x, ctx.rectChart.top(), x, ctx.rectChart.bottom()),
+            ctx.props.axisGridStyle
+        );
+    }
+    for (int i = 0; i < xAxisDate.size(); i++) {
+        painter.drawString(
+            xAxisRect[i],
+            xAxisDate[i],
+            ctx.props.xAxisTextFont
+        );
+    }
     painter.drawLine(
         Line(ctx.rectXAxis.topLeft(), ctx.rectXAxis.topRight()),
         ctx.props.axisLineStyle
     );
 
     // y
-    const Real stepHeight = ctx.props.yAxisGridStep;
-    const Real halfStepHeight = stepHeight / 2;
     for (int i = 0; i < yAxisPos.size(); i++) {
         const auto& y = yAxisPos[i];
         painter.drawLine(
@@ -76,34 +115,26 @@ void PluginBG::onPaint(std::shared_ptr<const ChartContext> context, Painter& pai
             ctx.props.axisGridStyle
         );
     }
-
-    // yl
+    for (int i = 0; i < ylAxisPrice.size(); i++) {
+        painter.drawString(
+            ylAxisRect[i],
+            ylAxisPrice[i],
+            ctx.props.ylAxisTextFont
+        );
+    }
+    for (int i = 0; i < yrAxisPrice.size(); i++) {
+        painter.drawString(
+            yrAxisRect[i],
+            yrAxisPrice[i],
+            ctx.props.yrAxisTextFont
+        );
+    }
     painter.drawLine(
         Line(ctx.rectYLAxis.topRight(), ctx.rectYLAxis.bottomRight()),
         ctx.props.axisLineStyle
     );
-    for (int i = 0; i < yAxisPos.size(); i++) {
-        const auto& y = yAxisPos[i];
-        const auto& price = yAxisPrice[i];
-        painter.drawString(
-            Rect(ctx.rectYLAxis.left() + 1, y - halfStepHeight, ctx.rectYLAxis.width() - 2, stepHeight),
-            NumberUtils::toString(price, ctx.props.precision),
-            ctx.props.ylAxisTextFont
-        );
-    }
-
-    // yr
     painter.drawLine(
         Line(ctx.rectYRAxis.topLeft(), ctx.rectYRAxis.bottomLeft()),
         ctx.props.axisLineStyle
     );
-    for (int i = 0; i < yAxisPos.size(); i++) {
-        const auto& y = yAxisPos[i];
-        const auto& price = yAxisPrice[i];
-        painter.drawString(
-            Rect(ctx.rectYRAxis.left() + 1, y - halfStepHeight, ctx.rectYRAxis.width() - 2, stepHeight),
-            NumberUtils::toString(price, ctx.props.precision),
-            ctx.props.yrAxisTextFont
-        );
-    }
 }
