@@ -13,6 +13,8 @@
 
 namespace StockCharts
 {
+    constexpr inline char ID_StockCoreChanged[] = "ID_StockCoreChanged";
+
     class ChartModel : public DataBinding
     {
     public:

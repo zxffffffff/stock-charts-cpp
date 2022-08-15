@@ -60,6 +60,18 @@ namespace StockCharts
                 }
                 break;
             }
+            for (int i = 1; i < xAxisPos.size(); ) {
+                auto& rect0 = xAxisRect[i - 1];
+                auto& rect1 = xAxisRect[i];
+                if (rect0.right() >= rect1.left()) {
+                    xAxisPos.erase(xAxisPos.begin() + i);
+                    xAxisRect.erase(xAxisRect.begin() + i);
+                    xAxisDate.erase(xAxisDate.begin() + i);
+                }
+                else {
+                    i++;
+                }
+            }
 
             //y
             yAxisPos.clear();

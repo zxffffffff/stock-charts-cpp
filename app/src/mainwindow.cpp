@@ -11,6 +11,7 @@
 #include "Core/Utils.h"
 #include <QPainter>
 #include <QRandomGenerator>
+#include <QTimer>
 
 using namespace StockCharts;
 
@@ -89,18 +90,18 @@ MainWindow::MainWindow(QWidget *parent)
     ui.kchart1->addIndicator(GenerateMACD());
 
     // general
-    connect(ui.generalDrawingType, &QComboBox::currentIndexChanged, ui.kchart0->getChart(), &KChartView::slotDrawingType);
-    connect(ui.generalCorrdinate, &QComboBox::currentIndexChanged, ui.kchart0->getChart(), &KChartView::slotCorrdinate);
+    connect(ui.generalDrawingType, &QComboBox::currentIndexChanged, ui.kchart0->getChartView(), &KChartView::slotDrawingType);
+    connect(ui.generalCorrdinate, &QComboBox::currentIndexChanged, ui.kchart0->getChartView(), &KChartView::slotCorrdinate);
     for (KChart* kchart : m_kcharts) {
-        connect(ui.generalYLWidth, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotYLWidth);
-        connect(ui.generalYRWidth, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotYRWidth);
-        connect(ui.generalXHeight, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotXHeight);
-        connect(ui.generalPaddingLeft, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotPaddingLeft);
-        connect(ui.generalPaddingTop, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotPaddingTop);
-        connect(ui.generalPaddingRight, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotPaddingRight);
-        connect(ui.generalPaddingBottom, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotPaddingBottom);
-        connect(ui.generalNodeWidth, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotNodeWidth);
-        connect(ui.generalStickWidth, &QSpinBox::valueChanged, kchart->getChart(), &KChartView::slotStickWidth);
+        connect(ui.generalYLWidth, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotYLWidth);
+        connect(ui.generalYRWidth, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotYRWidth);
+        connect(ui.generalXHeight, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotXHeight);
+        connect(ui.generalPaddingLeft, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotPaddingLeft);
+        connect(ui.generalPaddingTop, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotPaddingTop);
+        connect(ui.generalPaddingRight, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotPaddingRight);
+        connect(ui.generalPaddingBottom, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotPaddingBottom);
+        connect(ui.generalNodeWidth, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotNodeWidth);
+        connect(ui.generalStickWidth, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotStickWidth);
     }
 
     // indicator
@@ -109,6 +110,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     for (KChart* kchart : m_kcharts)
         bind(kchart);
+    for (int i = 0; i < m_kcharts.size(); i++) {
+        for (int j = 0; j < m_kcharts.size(); j++) {
+            if (i != j)
+                m_kcharts[i]->addSyncChart(m_kcharts[j]);
+        }
+    }
 }
 
 MainWindow::~MainWindow()
@@ -117,24 +124,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::on(DataBinding* sender, const std::string& id)
 {
-    auto ite = std::find(m_kcharts.begin(), m_kcharts.end(), sender);
-    if (ite == m_kcharts.end())
-        return;
-    auto& ctx = *((*ite)->getContext());
+    QTimer::singleShot(100, this, SLOT(updateUI()));
+}
 
-    if (id == ID_ChartContextChanged) {
-        if (ui.generalStickWidth->value() != ctx.props.stickWidth)
-            ui.generalStickWidth->setValue(ctx.props.stickWidth);
-        if (ui.generalNodeWidth->value() != ctx.props.nodeWidth)
-            ui.generalNodeWidth->setValue(ctx.props.nodeWidth);
+void MainWindow::updateUI()
+{
+    auto& ctx = *m_kcharts[0]->getContext();
 
-        for (KChart* kchart : m_kcharts) {
-            if (kchart == sender)
-                continue;
-            kchart->getChart()->slotSyncMouseMove(ctx.hoverIndex, ctx.hoverPrice);
-            kchart->getChart()->slotSyncViewCount(ctx.viewCount, ctx.beginIndex, ctx.endIndex);
-        }
-    }
+    if (ui.generalStickWidth->value() != ctx.props.stickWidth)
+        ui.generalStickWidth->setValue(ctx.props.stickWidth);
+    if (ui.generalNodeWidth->value() != ctx.props.nodeWidth)
+        ui.generalNodeWidth->setValue(ctx.props.nodeWidth);
 }
 
 void MainWindow::slotIndicatorBtnAdd()

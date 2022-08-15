@@ -8,6 +8,7 @@
 #pragma once
 #include <QWidget>
 #include "ui_kchart.h"
+#include "kcharttitle.h"
 #include "kchartview.h"
 
 QT_BEGIN_NAMESPACE
@@ -29,14 +30,18 @@ public:
         return ui.chart->getContext();
     }
 
-    QWidget* getTitle()
+    KChartTitle* getChartTitle()
     {
         return ui.title;
     }
-    KChartView* getChart()
+    KChartView* getChartView()
     {
         return ui.chart;
     }
+
+    void addSyncChart(KChart* otherChart);
+
+    virtual void on(DataBinding* sender, const std::string& id) override;
 
     // indicator
     std::shared_ptr<const StockCharts::StIndicator> addIndicator(const StockCharts::IndexFormula& formula);

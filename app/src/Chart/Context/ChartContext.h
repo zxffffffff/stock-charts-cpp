@@ -48,11 +48,17 @@ namespace StockCharts
         Real ylAxisWidth = 50;
         Real yrAxisWidth = 50;
 
+        // margin
+        Real MarginTop = 26;
+        Real MarginBottom = 4;
+        Real MarginLeft = 4;
+        Real MarginRight = 4;
+
         // padding
-        Real topPadding = 10;
-        Real btmPadding = 10;
-        Real leftPadding = 10;
-        Real rightPadding = 10;
+        Real paddingTop = 10;
+        Real paddingBottom = 10;
+        Real paddingLeft = 10;
+        Real paddingRight = 10;
 
         // stick
         Real nodeWidth = 7;
@@ -82,50 +88,6 @@ namespace StockCharts
 
         // stock
         int precision = 2;
-
-        ChartProps() = default;
-        ChartProps(const ChartProps&) = default;
-        ChartProps(ChartProps&&) = default;
-        ChartProps& operator=(const ChartProps&) = default;
-        ChartProps& operator=(ChartProps&&) = default;
-        ~ChartProps() = default;
-
-        bool operator==(const ChartProps& rhs) const
-        {
-            return (
-                klineType == rhs.klineType &&
-                coordinateType == rhs.coordinateType &&
-                xAxisHeight == rhs.xAxisHeight &&
-                ylAxisWidth == rhs.ylAxisWidth &&
-                yrAxisWidth == rhs.yrAxisWidth &&
-                topPadding == rhs.topPadding &&
-                btmPadding == rhs.btmPadding &&
-                leftPadding == rhs.leftPadding &&
-                rightPadding == rhs.rightPadding &&
-                nodeWidth == rhs.nodeWidth &&
-                stickWidth == rhs.stickWidth &&
-                axisLineStyle == rhs.axisLineStyle &&
-                axisGridStyle == rhs.axisGridStyle &&
-                crossLineStyle == rhs.crossLineStyle &&
-                crossTextBGStyle == rhs.crossTextBGStyle &&
-                crossTextBGSize == rhs.crossTextBGSize &&
-                xAxisType == rhs.xAxisType &&
-                xAxisHoverType == rhs.xAxisHoverType &&
-                xAxisTextWidth == rhs.xAxisTextWidth &&
-                xAxisTextFont == rhs.xAxisTextFont &&
-                xAxisHoverTextFont == rhs.xAxisHoverTextFont &&
-                yAxisGridStepHeight == rhs.yAxisGridStepHeight &&
-                yAxisGridStart == rhs.yAxisGridStart &&
-                ylAxisTextFont == rhs.ylAxisTextFont &&
-                yrAxisTextFont == rhs.yrAxisTextFont &&
-                ylAxisHoverTextFont == rhs.ylAxisHoverTextFont &&
-                yrAxisHoverTextFont == rhs.yrAxisHoverTextFont &&
-                precision == rhs.precision);
-        }
-        bool operator!=(const ChartProps& rhs) const
-        {
-            return !operator==(rhs);
-        }
     };
 
     struct ChartContext
@@ -154,38 +116,6 @@ namespace StockCharts
         Point pointHover;
         int hoverIndex = -1;
         Number hoverPrice = NumberNull;
-
-        ChartContext() = default;
-        ChartContext(const ChartContext&) = default;
-        ChartContext(ChartContext&&) = default;
-        ChartContext& operator=(const ChartContext&) = default;
-        ChartContext& operator=(ChartContext&&) = default;
-        ~ChartContext() = default;
-
-        bool operator==(const ChartContext& rhs) const
-        {
-            return (
-                props == rhs.props &&
-                rectView == rhs.rectView &&
-                rectXAxis == rhs.rectXAxis &&
-                rectYLAxis == rhs.rectYLAxis &&
-                rectYRAxis == rhs.rectYRAxis &&
-                rectChart == rhs.rectChart &&
-                rectInnerChart == rhs.rectInnerChart &&
-                viewCount == rhs.viewCount &&
-                endIndex == rhs.endIndex &&
-                beginIndex == rhs.beginIndex &&
-                minPrice == rhs.minPrice &&
-                maxPrice == rhs.maxPrice &&
-                syncHover == rhs.syncHover &&
-                pointHover == rhs.pointHover &&
-                hoverIndex == rhs.hoverIndex &&
-                hoverPrice == rhs.hoverPrice);
-        }
-        bool operator!=(const ChartContext& rhs) const
-        {
-            return !operator==(rhs);
-        }
     };
 }
 

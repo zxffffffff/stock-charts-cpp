@@ -27,6 +27,8 @@ public:
     virtual void on(DataBinding* sender, const std::string& id) override;
 
 public slots:
+    void updateUI();
+
     // indicator
     void slotIndicatorBtnAdd();
     void slotIndicatorBtnClear();

@@ -13,6 +13,12 @@
 namespace StockCharts
 {
     constexpr inline char ID_ChartContextChanged[] = "ID_ChartContextChanged";
+    constexpr inline char ID_ChartContextSync[] = "ID_ChartContextSync";
+    constexpr inline char ID_OnResize[] = "ID_OnResize";
+    constexpr inline char ID_OnMouseMove[] = "ID_OnMouseMove";
+    constexpr inline char ID_OnMouseLeave[] = "ID_OnMouseLeave";
+    constexpr inline char ID_OnScrollX[] = "ID_OnScrollX";
+    constexpr inline char ID_OnWheelY[] = "ID_OnWheelY";
 
     class ChartModel;
     class ChartVM : public DataBinding
@@ -26,6 +32,12 @@ namespace StockCharts
         }
         virtual ~ChartVM() = default;
 
+        virtual void on(DataBinding* sender, const std::string& id) override
+        {
+            if (m_model.get() == sender)
+                fire(id);
+        }
+
         std::shared_ptr<const ChartContext> getContext() const
         {
             return m_context;
@@ -35,8 +47,6 @@ namespace StockCharts
         void setProps(const ChartProps& props)
         {
             auto& ctx = *m_context;
-            if (ctx.props == props)
-                return;
             ctx.props = props;
             calcContext();
             fire(ID_ChartContextChanged);
@@ -44,8 +54,6 @@ namespace StockCharts
         void setContext(const ChartContext& context)
         {
             auto& ctx = *m_context;
-            if (ctx == context)
-                return;
             ctx = context;
             calcContext();
             fire(ID_ChartContextChanged);
@@ -84,10 +92,10 @@ namespace StockCharts
                 ctx.rectView.height() - ctx.props.xAxisHeight
             );
             ctx.rectInnerChart.set(
-                ctx.rectChart.left() + ctx.props.leftPadding,
-                ctx.rectChart.top() + ctx.props.topPadding,
-                ctx.rectChart.width() - ctx.props.leftPadding - ctx.props.rightPadding,
-                ctx.rectChart.height() - ctx.props.topPadding - ctx.props.btmPadding
+                ctx.rectChart.left() + ctx.props.paddingLeft,
+                ctx.rectChart.top() + ctx.props.paddingTop,
+                ctx.rectChart.width() - ctx.props.paddingLeft - ctx.props.paddingRight,
+                ctx.rectChart.height() - ctx.props.paddingTop - ctx.props.paddingBottom
             );
 
             // invalid size
@@ -152,12 +160,18 @@ namespace StockCharts
         void OnResize(const Rect& rect)
         {
             auto& ctx = *m_context;
-            if (ctx.rectView == rect)
+            const Rect view(
+                rect.left() + ctx.props.MarginLeft,
+                rect.top() + ctx.props.MarginTop,
+                rect.width() - ctx.props.MarginLeft - ctx.props.MarginRight,
+                rect.height() - ctx.props.MarginTop - ctx.props.MarginBottom
+            );
+            if (ctx.rectView == view)
                 return;
-            ctx.rectView = rect;
+            ctx.rectView = view;
 
             calcContext();
-            fire(ID_ChartContextChanged);
+            fire(ID_OnResize);
         }
 
         void OnMouseMove(const Point& point)
@@ -187,7 +201,7 @@ namespace StockCharts
             for (const auto& plugin : plugins) {
                 plugin->onMouseMove(m_context);
             }
-            fire(ID_ChartContextChanged);
+            fire(ID_OnMouseMove);
         }
 
         void OnMouseLeave()
@@ -205,7 +219,7 @@ namespace StockCharts
             for (const auto& plugin : plugins) {
                 plugin->onMouseLeave(m_context);
             }
-            fire(ID_ChartContextChanged);
+            fire(ID_OnMouseLeave);
         }
 
         void OnScrollX(int step)
@@ -231,7 +245,7 @@ namespace StockCharts
             ctx.endIndex = std::min(ctx.beginIndex + ctx.viewCount, stockCnt);
 
             calcContext();
-            fire(ID_ChartContextChanged);
+            fire(ID_OnScrollX);
         }
 
         void OnWheelY(int step)
@@ -281,7 +295,7 @@ namespace StockCharts
             }
 
             calcContext();
-            fire(ID_ChartContextChanged);
+            fire(ID_OnWheelY);
         }
 
         void paintPlugins(Painter& painter)
@@ -296,25 +310,25 @@ namespace StockCharts
         }
 
         // [3]
-        void SyncViewCount(int viewCount, int beginIndex, int endIndex)
+        void SyncViewCount(int viewCount, int beginIndex, int endIndex, Real nodeWidth, Real stickWidth)
         {
             auto& ctx = *m_context;
-            if (ctx.beginIndex == beginIndex && ctx.endIndex == endIndex)
+            if (ctx.viewCount == viewCount &&
+                ctx.beginIndex == beginIndex &&
+                ctx.endIndex == endIndex &&
+                ctx.props.nodeWidth == nodeWidth &&
+                ctx.props.stickWidth == stickWidth)
                 return;
-            const auto& stockCore = m_model->getStockCore();
 
             // [1] x
-            const int stockCnt = stockCore->getSize();
-            if (ctx.viewCount == viewCount) {
-                ctx.beginIndex = beginIndex;
-                ctx.endIndex = endIndex;
-            }
-            else {
-                // todo
-            }
+            ctx.viewCount = viewCount;
+            ctx.beginIndex = beginIndex;
+            ctx.endIndex = endIndex;
+            ctx.props.nodeWidth = nodeWidth;
+            ctx.props.stickWidth = stickWidth;
 
             calcContext();
-            // fire(ID_ChartContextChanged);
+            fire(ID_ChartContextSync);
         }
 
         void SyncMouseMove(int hoverIndex, Number hoverPrice)
@@ -335,10 +349,9 @@ namespace StockCharts
             ctx.hoverIndex = hoverIndex;
             ctx.hoverPrice = hoverPrice;
 
-            for (const auto& plugin : plugins) {
+            for (const auto& plugin : plugins)
                 plugin->onMouseMove(m_context);
-            }
-            // fire(ID_ChartContextChanged);
+            fire(ID_ChartContextSync);
         }
 
     private:

@@ -26,6 +26,8 @@ public:
 
     void init(std::shared_ptr<StockCharts::ChartVM> vm);
 
+    virtual void on(DataBinding* sender, const std::string& id) override;
+
     std::shared_ptr<const StockCharts::ChartContext> getContext() const
     {
         return m_vm->getContext();
@@ -46,7 +48,13 @@ public slots:
     void slotNodeWidth(int nodeWidth);
     void slotStickWidth(int stickWidth);
 
-    void slotSyncViewCount(int viewCount, int beginIndex, int endIndex);
+    void slotSyncViewCount(
+        int viewCount,
+        int beginIndex,
+        int endIndex,
+        StockCharts::Real nodeWidth, 
+        StockCharts::Real stickWidth
+    );
     void slotSyncMouseMove(int hoverIndex, StockCharts::Number hoverPrice);
 
 protected:

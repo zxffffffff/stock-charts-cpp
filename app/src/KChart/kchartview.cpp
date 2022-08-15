@@ -27,6 +27,12 @@ void KChartView::init(std::shared_ptr<ChartVM> vm)
     update();
 }
 
+void KChartView::on(DataBinding* sender, const std::string& id)
+{
+    if (m_vm.get() == sender)
+        fire(id);
+}
+
 void KChartView::slotCalcContext()
 {
     m_vm->calcContext();
@@ -35,7 +41,10 @@ void KChartView::slotCalcContext()
 
 void KChartView::slotDrawingType(int i)
 {
-    ChartProps props = m_vm->getContext()->props;
+    auto ctx = m_vm->getContext();
+    if (ctx->props.klineType == (EnKLineType)i)
+        return;
+    ChartProps props = ctx->props;
     props.klineType = (EnKLineType)i;
     m_vm->setProps(props);
     update();
@@ -43,7 +52,10 @@ void KChartView::slotDrawingType(int i)
 
 void KChartView::slotCorrdinate(int i)
 {
-    ChartProps props = m_vm->getContext()->props;
+    auto ctx = m_vm->getContext();
+    if (ctx->props.coordinateType == (EnCoordinateType)i)
+        return;
+    ChartProps props = ctx->props;
     props.coordinateType = (EnCoordinateType)i;
     m_vm->setProps(props);
     update();
@@ -51,7 +63,10 @@ void KChartView::slotCorrdinate(int i)
 
 void KChartView::slotYLWidth(int i)
 {
-    ChartProps props = m_vm->getContext()->props;
+    auto ctx = m_vm->getContext();
+    if (ctx->props.ylAxisWidth == i)
+        return;
+    ChartProps props = ctx->props;
     props.ylAxisWidth = i;
     m_vm->setProps(props);
     update();
@@ -59,7 +74,10 @@ void KChartView::slotYLWidth(int i)
 
 void KChartView::slotYRWidth(int i)
 {
-    ChartProps props = m_vm->getContext()->props;
+    auto ctx = m_vm->getContext();
+    if (ctx->props.yrAxisWidth == i)
+        return;
+    ChartProps props = ctx->props;
     props.yrAxisWidth = i;
     m_vm->setProps(props);
     update();
@@ -67,7 +85,10 @@ void KChartView::slotYRWidth(int i)
 
 void KChartView::slotXHeight(int i)
 {
-    ChartProps props = m_vm->getContext()->props;
+    auto ctx = m_vm->getContext();
+    if (ctx->props.xAxisHeight == i)
+        return;
+    ChartProps props = ctx->props;
     props.xAxisHeight = i;
     m_vm->setProps(props);
     update();
@@ -75,39 +96,54 @@ void KChartView::slotXHeight(int i)
 
 void KChartView::slotPaddingLeft(int i)
 {
-    ChartProps props = m_vm->getContext()->props;
-    props.leftPadding = i;
+    auto ctx = m_vm->getContext();
+    if (ctx->props.paddingLeft == i)
+        return;
+    ChartProps props = ctx->props;
+    props.paddingLeft = i;
     m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotPaddingTop(int i)
 {
-    ChartProps props = m_vm->getContext()->props;
-    props.topPadding = i;
+    auto ctx = m_vm->getContext();
+    if (ctx->props.paddingTop == i)
+        return;
+    ChartProps props = ctx->props;
+    props.paddingTop = i;
     m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotPaddingRight(int i)
 {
-    ChartProps props = m_vm->getContext()->props;
-    props.rightPadding = i;
+    auto ctx = m_vm->getContext();
+    if (ctx->props.paddingRight == i)
+        return;
+    ChartProps props = ctx->props;
+    props.paddingRight = i;
     m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotPaddingBottom(int i)
 {
-    ChartProps props = m_vm->getContext()->props;
-    props.btmPadding = i;
+    auto ctx = m_vm->getContext();
+    if (ctx->props.paddingBottom == i)
+        return;
+    ChartProps props = ctx->props;
+    props.paddingBottom = i;
     m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotNodeWidth(int nodeWidth)
 {
-    ChartProps props = m_vm->getContext()->props;
+    auto ctx = m_vm->getContext();
+    if (ctx->props.nodeWidth == nodeWidth)
+        return;
+    ChartProps props = ctx->props;
     props.nodeWidth = nodeWidth;
     m_vm->setProps(props);
     update();
@@ -115,15 +151,18 @@ void KChartView::slotNodeWidth(int nodeWidth)
 
 void KChartView::slotStickWidth(int stickWidth)
 {
-    ChartProps props = m_vm->getContext()->props;
+    auto ctx = m_vm->getContext();
+    if (ctx->props.stickWidth == stickWidth)
+        return;
+    ChartProps props = ctx->props;
     props.stickWidth = stickWidth;
     m_vm->setProps(props);
     update();
 }
 
-void KChartView::slotSyncViewCount(int viewCount, int beginIndex, int endIndex)
+void KChartView::slotSyncViewCount(int viewCount, int beginIndex, int endIndex, Real nodeWidth, Real stickWidth)
 {
-    m_vm->SyncViewCount(viewCount, beginIndex, endIndex);
+    m_vm->SyncViewCount(viewCount, beginIndex, endIndex, nodeWidth, stickWidth);
     update();
 }
 

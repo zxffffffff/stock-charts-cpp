@@ -41,13 +41,14 @@ namespace StockCharts
 
         void fire(const std::string& id)
         {
-            for (auto listener : listeners)
+            for (auto listener : listeners) {
                 listener->on(this, id);
+            }
         }
 
         virtual void on(DataBinding* sender, const std::string& id)
         {
-            fire(id);
+            // inherit
         }
 
     private:

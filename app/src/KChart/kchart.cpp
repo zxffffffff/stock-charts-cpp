@@ -34,6 +34,29 @@ void KChart::init(std::shared_ptr<StockCharts::StockCore> stockCore, bool main)
     bind(ui.chart);
 }
 
+void KChart::addSyncChart(KChart* otherChart)
+{
+    bind(otherChart);
+}
+
+void KChart::on(DataBinding* sender, const std::string& id)
+{
+    if (sender == ui.chart) {
+        fire(id);
+        return;
+    }
+
+    auto otherChart = static_cast<KChart*>(sender);
+    if (!otherChart)
+        return;
+    auto ctx = *otherChart->getContext();
+
+    if (id == ID_OnMouseMove || id == ID_OnMouseLeave)
+        getChartView()->slotSyncMouseMove(ctx.hoverIndex, ctx.hoverPrice);
+    else if (id == ID_OnScrollX || id == ID_OnWheelY)
+        getChartView()->slotSyncViewCount(ctx.viewCount, ctx.beginIndex, ctx.endIndex, ctx.props.nodeWidth, ctx.props.stickWidth);
+}
+
 std::shared_ptr<const StIndicator> KChart::addIndicator(const IndexFormula& formula)
 {
     auto pluginIndicator = m_model->getPlugin<PluginIndicator>();
