@@ -1,9 +1,9 @@
 /****************************************************************************
 ** MIT License
-** 
+**
 ** Author   : xiaofeng.zhu
 ** Support  : zxffffffff@outlook.com, 1337328542@qq.com
-** 
+**
 ****************************************************************************/
 #pragma once
 #include "NumberCore.h"
@@ -42,7 +42,7 @@ namespace StockCharts
         {
             auto minmax = high.getMinMax(beginIndex, endIndex);
             auto minmax2 = low.getMinMax(beginIndex, endIndex);
-            return { 
+            return {
                 NumberCore::min(minmax.first, minmax2.first),
                 NumberCore::max(minmax.second, minmax2.second)
             };

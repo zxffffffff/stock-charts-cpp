@@ -1,9 +1,9 @@
 /****************************************************************************
 ** MIT License
-** 
+**
 ** Author   : xiaofeng.zhu
 ** Support  : zxffffffff@outlook.com, 1337328542@qq.com
-** 
+**
 ****************************************************************************/
 #pragma once
 #include <array>
@@ -226,9 +226,9 @@ namespace StockCharts
             Real _x = RealNull,
             Real _y = RealNull,
             Real _width = 0,
-            Real _height = 0, 
+            Real _height = 0,
             Real _high = RealNull,
-            Real _low = RealNull, 
+            Real _low = RealNull,
             int _flag = 0
         )
             : rect(_x, _y, _width, _height)

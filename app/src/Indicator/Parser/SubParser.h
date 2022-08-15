@@ -1,9 +1,9 @@
 /****************************************************************************
 ** MIT License
-** 
+**
 ** Author   : xiaofeng.zhu
 ** Support  : zxffffffff@outlook.com, 1337328542@qq.com
-** 
+**
 ****************************************************************************/
 #pragma once
 #include "../../Core/StockCore.h"
@@ -11,22 +11,23 @@
 
 namespace StockCharts
 {
-	class HSLib
-	{
-	public:
-		virtual ~HSLib() {}
+    class HSLib
+    {
+    public:
+        HSLib() = default;
+        virtual ~HSLib() = default;
 
-		void setStockCore(std::shared_ptr<const StockCore> p)
-		{
-			m_spStockCore = p;
-		}
-		void setStockExt(std::shared_ptr<StockRelyData> p)
-		{
-			m_spStockExt = p;
-		}
+        void setStockCore(std::shared_ptr<const StockCore> p)
+        {
+            m_spStockCore = p;
+        }
+        void setStockExt(std::shared_ptr<StockRelyData> p)
+        {
+            m_spStockExt = p;
+        }
 
-	protected:
-		std::shared_ptr<const StockCore> m_spStockCore;
-		std::shared_ptr<StockRelyData> m_spStockExt;
-	};
+    protected:
+        std::shared_ptr<const StockCore> m_spStockCore;
+        std::shared_ptr<StockRelyData> m_spStockExt;
+    };
 }

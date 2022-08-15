@@ -39,13 +39,13 @@ namespace StockCharts
             data->listeners.erase(this);
         }
 
-        void fire(const std::string& id) 
+        void fire(const std::string& id)
         {
             for (auto listener : listeners)
                 listener->on(this, id);
         }
 
-        virtual void on(DataBinding* sender, const std::string& id) 
+        virtual void on(DataBinding* sender, const std::string& id)
         {
             fire(id);
         }

@@ -1,9 +1,9 @@
 ﻿/****************************************************************************
 ** MIT License
-** 
+**
 ** Author   : xiaofeng.zhu
 ** Support  : zxffffffff@outlook.com, 1337328542@qq.com
-** 
+**
 ****************************************************************************/
 #pragma once
 #include "ChartContext.h"
@@ -18,15 +18,87 @@ namespace StockCharts
             : context(_context)
         {
         }
-        ~ChartCoordinate() = default;
 
-        bool validX() const;
-        bool validY() const;
+        bool validX() const
+        {
+            const auto& ctx = *context;
+            return (
+                ctx.rectInnerChart.valid() && ctx.viewCount > 0 && ctx.props.nodeWidth > 0);
+        }
 
-        Real price2pos(Number price) const;
-        Number pos2price(Real pos) const;
-        Real index2pos(int index) const;
-        int pos2index(Real pos) const;
+        bool validY() const
+        {
+            const auto& ctx = *context;
+            return (ctx.rectInnerChart.valid() && ctx.minPrice != NumberNull && ctx.maxPrice != NumberNull);
+        }
+
+        Real price2pos(Number price) const
+        {
+            if (!validY())
+                return 0;
+
+            const auto& ctx = *context;
+            switch (ctx.props.coordinateType)
+            {
+            case EnCoordinateType::Linear:
+            case EnCoordinateType::Proportional:
+            case EnCoordinateType::Percentage:
+                return ctx.rectInnerChart.bottom() - (price - ctx.minPrice) * (ctx.rectInnerChart.height() / (ctx.maxPrice - ctx.minPrice));
+            case EnCoordinateType::LogLinear:
+            case EnCoordinateType::LogProportional:
+            case EnCoordinateType::LogPercentage:
+                return ctx.rectInnerChart.bottom() - (std::log(price) - std::log(ctx.minPrice)) * (ctx.rectInnerChart.height() / (std::log(ctx.maxPrice) - std::log(ctx.minPrice)));
+            default:
+                return 0;
+            }
+        }
+
+        Number pos2price(Real pos) const
+        {
+            if (!validY())
+                return NumberNull;
+
+            const auto& ctx = *context;
+
+            Number cache;
+            switch (ctx.props.coordinateType)
+            {
+            case EnCoordinateType::Linear:
+            case EnCoordinateType::Proportional:
+            case EnCoordinateType::Percentage:
+                cache = (ctx.rectInnerChart.bottom() - pos) / (ctx.rectInnerChart.height() / (ctx.maxPrice - ctx.minPrice));
+                return ctx.minPrice + cache;
+            case EnCoordinateType::LogLinear:
+            case EnCoordinateType::LogProportional:
+            case EnCoordinateType::LogPercentage:
+                cache = (ctx.rectInnerChart.bottom() - pos) / (ctx.rectInnerChart.height() / (std::log(ctx.maxPrice) - std::log(ctx.minPrice)));
+                cache = std::exp(cache + std::log(ctx.minPrice));
+                cache -= std::exp(std::log(ctx.minPrice));
+                return ctx.minPrice + cache;
+            default:
+                return NumberNull;
+            }
+        }
+
+        Real index2pos(int index) const
+        {
+            if (!validX())
+                return 0;
+
+            const auto& ctx = *context;
+            int viewIndex = index - ctx.beginIndex;
+            return ctx.rectInnerChart.left() + (viewIndex * ctx.props.nodeWidth) + (ctx.props.nodeWidth / 2.0 - 0.5);
+        }
+
+        int pos2index(Real pos) const
+        {
+            if (!validX())
+                return -1;
+
+            const auto& ctx = *context;
+            int viewIndex = std::round((pos - ctx.rectInnerChart.left() - (ctx.props.nodeWidth / 2.0 - 0.5)) / ctx.props.nodeWidth);
+            return ctx.beginIndex + viewIndex;
+        }
     };
 }
 

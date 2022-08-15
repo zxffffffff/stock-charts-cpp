@@ -42,22 +42,6 @@ HEADERS += \
     src/mainwindow.h
 
 SOURCES += \
-    src/Chart/ChartModel.cpp \
-    src/Chart/ChartVM.cpp \
-    src/Chart/Context/ChartCoordinate.cpp \
-    src/Chart/Plugins/ChartPlugin.cpp \
-    src/Chart/Plugins/PluginBG.cpp \
-    src/Chart/Plugins/PluginCrossLine.cpp \
-    src/Chart/Plugins/PluginIndicator.cpp \
-    src/Chart/Plugins/PluginKLine.cpp \
-    src/Core/NumberCore.cpp \
-    src/Core/Utils.cpp \
-    src/Indicator/IndicatorParser.cpp \
-    src/Indicator/Parser/ColorParser.cpp \
-    src/Indicator/Parser/DrawingParser.cpp \
-    src/Indicator/Parser/FunctionParser.cpp \
-    src/Indicator/Parser/KeywordParser.cpp \
-    src/Indicator/Parser/SubParser.cpp \
     src/KChart/kchart.cpp \
     src/KChart/kchartview.cpp \
     src/main.cpp \

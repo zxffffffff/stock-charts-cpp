@@ -1,9 +1,9 @@
 /****************************************************************************
 ** MIT License
-** 
+**
 ** Author   : xiaofeng.zhu
 ** Support  : zxffffffff@outlook.com, 1337328542@qq.com
-** 
+**
 ****************************************************************************/
 #include "kchartview.h"
 #include <QResizeEvent>
@@ -35,67 +35,89 @@ void KChartView::slotCalcContext()
 
 void KChartView::slotDrawingType(int i)
 {
-    m_vm->setDrawingType((EnKLineType)i);
+    ChartProps props = m_vm->getContext()->props;
+    props.klineType = (EnKLineType)i;
+    m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotCorrdinate(int i)
 {
-    m_vm->setCorrdinate((EnCoordinateType)i);
+    ChartProps props = m_vm->getContext()->props;
+    props.coordinateType = (EnCoordinateType)i;
+    m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotYLWidth(int i)
 {
-    m_vm->setYLWidth(i);
+    ChartProps props = m_vm->getContext()->props;
+    props.ylAxisWidth = i;
+    m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotYRWidth(int i)
 {
-    m_vm->setYRWidth(i);
+    ChartProps props = m_vm->getContext()->props;
+    props.yrAxisWidth = i;
+    m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotXHeight(int i)
 {
-    m_vm->setXHeight(i);
+    ChartProps props = m_vm->getContext()->props;
+    props.xAxisHeight = i;
+    m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotPaddingLeft(int i)
 {
-    m_vm->setPaddingLeft(i);
+    ChartProps props = m_vm->getContext()->props;
+    props.leftPadding = i;
+    m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotPaddingTop(int i)
 {
-    m_vm->setPaddingTop(i);
+    ChartProps props = m_vm->getContext()->props;
+    props.topPadding = i;
+    m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotPaddingRight(int i)
 {
-    m_vm->setPaddingRight(i);
+    ChartProps props = m_vm->getContext()->props;
+    props.rightPadding = i;
+    m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotPaddingBottom(int i)
 {
-    m_vm->setPaddingBottom(i);
+    ChartProps props = m_vm->getContext()->props;
+    props.btmPadding = i;
+    m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotNodeWidth(int nodeWidth)
 {
-    m_vm->setNodeWidth(nodeWidth);
+    ChartProps props = m_vm->getContext()->props;
+    props.nodeWidth = nodeWidth;
+    m_vm->setProps(props);
     update();
 }
 
 void KChartView::slotStickWidth(int stickWidth)
 {
-    m_vm->setStickWidth(stickWidth);
+    ChartProps props = m_vm->getContext()->props;
+    props.stickWidth = stickWidth;
+    m_vm->setProps(props);
     update();
 }
 

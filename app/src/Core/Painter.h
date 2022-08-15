@@ -1,9 +1,9 @@
 /****************************************************************************
 ** MIT License
-** 
+**
 ** Author   : xiaofeng.zhu
 ** Support  : zxffffffff@outlook.com, 1337328542@qq.com
-** 
+**
 ****************************************************************************/
 #pragma once
 #include "Graphics.h"
@@ -79,6 +79,15 @@ namespace StockCharts
             , lineType(_lineType)
         {
         }
+
+        bool operator==(const Pen& rhs) const
+        {
+            return (color == rhs.color && lineWidth == rhs.lineWidth && lineType == rhs.lineType);
+        }
+        bool operator!=(const Pen& rhs) const
+        {
+            return !operator==(rhs);
+        }
     };
 
     enum class PaintDirection
@@ -105,6 +114,15 @@ namespace StockCharts
             , fontSize(_fontSize)
             , dir(_dir)
         {
+        }
+
+        bool operator==(const Font& rhs) const
+        {
+            return (color == rhs.color && fontSize == rhs.fontSize && dir == rhs.dir);
+        }
+        bool operator!=(const Font& rhs) const
+        {
+            return !operator==(rhs);
         }
     };
 

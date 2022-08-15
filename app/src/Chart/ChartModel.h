@@ -1,22 +1,26 @@
 /****************************************************************************
 ** MIT License
-** 
+**
 ** Author   : xiaofeng.zhu
 ** Support  : zxffffffff@outlook.com, 1337328542@qq.com
-** 
+**
 ****************************************************************************/
 #pragma once
 #include "../Core/StockCore.h"
 #include "../Core/DataBinding.h"
 #include "Plugins/ChartPlugin.h"
-
+#include <cassert>
 
 namespace StockCharts
 {
     class ChartModel : public DataBinding
     {
     public:
-        ChartModel(std::shared_ptr<StockCore> stockCore);
+        ChartModel(std::shared_ptr<StockCore> stockCore)
+            : m_stockCore(stockCore)
+        {
+            assert(m_stockCore);
+        }
         virtual ~ChartModel() = default;
 
         const std::shared_ptr<StockCore>& getStockCore() const
