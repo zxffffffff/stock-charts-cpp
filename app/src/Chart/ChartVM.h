@@ -9,6 +9,7 @@
 #include "../Core/StockCore.h"
 #include "../Core/DataBinding.h"
 #include "Context/ChartContext.h"
+#include "Context/ChartTitleContext.h"
 
 namespace StockCharts
 {
@@ -27,6 +28,7 @@ namespace StockCharts
         ChartVM(std::shared_ptr<ChartModel> model)
             : m_model(model)
             , m_context(std::make_shared<ChartContext>())
+            , m_title(std::make_shared<ChartTitleContext>())
         {
             bind(m_model.get());
         }
@@ -34,8 +36,19 @@ namespace StockCharts
 
         virtual void on(DataBinding* sender, const std::string& id) override
         {
-            if (id == ID_StockCoreChanged || id == ID_ChartPropsChanged || id == ID_ChartPluginChanged)
-                calcContext();
+            if (m_model.get() == sender) {
+                if (id == ID_StockCoreChanged || id == ID_ChartPropsChanged || id == ID_ChartPluginChanged)
+                    calcContext();
+            }
+            else {
+                auto other = static_cast<ChartVM*>(sender);
+                const auto& ctx = *other->getContext();
+
+                if (id == ID_OnMouseMove || id == ID_OnMouseLeave)
+                    syncMouseMove(ctx.hoverIndex, ctx.hoverPrice);
+                else if (id == ID_OnScrollX || id == ID_OnWheelY)
+                    syncViewCount(ctx.viewCount, ctx.beginIndex, ctx.endIndex, ctx.nodeWidth, ctx.stickWidth);
+            }
         }
 
         std::shared_ptr<const ChartContext> getContext() const
@@ -138,12 +151,29 @@ namespace StockCharts
         }
 
         // [2]
-        void OnPaint(Painter& painter)
+        void onPaint(Painter& painter)
         {
             paintPlugins(painter);
+            paintTitle(painter);
         }
 
-        void OnResize(const Rect& rect)
+        void paintPlugins(Painter& painter)
+        {
+            const auto& plugins = m_model->getPlugins();
+
+            for (const auto& plugin : plugins) {
+                painter.save();
+                plugin->onPaint(m_context, painter);
+                painter.restore();
+            }
+        }
+
+        void paintTitle(Painter& painter)
+        {
+            const auto& plugins = m_model->getPlugins();
+        }
+
+        void onResize(const Rect& rect)
         {
             auto& ctx = *m_context;
             const auto& props = *m_model->getProps();
@@ -162,7 +192,7 @@ namespace StockCharts
             fire(ID_OnResize);
         }
 
-        void OnMouseMove(const Point& point)
+        void onMouseMove(const Point& point)
         {
             auto& ctx = *m_context;
             if (ctx.pointHover == point)
@@ -192,7 +222,7 @@ namespace StockCharts
             fire(ID_OnMouseMove);
         }
 
-        void OnMouseLeave()
+        void onMouseLeave()
         {
             auto& ctx = *m_context;
             auto& plugins = m_model->getPlugins();
@@ -210,7 +240,7 @@ namespace StockCharts
             fire(ID_OnMouseLeave);
         }
 
-        void OnScrollX(int step)
+        void onScrollX(int step)
         {
             if (step == 0)
                 return;
@@ -236,7 +266,7 @@ namespace StockCharts
             fire(ID_OnScrollX);
         }
 
-        void OnWheelY(int step)
+        void onWheelY(int step)
         {
             if (step == 0)
                 return;
@@ -289,19 +319,13 @@ namespace StockCharts
             fire(ID_OnWheelY);
         }
 
-        void paintPlugins(Painter& painter)
+        // [3]
+        void setSyncOther(ChartVM* other)
         {
-            const auto& plugins = m_model->getPlugins();
-
-            for (const auto& plugin : plugins) {
-                painter.save();
-                plugin->onPaint(m_context, painter);
-                painter.restore();
-            }
+            bind(other);
         }
 
-        // [3]
-        void SyncViewCount(int viewCount, int beginIndex, int endIndex, Real nodeWidth, Real stickWidth)
+        void syncViewCount(int viewCount, int beginIndex, int endIndex, Real nodeWidth, Real stickWidth)
         {
             auto& ctx = *m_context;
             if (ctx.viewCount == viewCount &&
@@ -322,7 +346,7 @@ namespace StockCharts
             fire(ID_ChartContextSync);
         }
 
-        void SyncMouseMove(int hoverIndex, Number hoverPrice)
+        void syncMouseMove(int hoverIndex, Number hoverPrice)
         {
             auto& ctx = *m_context;
             if (ctx.hoverIndex == hoverIndex && ctx.hoverPrice == hoverPrice)
@@ -348,6 +372,7 @@ namespace StockCharts
     private:
         std::shared_ptr<ChartModel> m_model;
         std::shared_ptr<ChartContext> m_context;
+        std::shared_ptr<ChartTitleContext> m_title;
     };
 }
 

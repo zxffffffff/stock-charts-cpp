@@ -34,12 +34,6 @@ public:
         return m_vm->getContext();
     }
 
-public slots:
-    void slotCalcContext();
-
-    void slotSyncViewCount(int viewCount, int beginIndex, int endIndex, StockCharts::Real nodeWidth, StockCharts::Real stickWidth);
-    void slotSyncMouseMove(int hoverIndex, StockCharts::Number hoverPrice);
-
 protected:
     virtual void paintEvent(QPaintEvent* event) override;
     virtual void resizeEvent(QResizeEvent* event) override;

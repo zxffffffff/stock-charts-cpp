@@ -8,18 +8,42 @@
 #pragma once
 #include "Graphics.h"
 #include "Painter.h"
-#include "DataBinding.h"
+#include <string>
 
 namespace StockCharts
 {
-    struct Button
+    struct WidgetBGStyle
+    {
+        Color colorBG;
+        Color colorBorder;
+
+        std::string image;
+    };
+
+    struct WidgetBG
+    {
+        WidgetBGStyle normal;
+        WidgetBGStyle hover;
+        WidgetBGStyle press;
+        WidgetBGStyle disable;
+    };
+
+    enum class WidgetTextStyle
+    {
+        Left,
+        Center,
+        Right,
+    };
+
+    struct Widget
     {
         std::string text;
         Rect rect;
-        Color bg;
+        WidgetBG bg;
         Font font;
+        WidgetTextStyle style = WidgetTextStyle::Center;
 
-        Button(const std::string& _text, const Rect& _rect, const Color& _bg, const Font& _font)
+        Widget(const std::string& _text, const Rect& _rect, const WidgetBG& _bg, const Font& _font)
             : text(_text)
             , rect(_rect)
             , bg(_bg)
@@ -35,6 +59,11 @@ namespace StockCharts
         void move(const Rect& _rect)
         {
             rect = _rect;
+        }
+
+        void paint(Painter& painter)
+        {
+            // todo
         }
     };
 }
