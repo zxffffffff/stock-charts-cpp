@@ -9,8 +9,6 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 FORMS += \
-    src/KChart/kchart.ui \
-    src/KChart/kcharttitle.ui \
     src/mainwindow.ui
 
 HEADERS += \
@@ -18,7 +16,8 @@ HEADERS += \
     src/Chart/ChartVM.h \
     src/Chart/Context/ChartContext.h \
     src/Chart/Context/ChartCoordinate.h \
-    src/Chart/Plugins/IChartPlugin.h \
+    src/Chart/Context/ChartProps.h \
+    src/Chart/Plugins/ChartPlugin.h \
     src/Chart/Plugins/PluginBG.h \
     src/Chart/Plugins/PluginCrossLine.h \
     src/Chart/Plugins/PluginIndicator.h \
@@ -30,6 +29,7 @@ HEADERS += \
     src/Core/PainterQt.h \
     src/Core/StockCore.h \
     src/Core/Utils.h \
+    src/Core/Widgets.h \
     src/Indicator/Core/ExpCore.h \
     src/Indicator/Core/IndexCore.h \
     src/Indicator/IndicatorParser.h \
@@ -38,15 +38,11 @@ HEADERS += \
     src/Indicator/Parser/FunctionParser.h \
     src/Indicator/Parser/KeywordParser.h \
     src/Indicator/Parser/SubParser.h \
-    src/KChart/kchart.h \
-    src/KChart/kcharttitle.h \
-    src/KChart/kchartview.h \
+    src/KChart/KChartWidget.h \
     src/mainwindow.h
 
 SOURCES += \
-    src/KChart/kchart.cpp \
-    src/KChart/kcharttitle.cpp \
-    src/KChart/kchartview.cpp \
+    src/KChart/KChartWidget.cpp \
     src/main.cpp \
     src/mainwindow.cpp
 
