@@ -13,6 +13,7 @@
 #include <locale>
 #include <codecvt>
 #include <iomanip>
+#include <cassert>
 
 namespace StockCharts
 {
@@ -93,8 +94,10 @@ namespace StockCharts
     class NumberUtils
     {
     public:
-        static std::string toString(Number price, int precision = 2)
+        static std::string toString(Number price, int precision = 2, std::string sNull = "--")
         {
+            if (price == NumberNull)
+                return sNull;
             std::stringstream ss;
             ss.precision(precision);
             ss.setf(std::ios::fixed);

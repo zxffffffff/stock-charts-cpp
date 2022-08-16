@@ -14,8 +14,8 @@ namespace StockCharts
     class PluginCrossLine : public ChartPlugin
     {
     public:
-        PluginCrossLine(std::shared_ptr<const StockCore> stockCore)
-            : ChartPlugin(stockCore)
+        PluginCrossLine(std::shared_ptr<const StockCore> stockCore, std::shared_ptr<const ChartProps> props)
+            : ChartPlugin(stockCore, props)
         {
         }
         virtual ~PluginCrossLine() = default;
@@ -29,12 +29,13 @@ namespace StockCharts
         virtual void onMouseMove(std::shared_ptr<const ChartContext> context) override
         {
             const auto& ctx = *context;
-            ChartCoordinate coordinate(context);
+            const auto& props = *m_props;
+            ChartCoordinate coordinate(context, m_props);
 
             Real x = coordinate.index2pos(ctx.hoverIndex);
-            const Real bgWidth = ctx.props.crossTextBGSize.width;
+            const Real bgWidth = props.crossTextBGSize.width;
             const Real bgHalfWidth = bgWidth / 2;
-            const Real bgHeight = ctx.props.crossTextBGSize.height;
+            const Real bgHeight = props.crossTextBGSize.height;
             const Real bgHalfHeight = bgHeight / 2;
 
             crossLineX.clear();
@@ -73,7 +74,7 @@ namespace StockCharts
                     bgWidth,
                     ctx.rectXAxis.height() - 2
                 ).moveInside(ctx.rectXAxis);
-                switch (ctx.props.xAxisHoverType)
+                switch (props.xAxisHoverType)
                 {
                 case EnXAxisType::yyyyMMdd:
                 default:
@@ -95,7 +96,7 @@ namespace StockCharts
                     ctx.rectYLAxis.width() - 2,
                     bgHeight
                 ).moveInside(ctx.rectYLAxis);
-                crossYLText = NumberUtils::toString(ctx.hoverPrice, ctx.props.precision);
+                crossYLText = NumberUtils::toString(ctx.hoverPrice, props.precision);
 
                 crossYRBG.set(
                     ctx.rectYRAxis.left() + 1,
@@ -103,39 +104,40 @@ namespace StockCharts
                     ctx.rectYRAxis.width() - 2,
                     bgHeight
                 ).moveInside(ctx.rectYRAxis);
-                crossYRText = NumberUtils::toString(ctx.hoverPrice, ctx.props.precision);
+                crossYRText = NumberUtils::toString(ctx.hoverPrice, props.precision);
             }
         }
 
         virtual void onPaint(std::shared_ptr<const ChartContext> context, Painter& painter) override
         {
             const auto& ctx = *context;
+            const auto& props = *m_props;
 
             // x
-            painter.drawLine(crossLineX, ctx.props.crossLineStyle);
+            painter.drawLine(crossLineX, props.crossLineStyle);
 
-            painter.fillRect(crossXBG, ctx.props.crossTextBGStyle);
+            painter.fillRect(crossXBG, props.crossTextBGStyle);
             painter.drawString(
                 crossXBG,
                 crossXText,
-                ctx.props.xAxisHoverTextFont
+                props.xAxisHoverTextFont
             );
 
             // y
-            painter.drawLine(crossLineY, ctx.props.crossLineStyle);
+            painter.drawLine(crossLineY, props.crossLineStyle);
 
-            painter.fillRect(crossYLBG, ctx.props.crossTextBGStyle);
+            painter.fillRect(crossYLBG, props.crossTextBGStyle);
             painter.drawString(
                 crossYLBG,
                 crossYLText,
-                ctx.props.ylAxisHoverTextFont
+                props.ylAxisHoverTextFont
             );
 
-            painter.fillRect(crossYRBG, ctx.props.crossTextBGStyle);
+            painter.fillRect(crossYRBG, props.crossTextBGStyle);
             painter.drawString(
                 crossYRBG,
                 crossYRText,
-                ctx.props.yrAxisHoverTextFont
+                props.yrAxisHoverTextFont
             );
         }
 

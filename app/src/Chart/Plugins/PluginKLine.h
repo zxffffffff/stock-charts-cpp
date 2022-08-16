@@ -13,8 +13,8 @@ namespace StockCharts
     class PluginKLine : public ChartPlugin
     {
     public:
-        PluginKLine(std::shared_ptr<const StockCore> stockCore)
-            : ChartPlugin(stockCore)
+        PluginKLine(std::shared_ptr<const StockCore> stockCore, std::shared_ptr<const ChartProps> props)
+            : ChartPlugin(stockCore, props)
         {
         }
         virtual ~PluginKLine() = default;
@@ -34,11 +34,12 @@ namespace StockCharts
         // [2]
         virtual void onContextChanged(std::shared_ptr<const ChartContext> context) override
         {
-            auto& ctx = *context;
+            const auto& ctx = *context;
+            const auto& props = *m_props;
             m_areaIndexs.resize(1);
             m_areaIndexs[0].exps.resize(1);
 
-            m_klineType = ctx.props.klineType;
+            m_klineType = props.klineType;
             switch (m_klineType)
             {
             case EnKLineType::CandleStickHollow:

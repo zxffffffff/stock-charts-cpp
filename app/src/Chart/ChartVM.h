@@ -34,8 +34,8 @@ namespace StockCharts
 
         virtual void on(DataBinding* sender, const std::string& id) override
         {
-            if (m_model.get() == sender)
-                fire(id);
+            if (id == ID_StockCoreChanged || id == ID_ChartPropsChanged || id == ID_ChartPluginChanged)
+                calcContext();
         }
 
         std::shared_ptr<const ChartContext> getContext() const
@@ -43,59 +43,44 @@ namespace StockCharts
             return m_context;
         }
 
-        // [0]
-        void setProps(const ChartProps& props)
-        {
-            auto& ctx = *m_context;
-            ctx.props = props;
-            calcContext();
-            fire(ID_ChartContextChanged);
-        }
-        void setContext(const ChartContext& context)
-        {
-            auto& ctx = *m_context;
-            ctx = context;
-            calcContext();
-            fire(ID_ChartContextChanged);
-        }
-
         // [1]
         void calcContext()
         {
             const auto& stockCore = m_model->getStockCore();
             const auto& plugins = m_model->getPlugins();
+            const auto& props = *m_model->getProps();
             auto& ctx = *m_context;
 
             // [0] content
             ctx.rectXAxis.set(
-                ctx.rectView.left() + ctx.props.ylAxisWidth,
-                ctx.rectView.bottom() - ctx.props.xAxisHeight,
-                ctx.rectView.width() - ctx.props.ylAxisWidth - ctx.props.yrAxisWidth,
-                ctx.props.xAxisHeight
+                ctx.rectView.left() + props.ylAxisWidth,
+                ctx.rectView.bottom() - props.xAxisHeight,
+                ctx.rectView.width() - props.ylAxisWidth - props.yrAxisWidth,
+                props.xAxisHeight
             );
             ctx.rectYLAxis.set(
                 ctx.rectView.left(),
                 ctx.rectView.top(),
-                ctx.props.ylAxisWidth,
+                props.ylAxisWidth,
                 ctx.rectView.height()
             );
             ctx.rectYRAxis.set(
-                ctx.rectView.right() - ctx.props.yrAxisWidth,
+                ctx.rectView.right() - props.yrAxisWidth,
                 ctx.rectView.top(),
-                ctx.props.yrAxisWidth,
+                props.yrAxisWidth,
                 ctx.rectView.height()
             );
             ctx.rectChart.set(
-                ctx.rectView.left() + ctx.props.ylAxisWidth,
+                ctx.rectView.left() + props.ylAxisWidth,
                 ctx.rectView.top(),
-                ctx.rectView.width() - ctx.props.ylAxisWidth - ctx.props.yrAxisWidth,
-                ctx.rectView.height() - ctx.props.xAxisHeight
+                ctx.rectView.width() - props.ylAxisWidth - props.yrAxisWidth,
+                ctx.rectView.height() - props.xAxisHeight
             );
             ctx.rectInnerChart.set(
-                ctx.rectChart.left() + ctx.props.paddingLeft,
-                ctx.rectChart.top() + ctx.props.paddingTop,
-                ctx.rectChart.width() - ctx.props.paddingLeft - ctx.props.paddingRight,
-                ctx.rectChart.height() - ctx.props.paddingTop - ctx.props.paddingBottom
+                ctx.rectChart.left() + props.paddingLeft,
+                ctx.rectChart.top() + props.paddingTop,
+                ctx.rectChart.width() - props.paddingLeft - props.paddingRight,
+                ctx.rectChart.height() - props.paddingTop - props.paddingBottom
             );
 
             // invalid size
@@ -106,7 +91,7 @@ namespace StockCharts
 
             // [1] x
             const int stockCnt = stockCore->getSize();
-            const Real stockWidth = stockCnt * ctx.props.nodeWidth;
+            const Real stockWidth = stockCnt * ctx.nodeWidth;
             const Real viewWidth = ctx.rectInnerChart.width();
             if (stockWidth <= viewWidth) {
                 if (ctx.viewCount != stockCnt) {
@@ -116,7 +101,7 @@ namespace StockCharts
                 }
             }
             else {
-                int viewCount = std::floor(viewWidth / ctx.props.nodeWidth);
+                int viewCount = std::floor(viewWidth / ctx.nodeWidth);
                 if (ctx.viewCount != viewCount) {
                     ctx.viewCount = viewCount;
                     ctx.endIndex = stockCnt;
@@ -140,6 +125,7 @@ namespace StockCharts
             }
 
             calcPlugins();
+            fire(ID_ChartContextChanged);
         }
 
         void calcPlugins()
@@ -160,11 +146,13 @@ namespace StockCharts
         void OnResize(const Rect& rect)
         {
             auto& ctx = *m_context;
+            const auto& props = *m_model->getProps();
+
             const Rect view(
-                rect.left() + ctx.props.MarginLeft,
-                rect.top() + ctx.props.MarginTop,
-                rect.width() - ctx.props.MarginLeft - ctx.props.MarginRight,
-                rect.height() - ctx.props.MarginTop - ctx.props.MarginBottom
+                rect.left() + props.MarginLeft,
+                rect.top() + props.MarginTop,
+                rect.width() - props.MarginLeft - props.MarginRight,
+                rect.height() - props.MarginTop - props.MarginBottom
             );
             if (ctx.rectView == view)
                 return;
@@ -181,7 +169,7 @@ namespace StockCharts
                 return;
 
             auto& plugins = m_model->getPlugins();
-            ChartCoordinate coordinate(m_context);
+            ChartCoordinate coordinate(m_context, m_model->getProps());
 
             // mouse event
             ctx.syncHover = false;
@@ -208,7 +196,7 @@ namespace StockCharts
         {
             auto& ctx = *m_context;
             auto& plugins = m_model->getPlugins();
-            ChartCoordinate coordinate(m_context);
+            ChartCoordinate coordinate(m_context, m_model->getProps());
 
             // mouse event
             ctx.syncHover = false;
@@ -254,21 +242,24 @@ namespace StockCharts
                 return;
 
             const auto& stockCore = m_model->getStockCore();
+            const auto& props = *m_model->getProps();
             auto& ctx = *m_context;
 
             int stepWidth = 2 * std::abs(step);
             if (step > 0) {
-                ctx.props.nodeWidth = std::min(ctx.props.nodeWidth + stepWidth, Real(99));
-                ctx.props.stickWidth = std::min(ctx.props.stickWidth + stepWidth, Real(99));
+                ctx.nodeWidth = std::min(ctx.nodeWidth + stepWidth, Real(99));
             }
             else {
-                ctx.props.nodeWidth = std::max(ctx.props.nodeWidth - stepWidth, Real(1));
-                ctx.props.stickWidth = std::max(ctx.props.stickWidth - stepWidth, Real(1));
+                ctx.nodeWidth = std::max(ctx.nodeWidth - stepWidth, Real(1));
             }
+            int stickWidth = std::round(ctx.nodeWidth * Real(0.75));
+            if (stickWidth % 2 != 1)
+                stickWidth -= 1;
+            ctx.stickWidth = std::min(std::max(Real(1), Real(stickWidth)), Real(99));
 
             // [1] x
             const int stockCnt = stockCore->getSize();
-            const Real stockWidth = stockCnt * ctx.props.nodeWidth;
+            const Real stockWidth = stockCnt * ctx.nodeWidth;
             const Real viewWidth = ctx.rectInnerChart.width();
             if (stockWidth <= viewWidth) {
                 ctx.viewCount = stockCnt;
@@ -276,7 +267,7 @@ namespace StockCharts
                 ctx.beginIndex = ctx.endIndex - ctx.viewCount;
             }
             else {
-                const int viewCount = std::floor(viewWidth / ctx.props.nodeWidth);
+                const int viewCount = std::floor(viewWidth / ctx.nodeWidth);
                 if (ctx.hoverIndex < 0) {
                     ctx.viewCount = viewCount;
                     ctx.endIndex = stockCnt;
@@ -316,16 +307,16 @@ namespace StockCharts
             if (ctx.viewCount == viewCount &&
                 ctx.beginIndex == beginIndex &&
                 ctx.endIndex == endIndex &&
-                ctx.props.nodeWidth == nodeWidth &&
-                ctx.props.stickWidth == stickWidth)
+                ctx.nodeWidth == nodeWidth &&
+                ctx.stickWidth == stickWidth)
                 return;
 
             // [1] x
             ctx.viewCount = viewCount;
             ctx.beginIndex = beginIndex;
             ctx.endIndex = endIndex;
-            ctx.props.nodeWidth = nodeWidth;
-            ctx.props.stickWidth = stickWidth;
+            ctx.nodeWidth = nodeWidth;
+            ctx.stickWidth = stickWidth;
 
             calcContext();
             fire(ID_ChartContextSync);
@@ -338,7 +329,7 @@ namespace StockCharts
                 return;
 
             auto& plugins = m_model->getPlugins();
-            ChartCoordinate coordinate(m_context);
+            ChartCoordinate coordinate(m_context, m_model->getProps());
 
             // mouse event
             ctx.syncHover = true;

@@ -13,8 +13,8 @@ namespace StockCharts
     class PluginBG : public ChartPlugin
     {
     public:
-        PluginBG(std::shared_ptr<const StockCore> stockCore)
-            : ChartPlugin(stockCore)
+        PluginBG(std::shared_ptr<const StockCore> stockCore, std::shared_ptr<const ChartProps> props)
+            : ChartPlugin(stockCore, props)
         {
         }
         virtual ~PluginBG() = default;
@@ -23,15 +23,16 @@ namespace StockCharts
         virtual void onContextChanged(std::shared_ptr<const ChartContext> context) override
         {
             auto& ctx = *context;
-            ChartCoordinate coordinate(context);
+            const auto& props = *m_props;
+            ChartCoordinate coordinate(context, m_props);
 
             // x
             xAxisPos.clear();
             xAxisRect.clear();
             xAxisDate.clear();
-            const Real textWidth = ctx.props.xAxisTextWidth;
+            const Real textWidth = props.xAxisTextWidth;
             const Real textHalfWidth = textWidth / 2;
-            switch (ctx.props.xAxisType)
+            switch (props.xAxisType)
             {
             case EnXAxisType::yyyyMM:
             default:
@@ -79,48 +80,49 @@ namespace StockCharts
             yrAxisRect.clear();
             ylAxisPrice.clear();
             yrAxisPrice.clear();
-            const Real stepHeight = ctx.props.yAxisGridStepHeight;
+            const Real stepHeight = props.yAxisGridStepHeight;
             const Real stepHalfHeight = stepHeight / 2;
-            for (Real y = ctx.rectChart.bottom() - ctx.props.yAxisGridStart; y >= ctx.rectChart.top() + stepHalfHeight; y -= stepHeight) {
+            for (Real y = ctx.rectChart.bottom() - props.yAxisGridStart; y >= ctx.rectChart.top() + stepHalfHeight; y -= stepHeight) {
                 yAxisPos.push_back(y);
                 ylAxisRect.push_back(Rect(ctx.rectYLAxis.left() + 1, y - stepHalfHeight, ctx.rectYLAxis.width() - 2, stepHeight));
                 yrAxisRect.push_back(Rect(ctx.rectYRAxis.left() + 1, y - stepHalfHeight, ctx.rectYRAxis.width() - 2, stepHeight));
                 ylAxisRect.back().moveInside(ctx.rectYLAxis);
                 yrAxisRect.back().moveInside(ctx.rectYRAxis);
-                ylAxisPrice.push_back(NumberUtils::toString(coordinate.pos2price(y), ctx.props.precision));
-                yrAxisPrice.push_back(NumberUtils::toString(coordinate.pos2price(y), ctx.props.precision));
+                ylAxisPrice.push_back(NumberUtils::toString(coordinate.pos2price(y), props.precision));
+                yrAxisPrice.push_back(NumberUtils::toString(coordinate.pos2price(y), props.precision));
             }
         }
 
         virtual void onPaint(std::shared_ptr<const ChartContext> context, Painter& painter) override
         {
-            auto& ctx = *context;
+            const auto& ctx = *context;
+            const auto& props = *m_props;
 
-            painter.fillRect(ctx.rectView, Color(255, 255, 255, 255 * 0.2));
-            painter.fillRect(ctx.rectXAxis, Color(150, 100, 100, 255 * 0.2));
-            painter.fillRect(ctx.rectYLAxis, Color(100, 150, 100, 255 * 0.2));
-            painter.fillRect(ctx.rectYRAxis, Color(100, 150, 100, 255 * 0.2));
-            painter.fillRect(ctx.rectChart, Color(100, 100, 150, 255 * 0.2));
-            painter.fillRect(ctx.rectInnerChart, Color(100, 100, 200, 255 * 0.2));
+            painter.fillRect(ctx.rectView, props.colorViewBG);
+            painter.fillRect(ctx.rectXAxis, props.colorXAxisBG);
+            painter.fillRect(ctx.rectYLAxis, props.colorYLAxisBG);
+            painter.fillRect(ctx.rectYRAxis, props.colorYRAxisBG);
+            painter.fillRect(ctx.rectChart, props.colorChartBG);
+            painter.fillRect(ctx.rectInnerChart, props.colorInnerChartBG);
 
             // x
             for (int i = 0; i < xAxisPos.size(); i++) {
                 const auto& x = xAxisPos[i];
                 painter.drawLine(
                     Line(x, ctx.rectChart.top(), x, ctx.rectChart.bottom()),
-                    ctx.props.axisGridStyle
+                    props.axisGridStyle
                 );
             }
             for (int i = 0; i < xAxisDate.size(); i++) {
                 painter.drawString(
                     xAxisRect[i],
                     xAxisDate[i],
-                    ctx.props.xAxisTextFont
+                    props.xAxisTextFont
                 );
             }
             painter.drawLine(
                 Line(ctx.rectXAxis.topLeft(), ctx.rectXAxis.topRight()),
-                ctx.props.axisLineStyle
+                props.axisLineStyle
             );
 
             // y
@@ -128,30 +130,30 @@ namespace StockCharts
                 const auto& y = yAxisPos[i];
                 painter.drawLine(
                     Line(ctx.rectChart.left(), y, ctx.rectChart.right(), y),
-                    ctx.props.axisGridStyle
+                    props.axisGridStyle
                 );
             }
             for (int i = 0; i < ylAxisPrice.size(); i++) {
                 painter.drawString(
                     ylAxisRect[i],
                     ylAxisPrice[i],
-                    ctx.props.ylAxisTextFont
+                    props.ylAxisTextFont
                 );
             }
             for (int i = 0; i < yrAxisPrice.size(); i++) {
                 painter.drawString(
                     yrAxisRect[i],
                     yrAxisPrice[i],
-                    ctx.props.yrAxisTextFont
+                    props.yrAxisTextFont
                 );
             }
             painter.drawLine(
                 Line(ctx.rectYLAxis.topRight(), ctx.rectYLAxis.bottomRight()),
-                ctx.props.axisLineStyle
+                props.axisLineStyle
             );
             painter.drawLine(
                 Line(ctx.rectYRAxis.topLeft(), ctx.rectYRAxis.bottomLeft()),
-                ctx.props.axisLineStyle
+                props.axisLineStyle
             );
         }
 

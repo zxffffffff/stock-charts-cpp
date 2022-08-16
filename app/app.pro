@@ -10,6 +10,7 @@ CONFIG += c++17
 
 FORMS += \
     src/KChart/kchart.ui \
+    src/KChart/kcharttitle.ui \
     src/mainwindow.ui
 
 HEADERS += \
@@ -17,7 +18,7 @@ HEADERS += \
     src/Chart/ChartVM.h \
     src/Chart/Context/ChartContext.h \
     src/Chart/Context/ChartCoordinate.h \
-    src/Chart/Plugins/ChartPlugin.h \
+    src/Chart/Plugins/IChartPlugin.h \
     src/Chart/Plugins/PluginBG.h \
     src/Chart/Plugins/PluginCrossLine.h \
     src/Chart/Plugins/PluginIndicator.h \
@@ -38,11 +39,13 @@ HEADERS += \
     src/Indicator/Parser/KeywordParser.h \
     src/Indicator/Parser/SubParser.h \
     src/KChart/kchart.h \
+    src/KChart/kcharttitle.h \
     src/KChart/kchartview.h \
     src/mainwindow.h
 
 SOURCES += \
     src/KChart/kchart.cpp \
+    src/KChart/kcharttitle.cpp \
     src/KChart/kchartview.cpp \
     src/main.cpp \
     src/mainwindow.cpp

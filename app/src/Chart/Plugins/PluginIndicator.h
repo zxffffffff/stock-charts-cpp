@@ -15,8 +15,8 @@ namespace StockCharts
     class PluginIndicator : public ChartPlugin
     {
     public:
-        PluginIndicator(std::shared_ptr<const StockCore> stockCore)
-            : ChartPlugin(stockCore)
+        PluginIndicator(std::shared_ptr<const StockCore> stockCore, std::shared_ptr<const ChartProps> props)
+            : ChartPlugin(stockCore, props)
         {
         }
         virtual ~PluginIndicator() = default;
@@ -98,6 +98,8 @@ namespace StockCharts
             indicator->formula = formular;
             m_indicators.push_back(indicator);
             calcIndicator(m_indicators.size() - 1);
+
+            fire(ID_ChartPluginChanged);
             return indicator;
         }
 
@@ -107,10 +109,14 @@ namespace StockCharts
             if (ite == m_indicators.end())
                 return;
             m_indicators.erase(ite);
+
+            fire(ID_ChartPluginChanged);
         }
         void delIndicators()
         {
             m_indicators.clear();
+
+            fire(ID_ChartPluginChanged);
         }
 
         std::vector<std::shared_ptr<const StIndicator>> getIndicators() const
@@ -140,6 +146,8 @@ namespace StockCharts
             parser.setStockCore(getStockCore());
             bool ok = parser.run();
             indicator->indexCore = parser.getResult();
+
+            fire(ID_ChartPluginChanged);
         }
 
     private:

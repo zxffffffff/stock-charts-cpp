@@ -6,7 +6,6 @@
 ** 
 ****************************************************************************/
 #include "mainwindow.h"
-#include "KChart/kchartview.h"
 #include "Indicator/IndicatorParser.h"
 #include "Core/Utils.h"
 #include <QPainter>
@@ -80,42 +79,47 @@ MainWindow::MainWindow(QWidget *parent)
     ui.setupUi(this);
     setMouseTracking(true);
 
-    auto stock = std::make_shared<StockCore>(GenerateStock());
-    ui.kchart0->init(stock, true);
-    ui.kchart1->init(stock, false);
-    
-    m_kcharts.push_back(ui.kchart0);
-    m_kcharts.push_back(ui.kchart1);
+    m_stockCore = std::make_shared<StockCore>(GenerateStock());
 
-    ui.kchart1->addIndicator(GenerateMACD());
+    const int nChartCnt = 2;
+    for (int i = 0; i < nChartCnt; i++) {
+        bool main = (i == 0);
 
-    // general
-    connect(ui.generalDrawingType, &QComboBox::currentIndexChanged, ui.kchart0->getChartView(), &KChartView::slotDrawingType);
-    connect(ui.generalCorrdinate, &QComboBox::currentIndexChanged, ui.kchart0->getChartView(), &KChartView::slotCorrdinate);
-    for (KChart* kchart : m_kcharts) {
-        connect(ui.generalYLWidth, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotYLWidth);
-        connect(ui.generalYRWidth, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotYRWidth);
-        connect(ui.generalXHeight, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotXHeight);
-        connect(ui.generalPaddingLeft, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotPaddingLeft);
-        connect(ui.generalPaddingTop, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotPaddingTop);
-        connect(ui.generalPaddingRight, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotPaddingRight);
-        connect(ui.generalPaddingBottom, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotPaddingBottom);
-        connect(ui.generalNodeWidth, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotNodeWidth);
-        connect(ui.generalStickWidth, &QSpinBox::valueChanged, kchart->getChartView(), &KChartView::slotStickWidth);
+        auto model = std::make_shared<ChartModel>(m_stockCore);
+        model->addPlugin<PluginBG>();
+        if (main)
+            model->addPlugin<PluginKLine>();
+        model->addPlugin<PluginIndicator>();
+        model->addPlugin<PluginCrossLine>();
+
+        auto widget = new KChartWidget(ui.kchartWidget);
+        ui.kchartLayout->addWidget(widget);
+        widget->init(std::make_shared<ChartVM>(model));
+        for (int j = 0; j < i; j++) {
+            widget->syncSubChart(m_kcharts[j].widget);
+            m_kcharts[j].widget->syncSubChart(widget);
+        }            
+        bind(widget);
+
+        m_kcharts.push_back({ main, widget, model });
     }
 
-    // indicator
+    addIndicator(GenerateMACD(), false);
+
+    // tab-general
+    connect(ui.generalDrawingType, &QComboBox::currentIndexChanged, this, &MainWindow::slotDrawingType);
+    connect(ui.generalCorrdinate, &QComboBox::currentIndexChanged, this, &MainWindow::slotCorrdinate);
+    connect(ui.generalYLWidth, &QSpinBox::valueChanged, this, &MainWindow::slotYLWidth);
+    connect(ui.generalYRWidth, &QSpinBox::valueChanged, this, &MainWindow::slotYRWidth);
+    connect(ui.generalXHeight, &QSpinBox::valueChanged, this, &MainWindow::slotXHeight);
+    connect(ui.generalPaddingLeft, &QSpinBox::valueChanged, this, &MainWindow::slotPaddingLeft);
+    connect(ui.generalPaddingTop, &QSpinBox::valueChanged, this, &MainWindow::slotPaddingTop);
+    connect(ui.generalPaddingRight, &QSpinBox::valueChanged, this, &MainWindow::slotPaddingRight);
+    connect(ui.generalPaddingBottom, &QSpinBox::valueChanged, this, &MainWindow::slotPaddingBottom);
+
+    // tab-indicator
     connect(ui.indicatorBtnAdd, &QPushButton::clicked, this, &MainWindow::slotIndicatorBtnAdd);
     connect(ui.indicatorBtnClear, &QPushButton::clicked, this, &MainWindow::slotIndicatorBtnClear);
-
-    for (KChart* kchart : m_kcharts)
-        bind(kchart);
-    for (int i = 0; i < m_kcharts.size(); i++) {
-        for (int j = 0; j < m_kcharts.size(); j++) {
-            if (i != j)
-                m_kcharts[i]->addSyncChart(m_kcharts[j]);
-        }
-    }
 }
 
 MainWindow::~MainWindow()
@@ -127,14 +131,141 @@ void MainWindow::on(DataBinding* sender, const std::string& id)
     QTimer::singleShot(100, this, SLOT(updateUI()));
 }
 
+std::shared_ptr<const StIndicator> MainWindow::addIndicator(const StockCharts::IndexFormula& formula, bool main)
+{
+    std::shared_ptr<const StIndicator> indicator;
+    if (main) {
+        if (auto pluginIndicator = m_kcharts[0].model->getPlugin<PluginIndicator>())
+            indicator = pluginIndicator->addIndicator(formula);
+    }
+    else {
+        if (auto pluginIndicator = m_kcharts[1].model->getPlugin<PluginIndicator>())
+            indicator = pluginIndicator->addIndicator(formula);
+    }
+    return indicator;
+}
+
+void MainWindow::clearIndicators()
+{
+    for (auto& kchart : m_kcharts) {
+        auto pluginIndicator = kchart.model->getPlugin<PluginIndicator>();
+        if (!pluginIndicator)
+            return;
+        pluginIndicator->delIndicators();
+    }
+}
+
 void MainWindow::updateUI()
 {
-    auto& ctx = *m_kcharts[0]->getContext();
+    auto& ctx = *m_kcharts[0].widget->getContext();
 
-    if (ui.generalStickWidth->value() != ctx.props.stickWidth)
-        ui.generalStickWidth->setValue(ctx.props.stickWidth);
-    if (ui.generalNodeWidth->value() != ctx.props.nodeWidth)
-        ui.generalNodeWidth->setValue(ctx.props.nodeWidth);
+    if (ui.generalStickWidth->value() != ctx.stickWidth)
+        ui.generalStickWidth->setValue(ctx.stickWidth);
+    if (ui.generalNodeWidth->value() != ctx.nodeWidth)
+        ui.generalNodeWidth->setValue(ctx.nodeWidth);
+}
+
+void MainWindow::slotDrawingType(int i)
+{
+    for (auto kchart : m_kcharts) {
+        if (!kchart.main)
+            continue;
+        auto props = *kchart.model->getProps();
+        if (props.klineType == (EnKLineType)i)
+            return;
+        props.klineType = (EnKLineType)i;
+        kchart.model->setProps(props);
+    }
+}
+
+void MainWindow::slotCorrdinate(int i)
+{
+    for (auto kchart : m_kcharts) {
+        if (!kchart.main)
+            continue;
+        auto props = *kchart.model->getProps();
+        if (props.coordinateType == (EnCoordinateType)i)
+            return;
+        props.coordinateType = (EnCoordinateType)i;
+        kchart.model->setProps(props);
+    }
+}
+
+void MainWindow::slotYLWidth(int i)
+{
+    for (auto kchart : m_kcharts) {
+        auto props = *kchart.model->getProps();
+        if (props.ylAxisWidth == i)
+            return;
+        props.ylAxisWidth = i;
+        kchart.model->setProps(props);
+    }
+}
+
+void MainWindow::slotYRWidth(int i)
+{
+    for (auto kchart : m_kcharts) {
+        auto props = *kchart.model->getProps();
+        if (props.yrAxisWidth == i)
+            return;
+        props.yrAxisWidth = i;
+        kchart.model->setProps(props);
+    }
+}
+
+void MainWindow::slotXHeight(int i)
+{
+    for (auto kchart : m_kcharts) {
+        auto props = *kchart.model->getProps();
+        if (props.xAxisHeight == i)
+            return;
+        props.xAxisHeight = i;
+        kchart.model->setProps(props);
+    }
+}
+
+void MainWindow::slotPaddingLeft(int i)
+{
+    for (auto kchart : m_kcharts) {
+        auto props = *kchart.model->getProps();
+        if (props.paddingLeft == i)
+            return;
+        props.paddingLeft = i;
+        kchart.model->setProps(props);
+    }
+}
+
+void MainWindow::slotPaddingTop(int i)
+{
+    for (auto kchart : m_kcharts) {
+        auto props = *kchart.model->getProps();
+        if (props.paddingTop == i)
+            return;
+        props.paddingTop = i;
+        kchart.model->setProps(props);
+    }
+}
+
+void MainWindow::slotPaddingRight(int i)
+{
+    for (auto kchart : m_kcharts) {
+        auto props = *kchart.model->getProps();
+        if (props.paddingRight == i)
+            return;
+        props.paddingRight = i;
+        kchart.model->setProps(props);
+    }
+}
+
+void MainWindow::slotPaddingBottom(int i)
+{
+    for (auto kchart : m_kcharts) {
+        auto props = *kchart.model->getProps();
+        if (props.paddingBottom == i)
+            return;
+        props.paddingBottom = i;
+        kchart.model->setProps(props);
+    }
 }
 
 void MainWindow::slotIndicatorBtnAdd()
@@ -152,7 +283,7 @@ void MainWindow::slotIndicatorBtnAdd()
     IndexFormula formular = { "Index", expression, params};
 
     bool bMain = ui.indicatorRadioMain->isChecked();
-    auto indicator = bMain ? ui.kchart0->addIndicator(formular) : ui.kchart1->addIndicator(formular);
+    auto indicator = addIndicator(formular, bMain);
 
     QString tips;
     if (!indicator) {
@@ -173,8 +304,8 @@ void MainWindow::slotIndicatorBtnAdd()
 
 void MainWindow::slotIndicatorBtnClear()
 {
-    ui.kchart0->clearIndicators();
-    ui.kchart1->clearIndicators();
+    for (auto& kchart : m_kcharts)
+        clearIndicators();
 
     ui.indicatorLabel->clear();
 }

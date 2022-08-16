@@ -10,7 +10,7 @@
 
 #include <QMainWindow>
 #include "ui_mainwindow.h"
-#include "Core/DataBinding.h"
+#include "KChart/KChartWidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -26,15 +26,38 @@ public:
 
     virtual void on(DataBinding* sender, const std::string& id) override;
 
+    // tab-indicator
+    std::shared_ptr<const StockCharts::StIndicator> addIndicator(const StockCharts::IndexFormula& formula, bool main);
+    void clearIndicators();
+
 public slots:
     void updateUI();
 
-    // indicator
+    // tab-general
+    void slotDrawingType(int i);
+    void slotCorrdinate(int i);
+    void slotYLWidth(int i);
+    void slotYRWidth(int i);
+    void slotXHeight(int i);
+    void slotPaddingLeft(int i);
+    void slotPaddingTop(int i);
+    void slotPaddingRight(int i);
+    void slotPaddingBottom(int i);
+
+    // tab-indicator
     void slotIndicatorBtnAdd();
     void slotIndicatorBtnClear();
 
 private:
     Ui::MainWindow ui;
-    std::vector<KChart*> m_kcharts;
+
+    struct StKChart 
+    {
+        bool main = false;
+        KChartWidget* widget = nullptr;
+        std::shared_ptr<StockCharts::ChartModel> model;
+    };
+    std::shared_ptr<StockCharts::StockCore> m_stockCore;
+    std::vector<StKChart> m_kcharts;
 };
 #endif // MAINWINDOW_H

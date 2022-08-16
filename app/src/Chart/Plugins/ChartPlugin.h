@@ -33,11 +33,14 @@ namespace StockCharts
         std::vector<StChartAreaExp> exps;
     };
 
+    constexpr inline char ID_ChartPluginChanged[] = "ID_ChartPluginChanged";
+
     class ChartPlugin : public DataBinding
     {
     public:
-        ChartPlugin(std::shared_ptr<const StockCore> stockCore)
+        ChartPlugin(std::shared_ptr<const StockCore> stockCore, std::shared_ptr<const ChartProps> props)
             : m_stockCore(stockCore)
+            , m_props(props)
         {
         }
         virtual ~ChartPlugin() = default;
@@ -75,7 +78,8 @@ namespace StockCharts
             const NumberCore& close
         ) {
             const auto& ctx = *context;
-            ChartCoordinate coordinate(context);
+            const auto& props = *m_props;
+            ChartCoordinate coordinate(context, m_props);
 
             StChartAreaExp exp;
             exp.type = EnChartAreaExpType::Stick;
@@ -92,9 +96,9 @@ namespace StockCharts
                 const Real cPos = coordinate.price2pos(c);
 
                 exp.sticks[i].set(
-                    xPos - ctx.props.stickWidth / 2,
+                    xPos - ctx.stickWidth / 2,
                     std::min(oPos, cPos),
-                    ctx.props.stickWidth,
+                    ctx.stickWidth,
                     std::abs(oPos - cPos),
                     hPos,
                     lPos,
@@ -109,7 +113,7 @@ namespace StockCharts
             const NumberCore& price
         ) {
             const auto& ctx = *context;
-            ChartCoordinate coordinate(context);
+            ChartCoordinate coordinate(context, m_props);
 
             StChartAreaExp exp;
             exp.type = EnChartAreaExpType::Line;
@@ -128,6 +132,7 @@ namespace StockCharts
     protected:
         // [0] data
         std::shared_ptr<const StockCore> m_stockCore;
+        std::shared_ptr<const ChartProps> m_props;
 
         // [1] layers-indexs-exps
         std::vector<StChartAreaIndex> m_areaIndexs;

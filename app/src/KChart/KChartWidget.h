@@ -16,15 +16,16 @@
 #include "../Chart/Plugins/PluginIndicator.h"
 #include "../Chart/Plugins/PluginCrossLine.h"
 
-class KChartView : public QWidget, public StockCharts::DataBinding
+class KChartWidget : public QWidget, public StockCharts::DataBinding
 {
     Q_OBJECT
 
 public:
-    explicit KChartView(QWidget* parent = nullptr);
-    ~KChartView();
+    explicit KChartWidget(QWidget* parent = nullptr);
+    ~KChartWidget();
 
     void init(std::shared_ptr<StockCharts::ChartVM> vm);
+    void syncSubChart(KChartWidget* otherChart);
 
     virtual void on(DataBinding* sender, const std::string& id) override;
 
@@ -36,25 +37,7 @@ public:
 public slots:
     void slotCalcContext();
 
-    void slotDrawingType(int i);
-    void slotCorrdinate(int i);
-    void slotYLWidth(int i);
-    void slotYRWidth(int i);
-    void slotXHeight(int i);
-    void slotPaddingLeft(int i);
-    void slotPaddingTop(int i);
-    void slotPaddingRight(int i);
-    void slotPaddingBottom(int i);
-    void slotNodeWidth(int nodeWidth);
-    void slotStickWidth(int stickWidth);
-
-    void slotSyncViewCount(
-        int viewCount,
-        int beginIndex,
-        int endIndex,
-        StockCharts::Real nodeWidth, 
-        StockCharts::Real stickWidth
-    );
+    void slotSyncViewCount(int viewCount, int beginIndex, int endIndex, StockCharts::Real nodeWidth, StockCharts::Real stickWidth);
     void slotSyncMouseMove(int hoverIndex, StockCharts::Number hoverPrice);
 
 protected:

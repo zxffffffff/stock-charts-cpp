@@ -12,33 +12,32 @@ namespace StockCharts
 {
     struct ChartCoordinate
     {
-        std::shared_ptr<const ChartContext> context;
+        const ChartContext& ctx;
+        const ChartProps& props;
 
-        ChartCoordinate(std::shared_ptr<const ChartContext> _context)
-            : context(_context)
+        ChartCoordinate(std::shared_ptr<const ChartContext> context, std::shared_ptr<const ChartProps> props)
+            : ctx(*context)
+            , props(*props)
         {
         }
 
         bool validX() const
         {
-            const auto& ctx = *context;
             return (
-                ctx.rectInnerChart.valid() && ctx.viewCount > 0 && ctx.props.nodeWidth > 0);
+                ctx.rectInnerChart.valid() && ctx.viewCount > 0 && ctx.nodeWidth > 0);
         }
 
         bool validY() const
         {
-            const auto& ctx = *context;
             return (ctx.rectInnerChart.valid() && ctx.minPrice != NumberNull && ctx.maxPrice != NumberNull);
         }
 
-        Real price2pos(Number price) const
+        Real price2pos(const Number price) const
         {
-            if (!validY())
-                return 0;
+            if (price == NumberNull || !validY())
+                return RealNull;
 
-            const auto& ctx = *context;
-            switch (ctx.props.coordinateType)
+            switch (props.coordinateType)
             {
             case EnCoordinateType::Linear:
             case EnCoordinateType::Proportional:
@@ -53,15 +52,13 @@ namespace StockCharts
             }
         }
 
-        Number pos2price(Real pos) const
+        Number pos2price(const Real pos) const
         {
-            if (!validY())
+            if (pos == RealNull || !validY())
                 return NumberNull;
 
-            const auto& ctx = *context;
-
             Number cache;
-            switch (ctx.props.coordinateType)
+            switch (props.coordinateType)
             {
             case EnCoordinateType::Linear:
             case EnCoordinateType::Proportional:
@@ -80,23 +77,21 @@ namespace StockCharts
             }
         }
 
-        Real index2pos(int index) const
+        Real index2pos(const int index) const
         {
-            if (!validX())
-                return 0;
+            if (index < 0 || !validX())
+                return RealNull;
 
-            const auto& ctx = *context;
             int viewIndex = index - ctx.beginIndex;
-            return ctx.rectInnerChart.left() + (viewIndex * ctx.props.nodeWidth) + (ctx.props.nodeWidth / 2.0 - 0.5);
+            return ctx.rectInnerChart.left() + (viewIndex * ctx.nodeWidth) + (ctx.nodeWidth / 2.0 - 0.5);
         }
 
-        int pos2index(Real pos) const
+        int pos2index(const Real pos) const
         {
-            if (!validX())
+            if (pos == RealNull || !validX())
                 return -1;
 
-            const auto& ctx = *context;
-            int viewIndex = std::round((pos - ctx.rectInnerChart.left() - (ctx.props.nodeWidth / 2.0 - 0.5)) / ctx.props.nodeWidth);
+            int viewIndex = std::round((pos - ctx.rectInnerChart.left() - (ctx.nodeWidth / 2.0 - 0.5)) / ctx.nodeWidth);
             return ctx.beginIndex + viewIndex;
         }
     };
