@@ -12,37 +12,40 @@ FORMS += \
     src/mainwindow.ui
 
 HEADERS += \
-    src/Chart/ChartModel.h \
-    src/Chart/ChartVM.h \
-    src/Chart/Context/ChartContext.h \
-    src/Chart/Context/ChartCoordinate.h \
-    src/Chart/Context/ChartProps.h \
-    src/Chart/Plugins/ChartPlugin.h \
-    src/Chart/Plugins/PluginBG.h \
-    src/Chart/Plugins/PluginCrossLine.h \
-    src/Chart/Plugins/PluginIndicator.h \
-    src/Chart/Plugins/PluginKLine.h \
-    src/Core/DataBinding.h \
-    src/Core/Graphics.h \
-    src/Core/NumberCore.h \
-    src/Core/Painter.h \
-    src/Core/PainterQt.h \
-    src/Core/StockCore.h \
-    src/Core/Utils.h \
-    src/Core/Widgets.h \
-    src/Indicator/Core/ExpCore.h \
-    src/Indicator/Core/IndexCore.h \
-    src/Indicator/IndicatorParser.h \
-    src/Indicator/Parser/ColorParser.h \
-    src/Indicator/Parser/DrawingParser.h \
-    src/Indicator/Parser/FunctionParser.h \
-    src/Indicator/Parser/KeywordParser.h \
-    src/Indicator/Parser/SubParser.h \
-    src/KChart/KChartWidget.h \
+    src/Chart/Core/DataBinding.h \
+    src/Chart/Core/NumberCore.h \
+    src/Chart/Core/StockCore.h \
+    src/Chart/Core/Utils.h \
+    src/Chart/Graphics/Graphics.h \
+    src/Chart/Graphics/Painter.h \
+    src/Chart/Graphics/PainterQt.h \
+    src/Chart/Graphics/Widget.h \
+    src/Chart/Model/ChartModel.h \
+    src/Chart/Model/ChartPlugin.h \
+    src/Chart/Model/Indicator/Core/ExpCore.h \
+    src/Chart/Model/Indicator/Core/IndexCore.h \
+    src/Chart/Model/Indicator/IndicatorParser.h \
+    src/Chart/Model/Indicator/Parser/ColorParser.h \
+    src/Chart/Model/Indicator/Parser/DrawingParser.h \
+    src/Chart/Model/Indicator/Parser/FunctionParser.h \
+    src/Chart/Model/Indicator/Parser/KeywordParser.h \
+    src/Chart/Model/Indicator/Parser/SubParser.h \
+    src/Chart/Model/Indicator/PluginIndicator.h \
+    src/Chart/View/BG/LayerBG.h \
+    src/Chart/View/ChartContext.h \
+    src/Chart/View/ChartCoordinate.h \
+    src/Chart/View/ChartLayer.h \
+    src/Chart/View/ChartProps.h \
+    src/Chart/View/ChartView.h \
+    src/Chart/View/CrossLine/LayerCrossLine.h \
+    src/Chart/View/Indicator/LayerIndicator.h \
+    src/Chart/View/Stock/LayerStock.h \
+    src/Chart/View/Title/LayerTitle.h \
+    src/ChartImpl/ChartWidget.h \
     src/mainwindow.h
 
 SOURCES += \
-    src/KChart/KChartWidget.cpp \
+    src/ChartImpl/ChartWidget.cpp \
     src/main.cpp \
     src/mainwindow.cpp
 

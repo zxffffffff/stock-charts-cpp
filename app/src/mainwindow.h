@@ -10,7 +10,12 @@
 
 #include <QMainWindow>
 #include "ui_mainwindow.h"
-#include "KChart/KChartWidget.h"
+#include "ChartImpl/ChartWidget.h"
+#include "Chart/Model/Indicator/PluginIndicator.h"
+#include "Chart/View/BG/LayerBG.h"
+#include "Chart/View/Stock/LayerStock.h"
+#include "Chart/View/Indicator/LayerIndicator.h"
+#include "Chart/View/CrossLine/LayerCrossLine.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -33,17 +38,6 @@ public:
 public slots:
     void updateUI();
 
-    // tab-general
-    void slotDrawingType(int i);
-    void slotCorrdinate(int i);
-    void slotYLWidth(int i);
-    void slotYRWidth(int i);
-    void slotXHeight(int i);
-    void slotPaddingLeft(int i);
-    void slotPaddingTop(int i);
-    void slotPaddingRight(int i);
-    void slotPaddingBottom(int i);
-
     // tab-indicator
     void slotIndicatorBtnAdd();
     void slotIndicatorBtnClear();
@@ -51,13 +45,15 @@ public slots:
 private:
     Ui::MainWindow ui;
 
-    struct StKChart 
+    struct StChart 
     {
         bool main = false;
-        KChartWidget* widget = nullptr;
+        ChartWidget* widget = nullptr;
         std::shared_ptr<StockCharts::ChartModel> model;
     };
-    std::shared_ptr<StockCharts::StockCore> m_stockCore;
-    std::vector<StKChart> m_kcharts;
+    std::shared_ptr<StockCharts::StockCore> m_kStock;
+    std::shared_ptr<StockCharts::StockCore> m_tStock;
+    std::vector<StChart> m_kcharts;
+    std::vector<StChart> m_tcharts;
 };
 #endif // MAINWINDOW_H
