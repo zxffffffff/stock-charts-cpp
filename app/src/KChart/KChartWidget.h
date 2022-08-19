@@ -41,6 +41,7 @@ protected:
     virtual void keyPressEvent(QKeyEvent* event) override;
     virtual void wheelEvent(QWheelEvent* event) override;
     virtual void leaveEvent(QEvent* event) override;
+    virtual void mouseDoubleClickEvent(QMouseEvent* event) override;
 
 private:
     std::shared_ptr<StockCharts::ChartVM> m_vm;

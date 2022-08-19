@@ -11,6 +11,12 @@
 
 namespace StockCharts
 {
+    enum class MouseHoverType
+    {
+        Normal,
+        SyncOther,      // 其他Chart联动
+    };
+
     struct ChartContext
     {
         // [0] content
@@ -32,11 +38,14 @@ namespace StockCharts
         Number minPrice = NumberNull;
         Number maxPrice = NumberNull;
 
-        // mouse event
-        bool syncHover = false;
+        // mouse & keyboard
+        MouseHoverType hoverType = MouseHoverType::Normal;
+
         Point pointHover;
         int hoverIndex = -1;
         Number hoverPrice = NumberNull;
+
+        bool crossLineVisible = true;
     };
 }
 

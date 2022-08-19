@@ -43,11 +43,6 @@ namespace StockCharts
 
         EnCoordinateType coordinateType = EnCoordinateType::Linear;
 
-        // border
-        Real xAxisHeight = 20;
-        Real ylAxisWidth = 50;
-        Real yrAxisWidth = 50;
-
         // margin
         Real MarginTop = 2;
         Real MarginBottom = 2;
@@ -76,17 +71,24 @@ namespace StockCharts
         // x-axis
         EnXAxisType xAxisType = EnXAxisType::yyyyMM;
         EnXAxisType xAxisHoverType = EnXAxisType::yyyyMMdd;
+        Real xAxisHeight = 20;
         Real xAxisTextWidth = 80;
         Font xAxisTextFont = Font(Color(0, 0, 0), 12, PaintDirection::Center);
         Font xAxisHoverTextFont = Font(Color(50, 0, 0), 12, PaintDirection::Center);
 
         // y-axis
+        Real ylAxisWidth = 50;
+        Real yrAxisWidth = 50;
         Real yAxisGridStepHeight = 26;
         Real yAxisGridStart = 26;
         Font ylAxisTextFont = Font(Color(0, 0, 0), 12, PaintDirection::CenterRight);
         Font yrAxisTextFont = Font(Color(0, 0, 0), 12, PaintDirection::CenterLeft);
         Font ylAxisHoverTextFont = Font(Color(50, 0, 0), 12, PaintDirection::CenterRight);
         Font yrAxisHoverTextFont = Font(Color(50, 0, 0), 12, PaintDirection::CenterLeft);
+
+        // mouse & keyboard
+        int scrollXStep = 1;
+        int wheelYStep = 2;
 
         // stock
         int precision = 2;

@@ -49,15 +49,22 @@ namespace StockCharts
             bool xCross = false;
             bool yCross = false;
 
-            if (!ctx.syncHover) {
+            if (ctx.hoverIndex < 0)
+                return;
+
+            switch (ctx.hoverType)
+            {
+            case MouseHoverType::SyncOther:
                 if (ctx.rectInnerChart.contains(ctx.pointHover))
                     xCross = true, yCross = true;
-            }
-            else {
+                break;
+            case MouseHoverType::Normal:
+            default:
                 if (ctx.pointHover.x >= ctx.rectInnerChart.left() && ctx.pointHover.x < ctx.rectInnerChart.right())
                     xCross = true;
                 if (ctx.pointHover.y >= ctx.rectInnerChart.top() && ctx.pointHover.y < ctx.rectInnerChart.bottom())
                     yCross = true;
+                break;
             }
 
             if (xCross) {
@@ -114,7 +121,8 @@ namespace StockCharts
             const auto& props = *m_props;
 
             // x
-            painter.drawLine(crossLineX, props.crossLineStyle);
+            if (ctx.crossLineVisible)
+                painter.drawLine(crossLineX, props.crossLineStyle);
 
             painter.fillRect(crossXBG, props.crossTextBGStyle);
             painter.drawString(
@@ -124,7 +132,8 @@ namespace StockCharts
             );
 
             // y
-            painter.drawLine(crossLineY, props.crossLineStyle);
+            if (ctx.crossLineVisible)
+                painter.drawLine(crossLineY, props.crossLineStyle);
 
             painter.fillRect(crossYLBG, props.crossTextBGStyle);
             painter.drawString(

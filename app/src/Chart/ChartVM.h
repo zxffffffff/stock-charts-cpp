@@ -14,12 +14,12 @@
 namespace StockCharts
 {
     constexpr inline char ID_ChartContextChanged[] = "ID_ChartContextChanged";
-    constexpr inline char ID_ChartContextSync[] = "ID_ChartContextSync";
     constexpr inline char ID_OnResize[] = "ID_OnResize";
     constexpr inline char ID_OnMouseMove[] = "ID_OnMouseMove";
     constexpr inline char ID_OnMouseLeave[] = "ID_OnMouseLeave";
     constexpr inline char ID_OnScrollX[] = "ID_OnScrollX";
     constexpr inline char ID_OnWheelY[] = "ID_OnWheelY";
+    constexpr inline char ID_OnDBClick[] = "ID_OnDBClick";
 
     class ChartModel;
     class ChartVM : public DataBinding
@@ -48,6 +48,8 @@ namespace StockCharts
                     syncMouseMove(ctx.hoverIndex, ctx.hoverPrice);
                 else if (id == ID_OnScrollX || id == ID_OnWheelY)
                     syncViewCount(ctx.viewCount, ctx.beginIndex, ctx.endIndex, ctx.nodeWidth, ctx.stickWidth);
+                else if (id == ID_OnDBClick)
+                    syncDBClick(ctx.crossLineVisible);
             }
         }
 
@@ -202,7 +204,7 @@ namespace StockCharts
             ChartCoordinate coordinate(m_context, m_model->getProps());
 
             // mouse event
-            ctx.syncHover = false;
+            ctx.hoverType = MouseHoverType::Normal;
             ctx.pointHover = point;
             if (ctx.rectInnerChart.contains(ctx.pointHover))
             {
@@ -229,7 +231,7 @@ namespace StockCharts
             ChartCoordinate coordinate(m_context, m_model->getProps());
 
             // mouse event
-            ctx.syncHover = false;
+            ctx.hoverType = MouseHoverType::Normal;
             ctx.pointHover = Point();
             ctx.hoverIndex = -1;
             ctx.hoverPrice = NumberNull;
@@ -246,20 +248,12 @@ namespace StockCharts
                 return;
 
             const auto& stockCore = m_model->getStockCore();
+            const auto& props = *m_model->getProps();
             auto& ctx = *m_context;
 
             // [1] x
             const int stockCnt = stockCore->getSize();
-            if (step > 0) {
-                if (ctx.beginIndex == stockCnt - 1)
-                    return;
-                ctx.beginIndex += 1;
-            }
-            else {
-                if (ctx.beginIndex == 0)
-                    return;
-                ctx.beginIndex -= 1;
-            }
+            ctx.beginIndex = std::min(std::max(0, ctx.beginIndex + step * props.scrollXStep), stockCnt - 1);
             ctx.endIndex = std::min(ctx.beginIndex + ctx.viewCount, stockCnt);
 
             calcContext();
@@ -276,12 +270,10 @@ namespace StockCharts
             auto& ctx = *m_context;
 
             int stepWidth = 2 * std::abs(step);
-            if (step > 0) {
-                ctx.nodeWidth = std::min(ctx.nodeWidth + stepWidth, Real(99));
-            }
-            else {
-                ctx.nodeWidth = std::max(ctx.nodeWidth - stepWidth, Real(1));
-            }
+            int nodeWidth = ctx.nodeWidth + step * props.wheelYStep;
+            if (nodeWidth % 2 != 1)
+                nodeWidth -= 1;
+            ctx.nodeWidth = std::min(std::max(Real(1), Real(nodeWidth)), Real(99));
             int stickWidth = std::round(ctx.nodeWidth * Real(0.75));
             if (stickWidth % 2 != 1)
                 stickWidth -= 1;
@@ -319,6 +311,15 @@ namespace StockCharts
             fire(ID_OnWheelY);
         }
 
+        void onDBClick(const Point& point)
+        {
+            auto& ctx = *m_context;
+            ctx.crossLineVisible = !ctx.crossLineVisible;
+
+            calcContext();
+            fire(ID_OnDBClick);
+        }
+
         // [3]
         void setSyncOther(ChartVM* other)
         {
@@ -343,7 +344,6 @@ namespace StockCharts
             ctx.stickWidth = stickWidth;
 
             calcContext();
-            fire(ID_ChartContextSync);
         }
 
         void syncMouseMove(int hoverIndex, Number hoverPrice)
@@ -356,7 +356,7 @@ namespace StockCharts
             ChartCoordinate coordinate(m_context, m_model->getProps());
 
             // mouse event
-            ctx.syncHover = true;
+            ctx.hoverType = MouseHoverType::SyncOther;
             ctx.pointHover = Point(
                 coordinate.index2pos(hoverIndex),
                 coordinate.price2pos(hoverPrice)
@@ -366,7 +366,16 @@ namespace StockCharts
 
             for (const auto& plugin : plugins)
                 plugin->onMouseMove(m_context);
-            fire(ID_ChartContextSync);
+            fire(ID_ChartContextChanged);
+        }
+
+        void syncDBClick(bool crossLineVisible)
+        {
+            auto& ctx = *m_context;
+            if (ctx.crossLineVisible == crossLineVisible)
+                return;
+            ctx.crossLineVisible = crossLineVisible;
+            calcContext();
         }
 
     private:

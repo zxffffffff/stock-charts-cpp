@@ -86,13 +86,24 @@ void KChartWidget::wheelEvent(QWheelEvent* event)
 {
     int yStep = event->angleDelta().y() / 120;
     int xStep = event->angleDelta().x() / 120;
-    if (yStep != 0)
-        m_vm->onWheelY(yStep);
-    if (xStep != 0)
+    if (yStep != 0) {
+        auto& ctx = *getContext();
+        if (ctx.crossLineVisible)
+            m_vm->onWheelY(yStep);
+        else
+            m_vm->onScrollX(-yStep);
+    }
+    if (xStep != 0) {
         m_vm->onScrollX(xStep);
+    }
 }
 
 void KChartWidget::leaveEvent(QEvent* event)
 {
     m_vm->onMouseLeave();
+}
+
+void KChartWidget::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    m_vm->onDBClick(Point(event->pos().x(), event->pos().y()));
 }
