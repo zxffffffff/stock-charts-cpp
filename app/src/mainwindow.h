@@ -11,10 +11,14 @@
 #include <QMainWindow>
 #include "ui_mainwindow.h"
 #include "ChartImpl/ChartWidget.h"
+#include "Chart/Model/Superimposition/PluginSuperimposition.h"
 #include "Chart/Model/Indicator/PluginIndicator.h"
+#include "Chart/Model/Painting/PluginPainting.h"
 #include "Chart/View/BG/LayerBG.h"
 #include "Chart/View/Stock/LayerStock.h"
+#include "Chart/View/Superimposition/LayerSuperimposition.h"
 #include "Chart/View/Indicator/LayerIndicator.h"
+#include "Chart/View/Painting/LayerPainting.h"
 #include "Chart/View/CrossLine/LayerCrossLine.h"
 #include "Chart/View/Title/LayerTitle.h"
 
@@ -38,6 +42,9 @@ public:
 
 public slots:
     void updateUI();
+
+    // tab-general
+    void slotGeneralPeriod();
 
     // tab-indicator
     void slotIndicatorBtnAdd();

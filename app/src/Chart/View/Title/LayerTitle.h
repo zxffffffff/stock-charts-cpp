@@ -73,16 +73,16 @@ namespace StockCharts
                     switch (i)
                     {
                     case 0:
-                        item.text = "open:" + NumberUtils::toString(stockCore.open.safeAt(index), props.precision);
+                        item.text = "O:" + NumberUtils::toString(stockCore.open.safeAt(index), props.precision);
                         break;
                     case 1:
-                        item.text = "high:" + NumberUtils::toString(stockCore.high.safeAt(index), props.precision);
+                        item.text = "H:" + NumberUtils::toString(stockCore.high.safeAt(index), props.precision);
                         break;
                     case 2:
-                        item.text = "low:" + NumberUtils::toString(stockCore.low.safeAt(index), props.precision);
+                        item.text = "L:" + NumberUtils::toString(stockCore.low.safeAt(index), props.precision);
                         break;
                     case 3:
-                        item.text = "close:" + NumberUtils::toString(stockCore.close.safeAt(index), props.precision);
+                        item.text = "C:" + NumberUtils::toString(stockCore.close.safeAt(index), props.precision);
                         break;
                     }
                     item.font.dir = PaintDirection::CenterLeft;

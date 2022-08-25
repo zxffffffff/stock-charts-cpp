@@ -122,18 +122,31 @@ MainWindow::MainWindow(QWidget* parent)
         bool main = (i == 0);
 
         auto model = std::make_shared<ChartModel>(m_kStock);
-        model->addPlugin<PluginIndicator>();
+        if (main) {
+            model->addPlugin<PluginIndicator>();
+            model->addPlugin<PluginSuperimposition>();
+            model->addPlugin<PluginPainting>();
+        }
+        else {
+            model->addPlugin<PluginIndicator>();
+        }
 
         auto view = std::make_shared<ChartView>(model);
-        view->addLayer<LayerBG>();
-        if (main)
+        if (main) {
+            view->addLayer<LayerBG>();
             view->addLayer<LayerStock>();
-        view->addLayer<LayerIndicator>();
-        view->addLayer<LayerCrossLine>();
-        if (main)
+            view->addLayer<LayerSuperimposition>();
+            view->addLayer<LayerIndicator>();
+            view->addLayer<LayerPainting>();
+            view->addLayer<LayerCrossLine>();
             view->addLayer<LayerTitle>(ChartTitleItemFlagStock | ChartTitleItemFlagIndicator);
-        else
+        }
+        else {
+            view->addLayer<LayerBG>();
+            view->addLayer<LayerIndicator>();
+            view->addLayer<LayerCrossLine>();
             view->addLayer<LayerTitle>(ChartTitleItemFlagIndicator);
+        }
 
         auto widget = new ChartWidget(ui.kchartWidget);
         ui.kchartLayout->addWidget(widget);
@@ -184,25 +197,36 @@ MainWindow::MainWindow(QWidget* parent)
     addIndicator(GenerateMACD(), false);
 
     // tab-general
-    for (auto& kchart : m_kcharts) {
-        if (kchart.main) {
-            connect(ui.generalDrawingType, &QComboBox::currentIndexChanged, kchart.widget, &ChartWidget::slotDrawingType);
-            connect(ui.generalCorrdinate, &QComboBox::currentIndexChanged, kchart.widget, &ChartWidget::slotCorrdinate);
+    connect(ui.generalPeriod, &QComboBox::currentIndexChanged, this, &MainWindow::slotGeneralPeriod);
+    for (auto& chart : m_kcharts) {
+        if (chart.main) {
+            connect(ui.generalDrawingType, &QComboBox::currentIndexChanged, chart.widget, &ChartWidget::slotDrawingType);
+            connect(ui.generalCorrdinate, &QComboBox::currentIndexChanged, chart.widget, &ChartWidget::slotCorrdinate);
         }
-        connect(ui.generalYLWidth, &QSpinBox::valueChanged, kchart.widget, &ChartWidget::slotYLWidth);
-        connect(ui.generalYRWidth, &QSpinBox::valueChanged, kchart.widget, &ChartWidget::slotYRWidth);
-        connect(ui.generalXHeight, &QSpinBox::valueChanged, kchart.widget, &ChartWidget::slotXHeight);
-        connect(ui.generalPaddingLeft, &QSpinBox::valueChanged, kchart.widget, &ChartWidget::slotPaddingLeft);
-        connect(ui.generalPaddingTop, &QSpinBox::valueChanged, kchart.widget, &ChartWidget::slotPaddingTop);
-        connect(ui.generalPaddingRight, &QSpinBox::valueChanged, kchart.widget, &ChartWidget::slotPaddingRight);
-        connect(ui.generalPaddingBottom, &QSpinBox::valueChanged, kchart.widget, &ChartWidget::slotPaddingBottom);
+        connect(ui.generalYLWidth, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotYLWidth);
+        connect(ui.generalYRWidth, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotYRWidth);
+        connect(ui.generalXHeight, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotXHeight);
+        connect(ui.generalPaddingLeft, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotPaddingLeft);
+        connect(ui.generalPaddingTop, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotPaddingTop);
+        connect(ui.generalPaddingRight, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotPaddingRight);
+        connect(ui.generalPaddingBottom, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotPaddingBottom);
+    }
+    for (auto& chart : m_tcharts) {
+        connect(ui.generalYLWidth, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotYLWidth);
+        connect(ui.generalYRWidth, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotYRWidth);
+        connect(ui.generalXHeight, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotXHeight);
+        connect(ui.generalPaddingLeft, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotPaddingLeft);
+        connect(ui.generalPaddingTop, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotPaddingTop);
+        connect(ui.generalPaddingRight, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotPaddingRight);
+        connect(ui.generalPaddingBottom, &QSpinBox::valueChanged, chart.widget, &ChartWidget::slotPaddingBottom);
     }
 
     // tab-indicator
     connect(ui.indicatorBtnAdd, &QPushButton::clicked, this, &MainWindow::slotIndicatorBtnAdd);
     connect(ui.indicatorBtnClear, &QPushButton::clicked, this, &MainWindow::slotIndicatorBtnClear);
 
-    QTimer::singleShot(100, this, SLOT(updateUI()));
+    updateUI();
+    slotGeneralPeriod();
 }
 
 MainWindow::~MainWindow()
@@ -274,6 +298,21 @@ void MainWindow::updateUI()
         ui.generalStickWidth->setValue(ctx.stickWidth);
     if (ui.generalNodeWidth->value() != ctx.nodeWidth)
         ui.generalNodeWidth->setValue(ctx.nodeWidth);
+}
+
+void MainWindow::slotGeneralPeriod()
+{
+    int period = ui.generalPeriod->currentIndex();
+
+    bool kline = (period == 0);
+    ui.kchartWidget->setVisible(kline);
+    ui.generalDrawingType->setVisible(kline);
+    ui.generalDrawingTypeLabel->setVisible(kline);
+    ui.generalCorrdinate->setVisible(kline);
+    ui.generalCorrdinateLabel->setVisible(kline);
+
+    bool tline = (period == 1);
+    ui.tchartWidget->setVisible(tline);
 }
 
 void MainWindow::slotIndicatorBtnAdd()

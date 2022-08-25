@@ -20,29 +20,28 @@ namespace StockCharts
         DataBinding() = default;
         virtual ~DataBinding()
         {
-            for (DataBinding* data : datas)
-                data->listeners.erase(this);
             for (DataBinding* listener : listeners)
-                listener->datas.erase(this);
+                listener->listening.erase(this);
+            for (DataBinding* other : listening)
+                other->listeners.erase(this);
         }
 
-        void bind(DataBinding* data)
+        void bind(DataBinding* other)
         {
-            this->datas.insert(data);
-            data->listeners.insert(this);
+            other->listeners.insert(this);
+            this->listening.insert(other);
         }
 
-        void unbind(DataBinding* data)
+        void unbind(DataBinding* other)
         {
-            this->datas.erase(data);
-            data->listeners.erase(this);
+            other->listeners.erase(this);
+            this->listening.erase(other);
         }
 
         void fire(const std::string& id)
         {
-            for (auto listener : listeners) {
+            for (auto listener : listeners)
                 listener->on(this, id);
-            }
         }
 
         virtual void on(DataBinding* sender, const std::string& id)
@@ -51,8 +50,8 @@ namespace StockCharts
         }
 
     private:
-        std::set<DataBinding*> datas;
         std::set<DataBinding*> listeners;
+        std::set<DataBinding*> listening;
     };
 }
 
