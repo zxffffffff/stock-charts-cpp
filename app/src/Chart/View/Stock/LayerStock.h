@@ -21,21 +21,20 @@ namespace StockCharts
 
         virtual std::pair<Number, Number> getMinMax(int beginIndex, int endIndex) override
         {
-            const auto& stockCore = *m_model->getStockCore();
+            auto stockCore = *m_model->getStockCore();
 
             return stockCore.getMinMax(beginIndex, endIndex);
         }
 
         virtual void onContextChanged() override
         {
-            const auto& stockCore = *m_model->getStockCore();
+            auto stockCore = *m_model->getStockCore();
             const auto& ctx = *m_context;
             const auto& props = *m_props;
             m_areaIndexs.resize(1);
             m_areaIndexs[0].exps.resize(1);
 
-            m_klineType = props.lineType;
-            switch (m_klineType)
+            switch (props.lineType)
             {
             case EnStockLineType::CandlestickHollow:
             case EnStockLineType::Candlestick:
@@ -50,29 +49,28 @@ namespace StockCharts
 
         virtual void onPaint(Painter& painter) override
         {
+            const auto& props = *m_props;
+
             if (m_areaIndexs.size() != 1 || m_areaIndexs[0].exps.size() != 1)
                 return;
             auto& exp = m_areaIndexs[0].exps[0];
 
-            switch (m_klineType)
+            switch (props.lineType)
             {
             case EnStockLineType::CandlestickHollow:
-                painter.drawStickHollow(exp.sticks, Color(200, 0, 0), Color(0, 200, 0));
+                painter.drawStickHollow(exp.sticks, props.riseColor, props.fallColor);
                 break;
             case EnStockLineType::Candlestick:
-                painter.drawStick(exp.sticks, Color(200, 0, 0), Color(0, 200, 0));
+                painter.drawStick(exp.sticks, props.riseColor, props.fallColor);
                 break;
             case EnStockLineType::BAR:
-                painter.drawBAR(exp.sticks, Color(200, 0, 0), Color(0, 200, 0));
+                painter.drawBAR(exp.sticks, props.riseColor, props.fallColor);
                 break;
             case EnStockLineType::Line:
                 painter.drawPath(exp.lines, Color(100, 100, 200));
                 break;
             }
         }
-
-    private:
-        EnStockLineType m_klineType = EnStockLineType::Candlestick;
     };
 }
 

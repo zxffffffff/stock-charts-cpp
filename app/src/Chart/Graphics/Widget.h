@@ -28,20 +28,16 @@ namespace StockCharts
         WidgetBGStyle disable;
     };
 
-    enum class WidgetTextStyle
-    {
-        Left,
-        Center,
-        Right,
-    };
-
     struct Widget
     {
         std::string text;
         Rect rect;
         WidgetBG bg;
         Font font;
-        WidgetTextStyle style = WidgetTextStyle::Center;
+
+        Widget()
+        {
+        }
 
         Widget(const std::string& _text, const Rect& _rect, const WidgetBG& _bg, const Font& _font)
             : text(_text)
@@ -51,19 +47,12 @@ namespace StockCharts
         {
         }
 
-        void setText(const std::string& _text)
-        {
-            text = _text;
-        }
-
-        void move(const Rect& _rect)
-        {
-            rect = _rect;
-        }
-
         void paint(Painter& painter)
         {
             // todo
+            painter.fillRect(rect, bg.normal.colorBG);
+            painter.drawRect(rect, bg.normal.colorBorder);
+            painter.drawString(rect, text, font);
         }
     };
 }

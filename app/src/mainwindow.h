@@ -16,6 +16,7 @@
 #include "Chart/View/Stock/LayerStock.h"
 #include "Chart/View/Indicator/LayerIndicator.h"
 #include "Chart/View/CrossLine/LayerCrossLine.h"
+#include "Chart/View/Title/LayerTitle.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

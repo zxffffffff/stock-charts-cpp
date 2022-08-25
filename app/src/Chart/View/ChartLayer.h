@@ -25,6 +25,7 @@ namespace StockCharts
         EnChartAreaExpType type = EnChartAreaExpType::None;
         std::vector<Point> lines;
         std::vector<Stick> sticks;
+        std::array<Color, 2> colors; // extends
     };
 
     struct StChartAreaIndex

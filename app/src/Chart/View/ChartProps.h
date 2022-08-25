@@ -99,6 +99,8 @@ namespace StockCharts
 
         // stock
         int precision = 2;
+        Color riseColor = Color(200, 0, 0);
+        Color fallColor = Color(0, 200, 0);
     };
 }
 

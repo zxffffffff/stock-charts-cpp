@@ -62,21 +62,24 @@ namespace StockCharts
                         // zxf todo
                         break;
                     }
+                    exp.colors[0] = Color(indicatorExp.colorType.color.c_str());
                 }
             }
         }
 
         virtual void onPaint(Painter& painter) override
         {
+            const auto& props = *m_props;
+
             for (auto& index : m_areaIndexs) {
                 for (auto& exp : index.exps) {
                     switch (exp.type)
                     {
                     case EnChartAreaExpType::Stick:
-                        painter.drawStick(exp.sticks, Color(200, 0, 0), Color(0, 200, 0));
+                        painter.drawStick(exp.sticks, props.riseColor, props.fallColor);
                         break;
                     case EnChartAreaExpType::Line:
-                        painter.drawPath(exp.lines, Color(100, 100, 200));
+                        painter.drawPath(exp.lines, exp.colors[0]);
                         break;
                     }
                 }

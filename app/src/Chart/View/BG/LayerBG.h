@@ -21,7 +21,7 @@ namespace StockCharts
 
         virtual void onContextChanged() override
         {
-            const auto& stockCore = *m_model->getStockCore();
+            auto stockCore = *m_model->getStockCore();
             const auto& props = *m_props;
             auto& ctx = *m_context;
             ChartCoordinate coordinate(m_props, m_context);
@@ -170,3 +170,4 @@ namespace StockCharts
         std::vector<std::string> yrAxisPrice;
     };
 }
+

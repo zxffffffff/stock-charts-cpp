@@ -121,7 +121,7 @@ namespace StockCharts
             size.clear();
         }
 
-        Rect& moveInside(const Rect& parent, std::array<int, 4> padding = { 1, 1, 0, 0 })
+        Rect& moveInside(const Rect& parent, std::array<Real, 4> padding = { 1, 1, 0, 0 })
         {
             if (left() < parent.left() + padding[0])
                 point.x = parent.left() + padding[0];
@@ -131,6 +131,30 @@ namespace StockCharts
                 point.x = parent.right() - padding[2] - width();
             if (bottom() > parent.bottom() - padding[3])
                 point.y = parent.bottom() - padding[3] - height();
+            return *this;
+        }
+
+        Rect& clipInside(const Rect& parent, std::array<Real, 4> padding = { 0, 0, 0, 0 })
+        {
+            Real offset_l = (parent.left() + padding[0]) - left();
+            if (offset_l > 0) {
+                point.x -= offset_l;
+                size.width -= offset_l;
+            }
+            Real offset_t = (parent.top() + padding[1]) - top();
+            if (offset_t > 0) {
+                point.y -= offset_t;
+                size.height -= offset_t;
+            }
+            Real offset_r = right() - (parent.right() - padding[2]);
+            if (offset_r > 0)
+                size.width -= offset_r;
+            Real offset_b = bottom() - (parent.bottom() - padding[3]);
+            if (offset_b > 0)
+                size.height -= offset_b;
+
+            if (!valid())
+                clear();
             return *this;
         }
 

@@ -130,6 +130,10 @@ MainWindow::MainWindow(QWidget* parent)
             view->addLayer<LayerStock>();
         view->addLayer<LayerIndicator>();
         view->addLayer<LayerCrossLine>();
+        if (main)
+            view->addLayer<LayerTitle>(ChartTitleItemFlagStock | ChartTitleItemFlagIndicator);
+        else
+            view->addLayer<LayerTitle>(ChartTitleItemFlagIndicator);
 
         auto widget = new ChartWidget(ui.kchartWidget);
         ui.kchartLayout->addWidget(widget);
