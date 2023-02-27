@@ -5,13 +5,13 @@
 - 抽象 Painter 兼容任意 UI 框架。
 
 ## 架构图
-![image](https://github.com/zxffffffff/stock-charts-cpp/blob/dev-v0.0.1-CreateProject/doc/architecture.png)
+![image](https://github.com/zxffffffff/stock-charts-cpp/blob/master/doc/architecture.png)
 
 ## 目录结构
-![image](https://github.com/zxffffffff/stock-charts-cpp/blob/dev-v0.0.1-CreateProject/doc/stock-chart-src.png)
+![image](https://github.com/zxffffffff/stock-charts-cpp/blob/master/doc/stock-chart-src.png)
 
 ## 参数控制
-![image](https://github.com/zxffffffff/stock-charts-cpp/blob/dev-v0.0.1-CreateProject/doc/stock-chart-0.png)
+![image](https://github.com/zxffffffff/stock-charts-cpp/blob/master/doc/stock-chart-0.png)
 
 ## 指标管理（模仿富途牛牛）
-![image](https://github.com/zxffffffff/stock-charts-cpp/blob/dev-v0.0.1-CreateProject/doc/stock-chart-1.png)
+![image](https://github.com/zxffffffff/stock-charts-cpp/blob/master/doc/stock-chart-1.png)
