@@ -114,6 +114,7 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
+    setWindowTitle(APP_TITLE + QString(" v") + APP_VERSION);
     setMouseTracking(true);
 
     const int nKChartCnt = 2;

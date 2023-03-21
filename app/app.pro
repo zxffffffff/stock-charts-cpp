@@ -42,7 +42,8 @@ HEADERS += \
     src/Chart/View/Stock/LayerStock.h \
     src/Chart/View/Title/LayerTitle.h \
     src/ChartImpl/ChartWidget.h \
-    src/mainwindow.h
+    src/mainwindow.h \
+    src/version.h
 
 SOURCES += \
     src/ChartImpl/ChartWidget.cpp \

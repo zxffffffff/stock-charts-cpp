@@ -10,6 +10,7 @@
 
 #include <QMainWindow>
 #include "ui_mainwindow.h"
+#include "version.h"
 #include "ChartImpl/ChartWidget.h"
 #include "Chart/Model/Superimposition/PluginSuperimposition.h"
 #include "Chart/Model/Indicator/PluginIndicator.h"
