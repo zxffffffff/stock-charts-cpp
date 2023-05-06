@@ -7,10 +7,10 @@
 ****************************************************************************/
 #pragma once
 #include <QWidget>
-#include "../Chart/Core/DataBinding.h"
-#include "../Chart/Graphics/PainterQt.h"
-#include "../Chart/Model/ChartModel.h"
-#include "../Chart/View/ChartView.h"
+#include "lib-chart/Core/DataBinding.h"
+#include "lib-chart/Graphics/PainterQt.h"
+#include "lib-chart/Model/ChartModel.h"
+#include "lib-chart/View/ChartView.h"
 
 class ChartWidget : public QWidget, public StockCharts::DataBinding
 {

@@ -11,17 +11,17 @@
 #include <QMainWindow>
 #include "ui_mainwindow.h"
 #include "version.h"
-#include "ChartImpl/ChartWidget.h"
-#include "Chart/Model/Superimposition/PluginSuperimposition.h"
-#include "Chart/Model/Indicator/PluginIndicator.h"
-#include "Chart/Model/Painting/PluginPainting.h"
-#include "Chart/View/BG/LayerBG.h"
-#include "Chart/View/Stock/LayerStock.h"
-#include "Chart/View/Superimposition/LayerSuperimposition.h"
-#include "Chart/View/Indicator/LayerIndicator.h"
-#include "Chart/View/Painting/LayerPainting.h"
-#include "Chart/View/CrossLine/LayerCrossLine.h"
-#include "Chart/View/Title/LayerTitle.h"
+#include "chartwidget.h"
+#include "lib-chart/Model/Superimposition/PluginSuperimposition.h"
+#include "lib-chart/Model/Indicator/PluginIndicator.h"
+#include "lib-chart/Model/Painting/PluginPainting.h"
+#include "lib-chart/View/BG/LayerBG.h"
+#include "lib-chart/View/Stock/LayerStock.h"
+#include "lib-chart/View/Superimposition/LayerSuperimposition.h"
+#include "lib-chart/View/Indicator/LayerIndicator.h"
+#include "lib-chart/View/Painting/LayerPainting.h"
+#include "lib-chart/View/CrossLine/LayerCrossLine.h"
+#include "lib-chart/View/Title/LayerTitle.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
