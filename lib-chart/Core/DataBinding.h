@@ -6,7 +6,6 @@
 **
 ****************************************************************************/
 #pragma once
-#include "NumberCore.h"
 #include <string>
 #include <variant>
 #include <map>
@@ -18,40 +17,50 @@ namespace StockCharts
     {
     public:
         DataBinding() = default;
+
         virtual ~DataBinding()
         {
-            for (DataBinding* listener : listeners)
-                listener->listening.erase(this);
-            for (DataBinding* other : listening)
-                other->listeners.erase(this);
+            for (auto it = listeners.begin(); it != listeners.end(); ++it)
+                (*it)->senders.erase(this);
+            for (auto it = senders.begin(); it != senders.end(); ++it)
+                (*it)->listeners.erase(this);
         }
 
-        void bind(DataBinding* other)
+        void bind(DataBinding* sender)
         {
-            other->listeners.insert(this);
-            this->listening.insert(other);
+            sender->listeners.insert(this);
+            this->senders.insert(sender);
         }
 
-        void unbind(DataBinding* other)
+        void unbind(DataBinding* sender)
         {
-            other->listeners.erase(this);
-            this->listening.erase(other);
+            sender->listeners.erase(this);
+            this->senders.erase(sender);
         }
 
         void fire(const std::string& id)
         {
-            for (auto listener : listeners)
+            for (DataBinding* listener : listeners)
                 listener->on(this, id);
         }
 
-        virtual void on(DataBinding* sender, const std::string& id)
+        virtual void on([[maybe_unused]] DataBinding* sender, [[maybe_unused]] const std::string& id)
         {
             // inherit
         }
 
+        const std::set<DataBinding*>& getListeners() const
+        {
+            return listeners;
+        }
+
+        const std::set<DataBinding*>& getSenders() const
+        {
+            return senders;
+        }
+
     private:
         std::set<DataBinding*> listeners;
-        std::set<DataBinding*> listening;
+        std::set<DataBinding*> senders;
     };
 }
-

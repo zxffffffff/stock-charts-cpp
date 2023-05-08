@@ -1,9 +1,11 @@
-QT += testlib
-QT -= gui
-
-CONFIG += qt console warn_on depend_includepath testcase
-CONFIG -= app_bundle
+include(test/gtest_dependency.pri)
 
 TEMPLATE = app
+CONFIG += console c++11
+CONFIG -= app_bundle
+CONFIG += thread
+CONFIG -= qt
 
-SOURCES +=  test/tst_chart.cpp
+SOURCES += \
+    test/main.cpp \
+    test/Core/DataBindingTest.cpp
