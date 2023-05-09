@@ -40,4 +40,7 @@ HEADERS += \
 SOURCES += \
     test/main.cpp \
     test/Core/DataBindingTest.cpp \
-    test/Core/NumberCoreTest.cpp
+    test/Core/NumberCoreTest.cpp \
+    test/Core/UtilsTest.cpp \
+    test/Graphics/GraphicsTest.cpp \
+    test/Graphics/PainterTest.cpp

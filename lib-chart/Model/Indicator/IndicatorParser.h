@@ -96,7 +96,7 @@ namespace StockCharts
             std::vector<std::string> expressions = Utils::splitStr(m_formula.expression, ';');
             int i;
             for (i = 0; i < expressions.size(); ++i) {
-                m_expression = Utils::to8bitStr(expressions[i]);
+                m_expression = Utils::to8bitStr(expressions[i]) + ";";
                 if (Utils::checkEmpty(m_expression))
                     continue;
                 if (m_expression.back() != '\0')

@@ -7,6 +7,10 @@
 ****************************************************************************/
 #pragma once
 #include "Graphics.h"
+#include <cstdio>
+#include <cstring>
+#include <string>
+#include <vector>
 
 namespace StockCharts
 {
@@ -29,7 +33,7 @@ namespace StockCharts
 
         Color(const char* hex)
         {
-            size_t len = strlen(hex);
+            std::size_t len = strlen(hex);
             if ((len & 1) && (hex[0] == '#')) {
                 hex += 1;
                 len -= 1;

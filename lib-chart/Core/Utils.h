@@ -48,10 +48,10 @@ namespace StockCharts
                     wss << wc;
                 }
             }
-            return toStr(wss.str()) + ";";
+            return toStr(wss.str());
         }
 
-        static std::vector<std::string> splitStr(const std::string str, const char separator)
+        static std::vector<std::string> splitStr(const std::string& str, const char separator)
         {
             std::vector<std::string> ret;
             std::size_t start = 0, end = 0;
@@ -72,18 +72,8 @@ namespace StockCharts
             if (str.empty())
                 return true;
 
-            for (auto& c : str) {
-                switch (c)
-                {
-                case '\r':
-                case '\n':
-                case '\t':
-                case '\v':
-                case ' ':
-                case ';':
-                    continue;
-
-                default:
+            for (const auto& c : str) {
+                if (c != '\r' && c != '\n' && c != '\t' && c != '\v' && c != ' ' && c != ';') {
                     return false;
                 }
             }
@@ -123,6 +113,20 @@ namespace StockCharts
             }
             std::time_t t = std::mktime(&tm);
             return t;
+        }
+
+        template<typename... Args>
+        static bool isDoubleValid(double value, Args... args)
+        {
+            if (std::isnan(value) || std::isinf(value)) {
+                return false;
+            }
+            return isDoubleValid(args...);
+        }
+
+        static bool isDoubleValid(double value)
+        {
+            return !(std::isnan(value) || std::isinf(value));
         }
     };
 }

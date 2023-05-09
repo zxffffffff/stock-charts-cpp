@@ -6,6 +6,7 @@
 **
 ****************************************************************************/
 #pragma once
+#include <cmath>
 #include <limits>
 #include <array>
 
@@ -39,6 +40,10 @@ namespace StockCharts
 
         bool valid() const
         {
+            if (std::isnan(x) || std::isinf(x))
+                return false;
+            if (std::isnan(y) || std::isinf(y))
+                return false;
             return (x != RealNull && y != RealNull);
         }
 
@@ -233,7 +238,7 @@ namespace StockCharts
 
         bool operator==(const Line& rhs) const
         {
-            return (first == rhs.first && second == rhs.second);
+            return (first == rhs.first && second == rhs.second) || (first == rhs.second && second == rhs.first);
         }
         bool operator!=(const Line& rhs) const
         {
@@ -296,7 +301,7 @@ namespace StockCharts
         Real height() const { return rect.height(); }
         Real high() const { return line.first.y; }
         Real low() const { return line.second.y; }
-        Real height2() const { return low() - height(); }
+        Real height2() const { return low() - high(); }
         Real centerX() const { return left() + width() / 2; }
         Real centerY() const { return high() + height2() / 2; }
         Point center() const { return { centerX(),  centerY() }; }
