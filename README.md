@@ -9,13 +9,13 @@
 - `star >= 100` 可以考虑更新绘图、叠加、复权等功能。
 
 ## 参数控制
-![image](https://github.com/zxffffffff/stock-charts-cpp/blob/master/doc/stock-chart-0.png)
+![image](https://github.com/zxffffffff/stock-charts-cpp/blob/main/doc/stock-chart-0.png)
 
 ## 指标管理（模仿富途牛牛）
-![image](https://github.com/zxffffffff/stock-charts-cpp/blob/master/doc/stock-chart-1.png)
+![image](https://github.com/zxffffffff/stock-charts-cpp/blob/main/doc/stock-chart-1.png)
 
 ## 目录结构
-![image](https://github.com/zxffffffff/stock-charts-cpp/blob/master/doc/stock-chart-src.png)
+![image](https://github.com/zxffffffff/stock-charts-cpp/blob/main/doc/stock-chart-src.png)
 
 ## 架构图
-![image](https://github.com/zxffffffff/stock-charts-cpp/blob/master/doc/architecture.png)
+![image](https://github.com/zxffffffff/stock-charts-cpp/blob/main/doc/architecture.png)
