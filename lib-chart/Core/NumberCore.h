@@ -357,15 +357,6 @@ namespace StockCharts
             return *this;
         }
 
-        NumberCore operator!() const
-        {
-            const int cnt = this->data.size();
-            NumberCore ret(cnt);
-            for (int i = 0; i < cnt; ++i)
-                ret[i] = !this->data[i];
-            return ret;
-        }
-
         Number& operator[](int i)
         {
             return this->data[i];
@@ -399,6 +390,15 @@ namespace StockCharts
         {
             *this = *this % rhs;
             return *this;
+        }
+
+        NumberCore operator!() const
+        {
+            const int cnt = this->data.size();
+            NumberCore ret(cnt);
+            for (int i = 0; i < cnt; ++i)
+                ret[i] = !this->data[i];
+            return ret;
         }
 
         friend NumberCore operator+(const NumberCore& lhs, const NumberCore& rhs)
