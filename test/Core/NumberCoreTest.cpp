@@ -329,7 +329,6 @@ TEST(NumberCoreTest, GetMinMaxTest) {
 }
 
 TEST(NumberCoreTest, MaxTest) {
-    NumberCore nc{ 1.1, 2.2, 3.3 };
     EXPECT_EQ(NumberCore::max(1.1, 2.2), 2.2);
     EXPECT_EQ(NumberCore::max(2.2, 3.3), 3.3);
     EXPECT_EQ(NumberCore::max(1.1, 3.3), 3.3);
@@ -339,7 +338,6 @@ TEST(NumberCoreTest, MaxTest) {
 }
 
 TEST(NumberCoreTest, MinTest) {
-    NumberCore nc{ 1.1, 2.2, 3.3 };
     EXPECT_EQ(NumberCore::min(1.1, 2.2), 1.1);
     EXPECT_EQ(NumberCore::min(2.2, 3.3), 2.2);
     EXPECT_EQ(NumberCore::min(1.1, 3.3), 1.1);
@@ -349,7 +347,6 @@ TEST(NumberCoreTest, MinTest) {
 }
 
 TEST(NumberCoreTest, AbsTest) {
-    NumberCore nc{ 1.1, -2.2, 3.3 };
     EXPECT_DOUBLE_EQ(NumberCore::abs(1.1), 1.1);
     EXPECT_DOUBLE_EQ(NumberCore::abs(-2.2), 2.2);
     EXPECT_DOUBLE_EQ(NumberCore::abs(3.3), 3.3);
