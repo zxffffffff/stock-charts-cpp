@@ -39,6 +39,8 @@ namespace StockCharts
         void setStockCore(const StockCore &stockCore)
         {
             *m_stockCore = stockCore;
+            for (auto &plugin : m_plugins)
+                plugin->onStockCoreChanged(m_stockCore);
             fire(ID_StockCoreChanged);
         }
 
@@ -47,9 +49,10 @@ namespace StockCharts
         std::shared_ptr<T> addPlugin(Args &&...args)
         {
             assert(!getPlugin<T>());
-            auto plugin = std::make_shared<T>(m_stockCore, args...);
+            auto plugin = std::make_shared<T>(args...);
             m_plugins.push_back(plugin);
             listen(plugin.get());
+            plugin->init(m_stockCore);
             return getPlugin<T>();
         }
 

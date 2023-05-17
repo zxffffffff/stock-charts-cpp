@@ -17,20 +17,8 @@ namespace StockCharts
     class ChartPlugin : public DataBinding
     {
     public:
-        ChartPlugin(std::shared_ptr<const StockCore> stockCore)
-            : m_stockCore(stockCore)
-        {
-        }
-        virtual ~ChartPlugin() = default;
+        virtual void init(std::shared_ptr<const StockCore> stockCore) {}
 
-        std::shared_ptr<const StockCore> getStockCore() const
-        {
-            return m_stockCore;
-        }
-
-        virtual void onStockCoreChanged() {}
-
-    protected:
-        std::shared_ptr<const StockCore> m_stockCore;
+        virtual void onStockCoreChanged(std::shared_ptr<const StockCore> stockCore) {}
     };
 }

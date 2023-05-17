@@ -14,15 +14,14 @@ namespace StockCharts
     class PluginIndicator : public ChartPlugin
     {
     public:
-        PluginIndicator(std::shared_ptr<const StockCore> stockCore)
-            : ChartPlugin(stockCore)
+        virtual void init(std::shared_ptr<const StockCore> stockCore) override
         {
+            m_stockCore = stockCore;
         }
-        virtual ~PluginIndicator() = default;
 
-        // [0]
-        virtual void onStockCoreChanged() override
+        virtual void onStockCoreChanged(std::shared_ptr<const StockCore> stockCore) override
         {
+            m_stockCore = stockCore;
             calcIndicators();
         }
 
@@ -78,7 +77,7 @@ namespace StockCharts
 
             IndicatorParser parser;
             parser.setFormula(indicator->formula);
-            parser.setStockCore(getStockCore());
+            parser.setStockCore(m_stockCore.lock());
             bool ok = parser.run();
             indicator->indexCore = parser.getResult();
 
@@ -86,6 +85,7 @@ namespace StockCharts
         }
 
     private:
+        std::weak_ptr<const StockCore> m_stockCore;
         std::vector<std::shared_ptr<StIndicator>> m_indicators;
     };
 }
