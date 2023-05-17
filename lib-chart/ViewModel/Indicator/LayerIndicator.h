@@ -25,9 +25,11 @@ namespace StockCharts
             auto plugin = m_model->getPlugin<PluginIndicator>();
             auto indicators = plugin->getIndicators();
 
-            auto minmax = std::pair<Number, Number>{ NumberNull, NumberNull };
-            for (auto& indicator : indicators) {
-                for (auto& exp : indicator->indexCore.exps) {
+            auto minmax = std::pair<Number, Number>{NumberNull, NumberNull};
+            for (auto &indicator : indicators)
+            {
+                for (auto &exp : indicator->indexCore.exps)
+                {
                     auto minmax2 = exp.core.getMinMax(beginIndex, endIndex);
                     minmax.first = NumberCore::min(minmax.first, minmax2.first);
                     minmax.second = NumberCore::max(minmax.second, minmax2.second);
@@ -43,14 +45,16 @@ namespace StockCharts
 
             const int indexCnt = indicators.size();
             m_areaIndexs.resize(indexCnt);
-            for (int i = 0; i < indexCnt; i += 1) {
-                auto& areaExps = m_areaIndexs[i].exps;
-                const auto& indicator = indicators[i];
+            for (int i = 0; i < indexCnt; i += 1)
+            {
+                auto &areaExps = m_areaIndexs[i].exps;
+                const auto &indicator = indicators[i];
                 const int expCnt = indicator->indexCore.exps.size();
                 areaExps.resize(expCnt);
-                for (int j = 0; j < expCnt; j += 1) {
-                    auto& exp = areaExps[j];
-                    auto& indicatorExp = indicator->indexCore.exps[j];
+                for (int j = 0; j < expCnt; j += 1)
+                {
+                    auto &exp = areaExps[j];
+                    auto &indicatorExp = indicator->indexCore.exps[j];
                     switch (indicatorExp.drawingType.type)
                     {
                     case EnDrawingType::None:
@@ -67,12 +71,14 @@ namespace StockCharts
             }
         }
 
-        virtual void onPaint(Painter& painter) override
+        virtual void onPaint(Painter &painter) override
         {
-            const auto& props = *m_props;
+            const auto &props = *m_props;
 
-            for (auto& index : m_areaIndexs) {
-                for (auto& exp : index.exps) {
+            for (auto &index : m_areaIndexs)
+            {
+                for (auto &exp : index.exps)
+                {
                     switch (exp.type)
                     {
                     case EnChartAreaExpType::Stick:
@@ -87,4 +93,3 @@ namespace StockCharts
         }
     };
 }
-

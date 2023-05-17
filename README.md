@@ -1,11 +1,12 @@
 # stock-charts-cpp
-基于 C++/Qt 实现K线图和指标。
-- lib-chart 纯头文件实现，代码量极少，方便阅读和二次开发。
-- 抽象 Painter 兼容任意 UI 框架，按需组装功能和界面。
-- 提供 Qt Painter 实现，可用 Win/Mac 直接运行，支持鼠标键盘交互。
+基于 Pure C++ 实现K线图和技术指标，支持任意 UI 框架，提供 Qt Widget 实现。
+- Header-Only 无需编译，MVVM 设计模式，方便阅读和修改。
+- 指标（lib-chart/Model/Indicator）模仿富途牛牛实现，可定制开发。
+- 抽象绘制（lib-chart/Graphics）支持任意 UI 框架，支持鼠标键盘交互。
+- 提供 Qt Widget 实现，可直接编译运行 demo/test。
 
 ## 作者说明
-- 精力有限，暂不维护，有需要可以联系我答疑解惑。
+- 精力有限，偶尔维护，有需要可以联系我答疑解惑（zxffffffff@outlook.com, 1337328542@qq.com）。
 - `star >= 100` 可以考虑更新绘图、叠加、复权等功能。
 
 ## 参数控制

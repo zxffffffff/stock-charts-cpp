@@ -21,7 +21,7 @@ namespace StockCharts
         NumberCore amount;
         NumberCore timestamp;
 
-        StockCore& reverse()
+        StockCore &reverse()
         {
             open.reverse();
             high.reverse();
@@ -44,8 +44,7 @@ namespace StockCharts
             auto minmax2 = low.getMinMax(beginIndex, endIndex);
             return {
                 NumberCore::min(minmax.first, minmax2.first),
-                NumberCore::max(minmax.second, minmax2.second)
-            };
+                NumberCore::max(minmax.second, minmax2.second)};
         }
     };
 }

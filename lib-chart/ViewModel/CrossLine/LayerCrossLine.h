@@ -41,11 +41,11 @@ namespace StockCharts
         virtual void onMouseMove() override
         {
             auto stockCore = *m_model->getStockCore();
-            const auto& props = *m_props;
-            const auto& ctx = *m_context;
+            const auto &props = *m_props;
+            const auto &ctx = *m_context;
             ChartCoordinate coordinate(m_props, m_context);
 
-            auto calcCross = [&](const StMouseHover& mouseHover, StCrossLine& crossLine)
+            auto calcCross = [&](const StMouseHover &mouseHover, StCrossLine &crossLine)
             {
                 Real x = coordinate.index2pos(mouseHover.index);
                 const Real bgWidth = props.crossTextBGSize.width;
@@ -72,20 +72,20 @@ namespace StockCharts
                     mouseHover.point.y < ctx.rectInnerChart.bottom())
                     yCross = true;
 
-                if (xCross) {
+                if (xCross)
+                {
                     crossLine.xLine.set(
                         x,
                         ctx.rectChart.top() + 1,
                         x,
-                        ctx.rectChart.bottom() - 1
-                    );
+                        ctx.rectChart.bottom() - 1);
 
                     crossLine.xBG.set(
-                        x - bgHalfWidth,
-                        ctx.rectXAxis.top() + 1,
-                        bgWidth,
-                        ctx.rectXAxis.height() - 2
-                    ).moveInside(ctx.rectXAxis);
+                                     x - bgHalfWidth,
+                                     ctx.rectXAxis.top() + 1,
+                                     bgWidth,
+                                     ctx.rectXAxis.height() - 2)
+                        .moveInside(ctx.rectXAxis);
                     switch (props.xAxisHoverType)
                     {
                     case EnXAxisType::yyyyMMdd:
@@ -94,28 +94,28 @@ namespace StockCharts
                         break;
                     }
                 }
-                if (yCross) {
+                if (yCross)
+                {
                     crossLine.yLine.set(
                         ctx.rectChart.left() + 1,
                         mouseHover.point.y,
                         ctx.rectChart.right() - 1,
-                        mouseHover.point.y
-                    );
+                        mouseHover.point.y);
 
                     crossLine.ylBG.set(
-                        ctx.rectYLAxis.left() + 1,
-                        mouseHover.point.y - bgHalfHeight,
-                        ctx.rectYLAxis.width() - 2,
-                        bgHeight
-                    ).moveInside(ctx.rectYLAxis);
+                                      ctx.rectYLAxis.left() + 1,
+                                      mouseHover.point.y - bgHalfHeight,
+                                      ctx.rectYLAxis.width() - 2,
+                                      bgHeight)
+                        .moveInside(ctx.rectYLAxis);
                     crossLine.ylText = NumberUtils::toString(mouseHover.price, props.precision);
 
                     crossLine.yrBG.set(
-                        ctx.rectYRAxis.left() + 1,
-                        mouseHover.point.y - bgHalfHeight,
-                        ctx.rectYRAxis.width() - 2,
-                        bgHeight
-                    ).moveInside(ctx.rectYRAxis);
+                                      ctx.rectYRAxis.left() + 1,
+                                      mouseHover.point.y - bgHalfHeight,
+                                      ctx.rectYRAxis.width() - 2,
+                                      bgHeight)
+                        .moveInside(ctx.rectYRAxis);
                     crossLine.yrText = NumberUtils::toString(mouseHover.price, props.precision);
                 }
             };
@@ -124,12 +124,12 @@ namespace StockCharts
             calcCross(ctx.hoverSync, crossSync);
         }
 
-        virtual void onPaint(Painter& painter) override
+        virtual void onPaint(Painter &painter) override
         {
-            const auto& props = *m_props;
-            const auto& ctx = *m_context;
+            const auto &props = *m_props;
+            const auto &ctx = *m_context;
 
-            auto paintCross = [&](const StCrossLine& crossLine)
+            auto paintCross = [&](const StCrossLine &crossLine)
             {
                 // x
                 if (ctx.crossLineVisible)
@@ -139,8 +139,7 @@ namespace StockCharts
                 painter.drawString(
                     crossLine.xBG,
                     crossLine.xText,
-                    props.xAxisHoverTextFont
-                );
+                    props.xAxisHoverTextFont);
 
                 // y
                 if (ctx.crossLineVisible)
@@ -150,15 +149,13 @@ namespace StockCharts
                 painter.drawString(
                     crossLine.ylBG,
                     crossLine.ylText,
-                    props.ylAxisHoverTextFont
-                );
+                    props.ylAxisHoverTextFont);
 
                 painter.fillRect(crossLine.yrBG, props.crossTextBGStyle);
                 painter.drawString(
                     crossLine.yrBG,
                     crossLine.yrText,
-                    props.yrAxisHoverTextFont
-                );
+                    props.yrAxisHoverTextFont);
             };
 
             paintCross(crossSync);
@@ -170,4 +167,3 @@ namespace StockCharts
         StCrossLine crossSync;
     };
 }
-

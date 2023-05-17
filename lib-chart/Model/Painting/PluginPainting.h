@@ -20,4 +20,3 @@ namespace StockCharts
         virtual ~PluginPainting() = default;
     };
 }
-

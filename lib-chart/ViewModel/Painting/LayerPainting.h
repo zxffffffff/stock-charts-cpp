@@ -10,14 +10,13 @@
 
 namespace StockCharts
 {
-    class LayerSuperimposition : public ChartLayer
+    class LayerPainting : public ChartLayer
     {
     public:
-        LayerSuperimposition(std::shared_ptr<const ChartModel> model, std::shared_ptr<const ChartProps> props, std::shared_ptr<const ChartContext> context)
+        LayerPainting(std::shared_ptr<const ChartModel> model, std::shared_ptr<const ChartProps> props, std::shared_ptr<const ChartContext> context)
             : ChartLayer(model, props, context)
         {
         }
-        virtual ~LayerSuperimposition() = default;
+        virtual ~LayerPainting() = default;
     };
 }
-

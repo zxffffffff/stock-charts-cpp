@@ -74,7 +74,7 @@ namespace StockCharts
         {
             if (i < 0 || i >= m_indicators.size())
                 return;
-            auto& indicator = m_indicators[i];
+            auto &indicator = m_indicators[i];
 
             IndicatorParser parser;
             parser.setFormula(indicator->formula);
@@ -89,4 +89,3 @@ namespace StockCharts
         std::vector<std::shared_ptr<StIndicator>> m_indicators;
     };
 }
-

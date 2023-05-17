@@ -31,9 +31,8 @@ namespace StockCharts
     {
     public:
         LayerTitle(std::shared_ptr<const ChartModel> model, std::shared_ptr<const ChartProps> props, std::shared_ptr<const ChartContext> context,
-            ChartTitleItemFlags flags)
-            : ChartLayer(model, props, context)
-            , m_flags(flags)
+                   ChartTitleItemFlags flags)
+            : ChartLayer(model, props, context), m_flags(flags)
         {
         }
         virtual ~LayerTitle() = default;
@@ -47,8 +46,8 @@ namespace StockCharts
         {
             auto stockCore = *m_model->getStockCore();
             auto pluginIndicator = m_model->getPlugin<PluginIndicator>();
-            const auto& ctx = *m_context;
-            const auto& props = *m_props;
+            const auto &ctx = *m_context;
+            const auto &props = *m_props;
 
             int index = ctx.hoverNormal.index;
             if (index < 0)
@@ -67,8 +66,9 @@ namespace StockCharts
             {
                 ChartTitleItem titItem;
                 titItem.items.resize(4);
-                for (int i = 0; i < titItem.items.size(); i++) {
-                    auto& item = titItem.items[i];
+                for (int i = 0; i < titItem.items.size(); i++)
+                {
+                    auto &item = titItem.items[i];
                     bool rise = stockCore.close.safeAt(index) > stockCore.open.safeAt(index);
                     switch (i)
                     {
@@ -99,13 +99,15 @@ namespace StockCharts
                 m_rows.push_back(std::move(titItem));
             }
 
-            if ((m_flags & ChartTitleItemFlagIndicator) && pluginIndicator) {
+            if ((m_flags & ChartTitleItemFlagIndicator) && pluginIndicator)
+            {
                 auto indicators = pluginIndicator->getIndicators();
-                for (auto& indicator : indicators) {
+                for (auto &indicator : indicators)
+                {
                     ChartTitleItem titItem;
                     titItem.items.resize(1 + indicator->indexCore.exps.size());
                     {
-                        auto& item = titItem.items[0];
+                        auto &item = titItem.items[0];
                         item.text = indicator->formula.name;
                         item.font.dir = PaintDirection::CenterLeft;
                         item.rect.set(
@@ -118,10 +120,11 @@ namespace StockCharts
                         item.bg.normal.colorBG = item.bg.normal.colorBorder;
                         item.bg.normal.colorBG.a = 25;
                     }
-                    for (int i = 0; i < indicator->indexCore.exps.size(); i++) {
-                        auto& exp = indicator->indexCore.exps[i];
+                    for (int i = 0; i < indicator->indexCore.exps.size(); i++)
+                    {
+                        auto &exp = indicator->indexCore.exps[i];
                         int iItem = i + 1;
-                        auto& item = titItem.items[iItem];
+                        auto &item = titItem.items[iItem];
                         item.text = exp.info.rename + ":" + NumberUtils::toString(exp.core[index], props.precision);
                         item.font.dir = PaintDirection::CenterLeft;
                         item.rect.set(
@@ -139,12 +142,13 @@ namespace StockCharts
             }
         }
 
-        virtual void onPaint(Painter& painter) override
+        virtual void onPaint(Painter &painter) override
         {
-            for (auto& row : m_rows) {
+            for (auto &row : m_rows)
+            {
                 row.btnSetting.paint(painter);
                 row.btnClose.paint(painter);
-                for (auto& item : row.items)
+                for (auto &item : row.items)
                     item.paint(painter);
             }
         }
@@ -154,4 +158,3 @@ namespace StockCharts
         std::vector<ChartTitleItem> m_rows;
     };
 }
-

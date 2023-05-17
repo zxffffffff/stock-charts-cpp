@@ -21,12 +21,11 @@ namespace StockCharts
         Real y;
 
         Point(Real _x = RealNull, Real _y = RealNull)
-            : x(_x)
-            , y(_y)
+            : x(_x), y(_y)
         {
         }
 
-        Point& set(Real _x, Real _y)
+        Point &set(Real _x, Real _y)
         {
             x = _x;
             y = _y;
@@ -47,11 +46,11 @@ namespace StockCharts
             return (x != RealNull && y != RealNull);
         }
 
-        bool operator==(const Point& rhs) const
+        bool operator==(const Point &rhs) const
         {
             return (x == rhs.x && y == rhs.y);
         }
-        bool operator!=(const Point& rhs) const
+        bool operator!=(const Point &rhs) const
         {
             return !operator==(rhs);
         }
@@ -63,12 +62,11 @@ namespace StockCharts
         Real height;
 
         Size(Real _width = 0, Real _height = 0)
-            : width(_width)
-            , height(_height)
+            : width(_width), height(_height)
         {
         }
 
-        Size& set(Real _width, Real _height)
+        Size &set(Real _width, Real _height)
         {
             width = _width;
             height = _height;
@@ -85,11 +83,11 @@ namespace StockCharts
             return (width >= 0 && height >= 0);
         }
 
-        bool operator==(const Size& rhs) const
+        bool operator==(const Size &rhs) const
         {
             return (width == rhs.width && height == rhs.height);
         }
-        bool operator!=(const Size& rhs) const
+        bool operator!=(const Size &rhs) const
         {
             return !operator==(rhs);
         }
@@ -101,18 +99,16 @@ namespace StockCharts
         Size size;
 
         Rect(Real _x = RealNull, Real _y = RealNull, Real _width = 0, Real _height = 0)
-            : point(_x, _y)
-            , size(_width, _height)
+            : point(_x, _y), size(_width, _height)
         {
         }
 
-        Rect(const Point& _point, const Size& _size)
-            : point(_point)
-            , size(_size)
+        Rect(const Point &_point, const Size &_size)
+            : point(_point), size(_size)
         {
         }
 
-        Rect& set(Real _x, Real _y, Real _width, Real _height)
+        Rect &set(Real _x, Real _y, Real _width, Real _height)
         {
             point.x = _x;
             point.y = _y;
@@ -126,7 +122,7 @@ namespace StockCharts
             size.clear();
         }
 
-        Rect& moveInside(const Rect& parent, std::array<Real, 4> padding = { 1, 1, 0, 0 })
+        Rect &moveInside(const Rect &parent, std::array<Real, 4> padding = {1, 1, 0, 0})
         {
             if (left() < parent.left() + padding[0])
                 point.x = parent.left() + padding[0];
@@ -139,15 +135,17 @@ namespace StockCharts
             return *this;
         }
 
-        Rect& clipInside(const Rect& parent, std::array<Real, 4> padding = { 0, 0, 0, 0 })
+        Rect &clipInside(const Rect &parent, std::array<Real, 4> padding = {0, 0, 0, 0})
         {
             Real offset_l = (parent.left() + padding[0]) - left();
-            if (offset_l > 0) {
+            if (offset_l > 0)
+            {
                 point.x -= offset_l;
                 size.width -= offset_l;
             }
             Real offset_t = (parent.top() + padding[1]) - top();
-            if (offset_t > 0) {
+            if (offset_t > 0)
+            {
                 point.y -= offset_t;
                 size.height -= offset_t;
             }
@@ -168,12 +166,11 @@ namespace StockCharts
             return (point.valid() && size.valid());
         }
 
-        bool contains(const Point& point) const
+        bool contains(const Point &point) const
         {
             if (!valid() || !point.valid())
                 return false;
-            return (point.x >= left() && point.x < right()
-                && point.y >= top() && point.y < bottom());
+            return (point.x >= left() && point.x < right() && point.y >= top() && point.y < bottom());
         }
 
         Real left() const { return point.x; }
@@ -184,17 +181,17 @@ namespace StockCharts
         Real height() const { return size.height; }
         Real centerX() const { return left() + width() / 2; }
         Real centerY() const { return top() + height() / 2; }
-        Point center() const { return { centerX(), centerY() }; }
-        Point topLeft() const { return { left(), top() }; }
-        Point topRight() const { return { right(), top() }; }
-        Point bottomLeft() const { return { left(), bottom() }; }
-        Point bottomRight() const { return { right(), bottom() }; }
+        Point center() const { return {centerX(), centerY()}; }
+        Point topLeft() const { return {left(), top()}; }
+        Point topRight() const { return {right(), top()}; }
+        Point bottomLeft() const { return {left(), bottom()}; }
+        Point bottomRight() const { return {right(), bottom()}; }
 
-        bool operator==(const Rect& rhs) const
+        bool operator==(const Rect &rhs) const
         {
             return (point == rhs.point && size == rhs.size);
         }
-        bool operator!=(const Rect& rhs) const
+        bool operator!=(const Rect &rhs) const
         {
             return !operator==(rhs);
         }
@@ -206,18 +203,16 @@ namespace StockCharts
         Point second;
 
         Line(Real _x1 = RealNull, Real _y1 = RealNull, Real _x2 = RealNull, Real _y2 = RealNull)
-            : first(_x1, _y1)
-            , second(_x2, _y2)
+            : first(_x1, _y1), second(_x2, _y2)
         {
         }
 
-        Line(const Point& _point1, const Point& _point2)
-            : first(_point1)
-            , second(_point2)
+        Line(const Point &_point1, const Point &_point2)
+            : first(_point1), second(_point2)
         {
         }
 
-        Line& set(Real _x1, Real _y1, Real _x2, Real _y2)
+        Line &set(Real _x1, Real _y1, Real _x2, Real _y2)
         {
             first.x = _x1;
             first.y = _y1;
@@ -236,11 +231,11 @@ namespace StockCharts
             return (first.valid() && second.valid());
         }
 
-        bool operator==(const Line& rhs) const
+        bool operator==(const Line &rhs) const
         {
             return (first == rhs.first && second == rhs.second) || (first == rhs.second && second == rhs.first);
         }
-        bool operator!=(const Line& rhs) const
+        bool operator!=(const Line &rhs) const
         {
             return !operator==(rhs);
         }
@@ -259,22 +254,17 @@ namespace StockCharts
             Real _height = 0,
             Real _high = RealNull,
             Real _low = RealNull,
-            int _flag = 0
-        )
-            : rect(_x, _y, _width, _height)
-            , line(rect.centerX(), _high, rect.centerX(), _low)
-            , flag(_flag)
+            int _flag = 0)
+            : rect(_x, _y, _width, _height), line(rect.centerX(), _high, rect.centerX(), _low), flag(_flag)
         {
         }
 
-        Stick(const Rect& _rect, const Line& _line, int _flag = 0)
-            : rect(_rect)
-            , line(_line)
-            , flag(_flag)
+        Stick(const Rect &_rect, const Line &_line, int _flag = 0)
+            : rect(_rect), line(_line), flag(_flag)
         {
         }
 
-        Stick& set(Real _x, Real _y, Real _width, Real _height, Real _high, Real _low, int _flag)
+        Stick &set(Real _x, Real _y, Real _width, Real _height, Real _high, Real _low, int _flag)
         {
             rect.set(_x, _y, _width, _height);
             line.set(rect.centerX(), _high, rect.centerX(), _low);
@@ -304,13 +294,13 @@ namespace StockCharts
         Real height2() const { return low() - high(); }
         Real centerX() const { return left() + width() / 2; }
         Real centerY() const { return high() + height2() / 2; }
-        Point center() const { return { centerX(),  centerY() }; }
+        Point center() const { return {centerX(), centerY()}; }
 
-        bool operator==(const Stick& rhs) const
+        bool operator==(const Stick &rhs) const
         {
             return (rect == rhs.rect && line == rhs.line);
         }
-        bool operator!=(const Stick& rhs) const
+        bool operator!=(const Stick &rhs) const
         {
             return !operator==(rhs);
         }

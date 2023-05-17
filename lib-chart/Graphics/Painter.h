@@ -24,30 +24,31 @@ namespace StockCharts
         Byte a;
 
         constexpr Color(Byte _r = 0, Byte _g = 255, Byte _b = 255, Byte _a = 255)
-            : r(_r)
-            , g(_g)
-            , b(_b)
-            , a(_a)
+            : r(_r), g(_g), b(_b), a(_a)
         {
         }
 
-        Color(const char* hex)
+        Color(const char *hex)
         {
             std::size_t len = strlen(hex);
-            if ((len & 1) && (hex[0] == '#')) {
+            if ((len & 1) && (hex[0] == '#'))
+            {
                 hex += 1;
                 len -= 1;
             }
 
             unsigned int _r, _g, _b, _a;
-            if (len == 6) {
+            if (len == 6)
+            {
                 sscanf(hex, "%02x%02x%02x", &_r, &_g, &_b);
                 _a = 255;
             }
-            else if (len == 8) {
+            else if (len == 8)
+            {
                 sscanf(hex, "%02x%02x%02x%02x", &_r, &_g, &_b, &_a);
             }
-            else {
+            else
+            {
                 // windows invalid color
                 _r = 0;
                 _g = _b = _a = 255;
@@ -58,11 +59,11 @@ namespace StockCharts
             a = _a;
         }
 
-        bool operator==(const Color& rhs) const
+        bool operator==(const Color &rhs) const
         {
             return (r == rhs.r && g == rhs.g && b == rhs.b && a == rhs.a);
         }
-        bool operator!=(const Color& rhs) const
+        bool operator!=(const Color &rhs) const
         {
             return !operator==(rhs);
         }
@@ -77,30 +78,28 @@ namespace StockCharts
 
     enum class LineType
     {
-        SolidLine,      // _____
-        DashLine,       // _ _ _
-        DotLine,        // . . .
-        DashDotLine,    // _ . _
+        SolidLine,   // _____
+        DashLine,    // _ _ _
+        DotLine,     // . . .
+        DashDotLine, // _ . _
     };
 
     struct Pen
     {
-        Color       color;
-        Real        lineWidth;
-        LineType    lineType;
+        Color color;
+        Real lineWidth;
+        LineType lineType;
 
-        Pen(const Color& _color = ColorBlack, Real _lineWidth = 1, LineType _lineType = LineType::SolidLine)
-            : color(_color)
-            , lineWidth(_lineWidth)
-            , lineType(_lineType)
+        Pen(const Color &_color = ColorBlack, Real _lineWidth = 1, LineType _lineType = LineType::SolidLine)
+            : color(_color), lineWidth(_lineWidth), lineType(_lineType)
         {
         }
 
-        bool operator==(const Pen& rhs) const
+        bool operator==(const Pen &rhs) const
         {
             return (color == rhs.color && lineWidth == rhs.lineWidth && lineType == rhs.lineType);
         }
-        bool operator!=(const Pen& rhs) const
+        bool operator!=(const Pen &rhs) const
         {
             return !operator==(rhs);
         }
@@ -121,22 +120,20 @@ namespace StockCharts
 
     struct Font
     {
-        Color           color;
-        int             fontSize;
-        PaintDirection  dir;
+        Color color;
+        int fontSize;
+        PaintDirection dir;
 
-        Font(const Color& _color = ColorBlack, int _fontSize = 12, PaintDirection _dir = PaintDirection::Center)
-            : color(_color)
-            , fontSize(_fontSize)
-            , dir(_dir)
+        Font(const Color &_color = ColorBlack, int _fontSize = 12, PaintDirection _dir = PaintDirection::Center)
+            : color(_color), fontSize(_fontSize), dir(_dir)
         {
         }
 
-        bool operator==(const Font& rhs) const
+        bool operator==(const Font &rhs) const
         {
             return (color == rhs.color && fontSize == rhs.fontSize && dir == rhs.dir);
         }
-        bool operator!=(const Font& rhs) const
+        bool operator!=(const Font &rhs) const
         {
             return !operator==(rhs);
         }
@@ -151,15 +148,14 @@ namespace StockCharts
         virtual void save() = 0;
         virtual void restore() = 0;
 
-        virtual void drawString(const Rect& rect, const std::string& text, const Font& font) = 0;
-        virtual void drawRect(const Rect& rect, const Pen& pen) = 0;
-        virtual void fillRect(const Rect& rect, const Pen& pen) = 0;
-        virtual void drawLine(const Line& line, const Pen& pen) = 0;
-        virtual void drawPath(const std::vector<Point>& points, const Pen& pen) = 0;
+        virtual void drawString(const Rect &rect, const std::string &text, const Font &font) = 0;
+        virtual void drawRect(const Rect &rect, const Pen &pen) = 0;
+        virtual void fillRect(const Rect &rect, const Pen &pen) = 0;
+        virtual void drawLine(const Line &line, const Pen &pen) = 0;
+        virtual void drawPath(const std::vector<Point> &points, const Pen &pen) = 0;
 
-        virtual void drawStick(const std::vector<Stick>& sticks, const Color& rise, const Color& fall) = 0;
-        virtual void drawStickHollow(const std::vector<Stick>& sticks, const Color& rise, const Color& fall) = 0;
-        virtual void drawBAR(const std::vector<Stick>& sticks, const Color& rise, const Color& fall) = 0;
+        virtual void drawStick(const std::vector<Stick> &sticks, const Color &rise, const Color &fall) = 0;
+        virtual void drawStickHollow(const std::vector<Stick> &sticks, const Color &rise, const Color &fall) = 0;
+        virtual void drawBAR(const std::vector<Stick> &sticks, const Color &rise, const Color &fall) = 0;
     };
 }
-

@@ -19,28 +19,29 @@ namespace StockCharts
     constexpr inline char ID_OnDBClick[] = "ID_OnDBClick";
 
     class ChartModel;
-    class ChartView : public DataBinding
+    class ChartViewModel : public DataBinding
     {
     public:
-        ChartView(std::shared_ptr<ChartModel> model)
-            : m_model(model)
-            , m_props(std::make_shared<ChartProps>())
-            , m_context(std::make_shared<ChartContext>())
+        ChartViewModel(std::shared_ptr<ChartModel> model)
+            : m_model(model), m_props(std::make_shared<ChartProps>()), m_context(std::make_shared<ChartContext>())
         {
             bind(m_model.get());
         }
-        virtual ~ChartView() = default;
+        virtual ~ChartViewModel() = default;
 
-        virtual void on(DataBinding* sender, const std::string& id) override
+        virtual void on(DataBinding *sender, const std::string &id) override
         {
-            if (m_model.get() == sender) {
+            if (m_model.get() == sender)
+            {
                 if (id == ID_StockCoreChanged || id == ID_ChartPluginChanged)
                     calcContext();
                 return;
             }
 
-            for (auto& layer : m_layers) {
-                if (layer.get() == sender) {
+            for (auto &layer : m_layers)
+            {
+                if (layer.get() == sender)
+                {
                     if (id == ID_ChartLayerChanged)
                         calcContext();
                     return;
@@ -48,8 +49,8 @@ namespace StockCharts
             }
 
             {
-                auto other = static_cast<ChartView*>(sender);
-                const auto& ctx = *other->getContext();
+                auto other = static_cast<ChartViewModel *>(sender);
+                const auto &ctx = *other->getContext();
 
                 if (id == ID_OnMouseMove || id == ID_OnMouseLeave)
                     syncMouseMove(ctx.hoverNormal.index, ctx.hoverNormal.price);
@@ -66,7 +67,7 @@ namespace StockCharts
             return m_props;
         }
 
-        void setProps(const ChartProps& props, bool calcCtx = true)
+        void setProps(const ChartProps &props, bool calcCtx = true)
         {
             *m_props = props;
             if (calcCtx)
@@ -79,8 +80,8 @@ namespace StockCharts
         }
 
         // [1]
-        template<typename T = ChartLayer, typename... Args>
-        std::shared_ptr<T> addLayer(Args&&... args)
+        template <typename T = ChartLayer, typename... Args>
+        std::shared_ptr<T> addLayer(Args &&...args)
         {
             assert(!getLayer<T>());
             auto layer = std::make_shared<T>(m_model, m_props, m_context, args...);
@@ -89,10 +90,11 @@ namespace StockCharts
             return getLayer<T>();
         }
 
-        template<typename T = ChartLayer>
+        template <typename T = ChartLayer>
         std::shared_ptr<T> getLayer()
         {
-            for (auto& layer : m_layers) {
+            for (auto &layer : m_layers)
+            {
                 // RTTI
                 auto derived = std::dynamic_pointer_cast<T>(layer);
                 if (derived)
@@ -101,52 +103,48 @@ namespace StockCharts
             return nullptr;
         }
 
-        const std::vector<std::shared_ptr<ChartLayer>>& getLayers()
+        const std::vector<std::shared_ptr<ChartLayer>> &getLayers()
         {
             return m_layers;
-        }        
-        
+        }
+
         // [2]
         void calcContext()
         {
-            const auto& stockCore = m_model->getStockCore();
-            const auto& props = *m_props;
-            auto& ctx = *m_context;
+            const auto &stockCore = m_model->getStockCore();
+            const auto &props = *m_props;
+            auto &ctx = *m_context;
 
             // [0] content
             ctx.rectXAxis.set(
                 ctx.rectView.left() + props.ylAxisWidth,
                 ctx.rectView.bottom() - props.xAxisHeight,
                 ctx.rectView.width() - props.ylAxisWidth - props.yrAxisWidth,
-                props.xAxisHeight
-            );
+                props.xAxisHeight);
             ctx.rectYLAxis.set(
                 ctx.rectView.left(),
                 ctx.rectView.top(),
                 props.ylAxisWidth,
-                ctx.rectView.height()
-            );
+                ctx.rectView.height());
             ctx.rectYRAxis.set(
                 ctx.rectView.right() - props.yrAxisWidth,
                 ctx.rectView.top(),
                 props.yrAxisWidth,
-                ctx.rectView.height()
-            );
+                ctx.rectView.height());
             ctx.rectChart.set(
                 ctx.rectView.left() + props.ylAxisWidth,
                 ctx.rectView.top(),
                 ctx.rectView.width() - props.ylAxisWidth - props.yrAxisWidth,
-                ctx.rectView.height() - props.xAxisHeight
-            );
+                ctx.rectView.height() - props.xAxisHeight);
             ctx.rectInnerChart.set(
                 ctx.rectChart.left() + props.paddingLeft,
                 ctx.rectChart.top() + props.paddingTop,
                 ctx.rectChart.width() - props.paddingLeft - props.paddingRight,
-                ctx.rectChart.height() - props.paddingTop - props.paddingBottom
-            );
+                ctx.rectChart.height() - props.paddingTop - props.paddingBottom);
 
             // invalid size
-            if (!ctx.rectInnerChart.valid()) {
+            if (!ctx.rectInnerChart.valid())
+            {
                 // assert(false);
                 return;
             }
@@ -165,16 +163,20 @@ namespace StockCharts
                 break;
             case EnXCoordinateType::Cover:
             default:
-                if (stockWidth <= viewWidth) {
-                    if (ctx.viewCount != stockCnt) {
+                if (stockWidth <= viewWidth)
+                {
+                    if (ctx.viewCount != stockCnt)
+                    {
                         ctx.viewCount = stockCnt;
                         ctx.endIndex = stockCnt;
                         ctx.beginIndex = 0;
                     }
                 }
-                else {
+                else
+                {
                     int viewCount = std::floor(viewWidth / ctx.nodeWidth);
-                    if (ctx.viewCount != viewCount) {
+                    if (ctx.viewCount != viewCount)
+                    {
                         ctx.viewCount = viewCount;
                         ctx.endIndex = stockCnt;
                         ctx.beginIndex = ctx.endIndex - ctx.viewCount;
@@ -192,7 +194,8 @@ namespace StockCharts
             // [2] y
             ctx.minPrice = NumberNull;
             ctx.maxPrice = NumberNull;
-            for (const auto& layer : m_layers) {
+            for (const auto &layer : m_layers)
+            {
                 auto minmax = layer->getMinMax(ctx.beginIndex, ctx.endIndex);
                 ctx.minPrice = NumberCore::min(minmax.first, ctx.minPrice);
                 ctx.maxPrice = NumberCore::max(minmax.second, ctx.maxPrice);
@@ -204,32 +207,33 @@ namespace StockCharts
 
         void calcLayers()
         {
-            for (const auto& layer : m_layers) {
+            for (const auto &layer : m_layers)
+            {
                 layer->onContextChanged();
             }
         }
 
         // [3]
-        void onPaint(Painter& painter)
+        void onPaint(Painter &painter)
         {
-            for (const auto& layer : m_layers) {
+            for (const auto &layer : m_layers)
+            {
                 painter.save();
                 layer->onPaint(painter);
                 painter.restore();
             }
         }
 
-        void onResize(const Rect& rect)
+        void onResize(const Rect &rect)
         {
-            const auto& props = *m_props;
-            auto& ctx = *m_context;
+            const auto &props = *m_props;
+            auto &ctx = *m_context;
 
             const Rect view(
                 rect.left() + props.MarginLeft,
                 rect.top() + props.MarginTop,
                 rect.width() - props.MarginLeft - props.MarginRight,
-                rect.height() - props.MarginTop - props.MarginBottom
-            );
+                rect.height() - props.MarginTop - props.MarginBottom);
             if (ctx.rectView == view)
                 return;
             ctx.rectView = view;
@@ -238,10 +242,10 @@ namespace StockCharts
             fire(ID_OnResize);
         }
 
-        void onMouseMove(const Point& point)
+        void onMouseMove(const Point &point)
         {
-            const auto& props = *m_props;
-            auto& ctx = *m_context;
+            const auto &props = *m_props;
+            auto &ctx = *m_context;
             if (ctx.hoverNormal.point == point)
                 return;
 
@@ -256,13 +260,15 @@ namespace StockCharts
                     ctx.hoverNormal.index = ctx.endIndex - 1;
                 ctx.hoverNormal.price = coordinate.pos2price(point.y);
             }
-            else {
+            else
+            {
                 ctx.hoverNormal.point.clear();
                 ctx.hoverNormal.index = -1;
                 ctx.hoverNormal.price = NumberNull;
             }
 
-            for (const auto& layer : m_layers) {
+            for (const auto &layer : m_layers)
+            {
                 layer->onMouseMove();
             }
             fire(ID_OnMouseMove);
@@ -270,7 +276,7 @@ namespace StockCharts
 
         void onMouseLeave()
         {
-            auto& ctx = *m_context;
+            auto &ctx = *m_context;
             ChartCoordinate coordinate(m_props, m_context);
 
             // mouse event
@@ -278,7 +284,8 @@ namespace StockCharts
             ctx.hoverNormal.index = -1;
             ctx.hoverNormal.price = NumberNull;
 
-            for (const auto& layer : m_layers) {
+            for (const auto &layer : m_layers)
+            {
                 layer->onMouseLeave();
             }
             fire(ID_OnMouseLeave);
@@ -289,9 +296,9 @@ namespace StockCharts
             if (step == 0)
                 return;
 
-            const auto& stockCore = m_model->getStockCore();
-            const auto& props = *m_props;
-            auto& ctx = *m_context;
+            const auto &stockCore = m_model->getStockCore();
+            const auto &props = *m_props;
+            auto &ctx = *m_context;
 
             if (props.xCoordType == EnXCoordinateType::Fill)
                 return;
@@ -310,9 +317,9 @@ namespace StockCharts
             if (step == 0)
                 return;
 
-            const auto& stockCore = m_model->getStockCore();
-            const auto& props = *m_props;
-            auto& ctx = *m_context;
+            const auto &stockCore = m_model->getStockCore();
+            const auto &props = *m_props;
+            auto &ctx = *m_context;
 
             if (props.xCoordType == EnXCoordinateType::Fill)
                 return;
@@ -331,19 +338,23 @@ namespace StockCharts
             const int stockCnt = stockCore->getSize();
             const Real stockWidth = stockCnt * ctx.nodeWidth;
             const Real viewWidth = ctx.rectInnerChart.width();
-            if (stockWidth <= viewWidth) {
+            if (stockWidth <= viewWidth)
+            {
                 ctx.viewCount = stockCnt;
                 ctx.endIndex = stockCnt;
                 ctx.beginIndex = ctx.endIndex - ctx.viewCount;
             }
-            else {
+            else
+            {
                 const int viewCount = std::floor(viewWidth / ctx.nodeWidth);
-                if (ctx.hoverNormal.index < 0) {
+                if (ctx.hoverNormal.index < 0)
+                {
                     ctx.viewCount = viewCount;
                     ctx.endIndex = stockCnt;
                     ctx.beginIndex = ctx.endIndex - ctx.viewCount;
                 }
-                else {
+                else
+                {
                     const double percent = double(ctx.hoverNormal.index - ctx.beginIndex) / ctx.viewCount;
                     ctx.viewCount = viewCount;
                     ctx.beginIndex = ctx.hoverNormal.index - std::round(percent * viewCount);
@@ -359,23 +370,23 @@ namespace StockCharts
             fire(ID_OnWheelY);
         }
 
-        void onDBClick(const Point& point)
+        void onDBClick(const Point &point)
         {
-            auto& ctx = *m_context;
+            auto &ctx = *m_context;
             ctx.crossLineVisible = !ctx.crossLineVisible;
 
             calcContext();
             fire(ID_OnDBClick);
         }
 
-        void setSyncOther(ChartView* other)
+        void setSyncOther(ChartViewModel *other)
         {
             bind(other);
         }
 
         void syncViewCount(int viewCount, int beginIndex, int endIndex, Real nodeWidth, Real stickWidth)
         {
-            auto& ctx = *m_context;
+            auto &ctx = *m_context;
             if (ctx.viewCount == viewCount &&
                 ctx.beginIndex == beginIndex &&
                 ctx.endIndex == endIndex &&
@@ -395,7 +406,7 @@ namespace StockCharts
 
         void syncMouseMove(int hoverIndex, Number hoverPrice)
         {
-            auto& ctx = *m_context;
+            auto &ctx = *m_context;
             if (ctx.hoverSync.index == hoverIndex && ctx.hoverSync.price == hoverPrice)
                 return;
 
@@ -404,19 +415,18 @@ namespace StockCharts
             // mouse event
             ctx.hoverSync.point = Point(
                 coordinate.index2pos(hoverIndex),
-                coordinate.price2pos(hoverPrice)
-            );
+                coordinate.price2pos(hoverPrice));
             ctx.hoverSync.index = hoverIndex;
             ctx.hoverSync.price = hoverPrice;
 
-            for (const auto& layer : m_layers)
+            for (const auto &layer : m_layers)
                 layer->onMouseMove();
             fire(ID_ChartContextChanged);
         }
 
         void syncDBClick(bool crossLineVisible)
         {
-            auto& ctx = *m_context;
+            auto &ctx = *m_context;
             if (ctx.crossLineVisible == crossLineVisible)
                 return;
             ctx.crossLineVisible = crossLineVisible;
@@ -433,4 +443,3 @@ namespace StockCharts
         std::vector<std::shared_ptr<ChartLayer>> m_layers;
     };
 }
-

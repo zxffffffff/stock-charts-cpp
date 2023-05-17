@@ -8,7 +8,7 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#define APP_TITLE   "stock-charts-cpp"
-#define APP_VERSION "0.1.1"
+#define STOCK_CHARTS_NAME    "stock-charts-cpp"
+#define STOCK_CHARTS_VERSION "0.1.1"
 
 #endif // VERSION_H

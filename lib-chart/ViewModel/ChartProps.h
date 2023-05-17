@@ -13,26 +13,26 @@ namespace StockCharts
 {
     enum class EnStockLineType
     {
-        CandlestickHollow,  // 蜡烛图（空心）
-        Candlestick,        // 蜡烛图
-        BAR,                // 美国线
-        Line,               // 收盘价线，分时线
+        CandlestickHollow, // 蜡烛图（空心）
+        Candlestick,       // 蜡烛图
+        BAR,               // 美国线
+        Line,              // 收盘价线，分时线
     };
 
     enum class EnXCoordinateType
     {
-        Fill,               // 填充
-        Cover,              // x滚动y缩放
+        Fill,  // 填充
+        Cover, // x滚动y缩放
     };
 
     enum class EnYCoordinateType
     {
-        Linear,             // 等差
-        Proportional,       // 等比
-        Percentage,         // 百分比
-        LogLinear,          // 等差（对数）
-        LogProportional,    // 等比（对数）
-        LogPercentage,      // 百分比（对数）
+        Linear,          // 等差
+        Proportional,    // 等比
+        Percentage,      // 百分比
+        LogLinear,       // 等差（对数）
+        LogProportional, // 等比（对数）
+        LogPercentage,   // 百分比（对数）
     };
 
     enum class EnXAxisType
@@ -103,4 +103,3 @@ namespace StockCharts
         Color fallColor = Color(0, 200, 0);
     };
 }
-

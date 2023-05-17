@@ -23,10 +23,10 @@ namespace StockCharts
     {
     public:
         NumberCore() = default;
-        NumberCore(const NumberCore&) = default;
-        NumberCore(NumberCore&&) = default;
+        NumberCore(const NumberCore &) = default;
+        NumberCore(NumberCore &&) = default;
         NumberCore(const Number val)
-            : data({ val })
+            : data({val})
         {
         }
         NumberCore(int cnt, const Number val = NumberNull)
@@ -37,19 +37,18 @@ namespace StockCharts
             : data(list)
         {
         }
-        NumberCore(const std::vector<Number>& v, bool reverse = false)
+        NumberCore(const std::vector<Number> &v, bool reverse = false)
             : data(v)
         {
             if (reverse)
                 this->reverse();
         }
-        NumberCore(std::vector<Number>&& v)
+        NumberCore(std::vector<Number> &&v)
             : data(std::move(v))
         {
         }
-        NumberCore(std::vector<Number>&& v, std::vector<std::string>&& other)
-            : data(std::move(v))
-            , other(std::move(other))
+        NumberCore(std::vector<Number> &&v, std::vector<std::string> &&other)
+            : data(std::move(v)), other(std::move(other))
         {
         }
         ~NumberCore() = default;
@@ -72,7 +71,7 @@ namespace StockCharts
             this->other.clear();
         }
 
-        Number& at(int i)
+        Number &at(int i)
         {
             return this->data[i];
         }
@@ -80,9 +79,10 @@ namespace StockCharts
         {
             return this->data[i];
         }
-        Number& safeAt(int i)
+        Number &safeAt(int i)
         {
-            if (i < 0 || i >= this->data.size()) {
+            if (i < 0 || i >= this->data.size())
+            {
                 static Number d;
                 d = NumberNull;
                 return d;
@@ -96,7 +96,7 @@ namespace StockCharts
             return this->data[i];
         }
 
-        Number& front()
+        Number &front()
         {
             return this->data.front();
         }
@@ -105,7 +105,7 @@ namespace StockCharts
             return this->data.front();
         }
 
-        Number& back()
+        Number &back()
         {
             return this->data.back();
         }
@@ -125,7 +125,8 @@ namespace StockCharts
         void fill(int begin, int count, const Number newVal)
         {
             const int sz = this->data.size();
-            for (int i = 0; i < count; ++i) {
+            for (int i = 0; i < count; ++i)
+            {
                 int pos = begin + i;
                 if (pos < 0 || pos >= sz)
                     continue;
@@ -137,14 +138,16 @@ namespace StockCharts
         {
             if (oldVal == newVal)
                 return;
-            for (auto ite = this->data.begin(); ite != this->data.end(); ++ite) {
+            for (auto ite = this->data.begin(); ite != this->data.end(); ++ite)
+            {
                 if (*ite == oldVal)
                     *ite = newVal;
             }
         }
         void replaceNotNumber(const Number newVal)
         {
-            for (auto ite = this->data.begin(); ite != this->data.end(); ++ite) {
+            for (auto ite = this->data.begin(); ite != this->data.end(); ++ite)
+            {
                 if (std::isnan(*ite) || std::isinf(*ite))
                     *ite = newVal;
             }
@@ -154,7 +157,7 @@ namespace StockCharts
             replace(NumberNull, newVal);
         }
 
-        void swap(NumberCore& rhs)
+        void swap(NumberCore &rhs)
         {
             std::swap(this->data, rhs.data);
             std::swap(this->other, rhs.other);
@@ -169,15 +172,16 @@ namespace StockCharts
         {
             const int len = size();
             if (len == 0 || beginIndex < 0 || endIndex < 0 || beginIndex >= len || endIndex > len)
-                return { NumberNull , NumberNull };
+                return {NumberNull, NumberNull};
             Number min = this->data[beginIndex];
             Number max = min;
-            for (int i = beginIndex + 1; i < endIndex; i += 1) {
-                const auto& n = this->data[i];
+            for (int i = beginIndex + 1; i < endIndex; i += 1)
+            {
+                const auto &n = this->data[i];
                 min = NumberCore::min(min, n);
                 max = NumberCore::max(max, n);
             }
-            return{ min, max };
+            return {min, max};
         }
 
         static Number max(const Number lhs, const Number rhs)
@@ -209,7 +213,7 @@ namespace StockCharts
             return val;
         }
 
-        NumberCore& max(const NumberCore& rhs)
+        NumberCore &max(const NumberCore &rhs)
         {
             auto comp = [this](Number l, Number r) -> Number
             {
@@ -218,7 +222,7 @@ namespace StockCharts
             *this = operatorFunc(*this, rhs, comp);
             return *this;
         }
-        NumberCore& min(const NumberCore& rhs)
+        NumberCore &min(const NumberCore &rhs)
         {
             auto comp = [this](Number l, Number r) -> Number
             {
@@ -228,66 +232,78 @@ namespace StockCharts
             return *this;
         }
 
-        static NumberCore max(const NumberCore& lhs, const NumberCore& rhs)
+        static NumberCore max(const NumberCore &lhs, const NumberCore &rhs)
         {
             const int lCnt = lhs.size();
             const int rCnt = rhs.size();
             const int maxCnt = std::max(lCnt, rCnt);
 
-            if (lCnt == 0) {
+            if (lCnt == 0)
+            {
                 return rhs;
             }
-            else if (rCnt == 0) {
+            else if (rCnt == 0)
+            {
                 return lhs;
             }
-            else if (lCnt == 1 && rCnt > 1) {
+            else if (lCnt == 1 && rCnt > 1)
+            {
                 NumberCore buffer(maxCnt);
                 for (int i = 0; i < maxCnt; ++i)
                     buffer[i] = max(lhs[0], rhs[i]); //
                 return buffer;
             }
-            else if (lCnt > 1 && rCnt == 1) {
+            else if (lCnt > 1 && rCnt == 1)
+            {
                 NumberCore buffer(maxCnt);
                 for (int i = 0; i < maxCnt; ++i)
                     buffer[i] = max(lhs[i], rhs[0]); //
                 return buffer;
             }
-            else {
+            else
+            {
                 NumberCore buffer(maxCnt);
-                for (int i = 0; i < maxCnt; ++i) {
+                for (int i = 0; i < maxCnt; ++i)
+                {
                     if (i < lCnt && i < rCnt)
                         buffer[i] = max(lhs[i], rhs[i]); //
                 }
                 return buffer;
             }
         }
-        static NumberCore min(const NumberCore& lhs, const NumberCore& rhs)
+        static NumberCore min(const NumberCore &lhs, const NumberCore &rhs)
         {
             const int lCnt = lhs.size();
             const int rCnt = rhs.size();
             const int maxCnt = std::max(lCnt, rCnt);
 
-            if (lCnt == 0) {
+            if (lCnt == 0)
+            {
                 return rhs;
             }
-            else if (rCnt == 0) {
+            else if (rCnt == 0)
+            {
                 return lhs;
             }
-            else if (lCnt == 1 && rCnt > 1) {
+            else if (lCnt == 1 && rCnt > 1)
+            {
                 NumberCore buffer(maxCnt);
                 for (int i = 0; i < maxCnt; ++i)
                     buffer[i] = min(lhs[0], rhs[i]); //
                 return buffer;
             }
-            else if (lCnt > 1 && rCnt == 1) {
+            else if (lCnt > 1 && rCnt == 1)
+            {
                 NumberCore buffer(maxCnt);
                 for (int i = 0; i < maxCnt; ++i)
                     buffer[i] = min(lhs[i], rhs[0]); //
                 return buffer;
             }
-            else {
+            else
+            {
                 NumberCore buffer(maxCnt);
-                for (int i = 0; i < maxCnt; ++i) {
+                for (int i = 0; i < maxCnt; ++i)
+                {
                     if (i < lCnt && i < rCnt)
                         buffer[i] = min(lhs[i], rhs[i]); //
                 }
@@ -296,7 +312,7 @@ namespace StockCharts
         }
 
         using OperatorCompare = std::function<Number(Number l, Number r)>;
-        static NumberCore operatorFunc(const NumberCore& lhs, const NumberCore& rhs, OperatorCompare comp)
+        static NumberCore operatorFunc(const NumberCore &lhs, const NumberCore &rhs, OperatorCompare comp)
         {
             const int lCnt = lhs.size();
             const int rCnt = rhs.size();
@@ -305,30 +321,38 @@ namespace StockCharts
             Number r = NumberNull;
 
             NumberCore buffer(maxCnt);
-            if (lCnt == 0) {
+            if (lCnt == 0)
+            {
                 return rhs;
             }
-            else if (rCnt == 0) {
+            else if (rCnt == 0)
+            {
                 return lhs;
             }
-            else if (lCnt == 1 && rCnt > 1) {
+            else if (lCnt == 1 && rCnt > 1)
+            {
                 l = lhs[0];
-                for (int i = 0; i < maxCnt; ++i) {
+                for (int i = 0; i < maxCnt; ++i)
+                {
                     r = rhs[i];
                     if (l != NumberNull && r != NumberNull)
                         buffer[i] = comp(l, r); //
                 }
             }
-            else if (lCnt > 1 && rCnt == 1) {
+            else if (lCnt > 1 && rCnt == 1)
+            {
                 Number r = rhs[0];
-                for (int i = 0; i < maxCnt; ++i) {
+                for (int i = 0; i < maxCnt; ++i)
+                {
                     l = lhs[i];
                     if (l != NumberNull && r != NumberNull)
                         buffer[i] = comp(l, r); //
                 }
             }
-            else {
-                for (int i = 0; i < maxCnt; ++i) {
+            else
+            {
+                for (int i = 0; i < maxCnt; ++i)
+                {
                     l = lhs.safeAt(i);
                     r = rhs.safeAt(i);
                     if (i < lCnt && i < rCnt && l != NumberNull && r != NumberNull)
@@ -339,54 +363,54 @@ namespace StockCharts
         }
 
     public:
-        NumberCore& operator=(const NumberCore&) = default;
-        NumberCore& operator=(NumberCore&&) = default;
-        NumberCore& operator=(const Number val)
+        NumberCore &operator=(const NumberCore &) = default;
+        NumberCore &operator=(NumberCore &&) = default;
+        NumberCore &operator=(const Number val)
         {
-            this->data = { val };
+            this->data = {val};
             return *this;
         }
-        NumberCore& operator=(std::initializer_list<Number> list)
+        NumberCore &operator=(std::initializer_list<Number> list)
         {
             this->data = list;
             return *this;
         }
-        NumberCore& operator=(std::vector<Number>&& v)
+        NumberCore &operator=(std::vector<Number> &&v)
         {
             this->data = std::move(v);
             return *this;
         }
 
-        Number& operator[](int i)
+        Number &operator[](int i)
         {
             return this->data[i];
         }
-        const Number& operator[](int i) const
+        const Number &operator[](int i) const
         {
             return this->data[i];
         }
 
-        NumberCore& operator+=(const NumberCore& rhs)
+        NumberCore &operator+=(const NumberCore &rhs)
         {
             *this = *this + rhs;
             return *this;
         }
-        NumberCore& operator-=(const NumberCore& rhs)
+        NumberCore &operator-=(const NumberCore &rhs)
         {
             *this = *this - rhs;
             return *this;
         }
-        NumberCore& operator*=(const NumberCore& rhs)
+        NumberCore &operator*=(const NumberCore &rhs)
         {
             *this = *this * rhs;
             return *this;
         }
-        NumberCore& operator/=(const NumberCore& rhs)
+        NumberCore &operator/=(const NumberCore &rhs)
         {
             *this = *this / rhs;
             return *this;
         }
-        NumberCore& operator%=(const NumberCore& rhs)
+        NumberCore &operator%=(const NumberCore &rhs)
         {
             *this = *this % rhs;
             return *this;
@@ -401,7 +425,7 @@ namespace StockCharts
             return ret;
         }
 
-        friend NumberCore operator+(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator+(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -409,7 +433,7 @@ namespace StockCharts
             };
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
-        friend NumberCore operator-(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator-(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -417,7 +441,7 @@ namespace StockCharts
             };
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
-        friend NumberCore operator*(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator*(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -425,7 +449,7 @@ namespace StockCharts
             };
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
-        friend NumberCore operator/(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator/(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -437,7 +461,7 @@ namespace StockCharts
             };
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
-        friend NumberCore operator%(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator%(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -449,7 +473,7 @@ namespace StockCharts
             };
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
-        friend NumberCore operator&&(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator&&(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -457,7 +481,7 @@ namespace StockCharts
             };
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
-        friend NumberCore operator||(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator||(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -465,7 +489,7 @@ namespace StockCharts
             };
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
-        friend NumberCore operator<(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator<(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -473,7 +497,7 @@ namespace StockCharts
             };
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
-        friend NumberCore operator<=(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator<=(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -481,7 +505,7 @@ namespace StockCharts
             };
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
-        friend NumberCore operator>(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator>(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -489,7 +513,7 @@ namespace StockCharts
             };
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
-        friend NumberCore operator>=(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator>=(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -497,7 +521,7 @@ namespace StockCharts
             };
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
-        friend NumberCore operator==(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator==(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -505,7 +529,7 @@ namespace StockCharts
             };
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
-        friend NumberCore operator!=(const NumberCore& lhs, const NumberCore& rhs)
+        friend NumberCore operator!=(const NumberCore &lhs, const NumberCore &rhs)
         {
             auto comp = [](Number l, Number r) -> Number
             {
@@ -518,7 +542,7 @@ namespace StockCharts
         std::vector<Number> data;
 
     public:
-        void setOther(int i, const std::string& other)
+        void setOther(int i, const std::string &other)
         {
             int sz = this->data.size();
             if (i < 0 || i >= sz)

@@ -19,27 +19,27 @@ namespace StockCharts
         ParseInit,
         String,
         Number,
-        Rename,			// :
-        RenameAssign,	// :=
-        TokenLT,		// <
-        TokenLE,		// <=
-        TokenGT,		// >
-        TokenGE,		// >=
-        TokenEQ,		// =, ==
-        TokenNEQ,		// !=
-        TokenNOT,		// !
-        TokenPlus,		// +
-        TokenMinus,		// -
-        TokenMul,		// *
-        TokenDiv,		// /
-        TokenMod,		// %
-        TokenPow,		// ^
-        TokenAnd,		// &&
-        TokenOr,		// ||
-        TokenComma,		// ,
-        TokenLP,		// (
-        TokenRP,		// )
-        TokenFinal,		// ;
+        Rename,       // :
+        RenameAssign, // :=
+        TokenLT,      // <
+        TokenLE,      // <=
+        TokenGT,      // >
+        TokenGE,      // >=
+        TokenEQ,      // =, ==
+        TokenNEQ,     // !=
+        TokenNOT,     // !
+        TokenPlus,    // +
+        TokenMinus,   // -
+        TokenMul,     // *
+        TokenDiv,     // /
+        TokenMod,     // %
+        TokenPow,     // ^
+        TokenAnd,     // &&
+        TokenOr,      // ||
+        TokenComma,   // ,
+        TokenLP,      // (
+        TokenRP,      // )
+        TokenFinal,   // ;
     };
 
     class IndicatorParser
@@ -55,13 +55,13 @@ namespace StockCharts
         ~IndicatorParser() = default;
 
         // [0]
-        void setFormula(const IndexFormula& formula)
+        void setFormula(const IndexFormula &formula)
         {
             m_formula = formula;
         }
 
         // [1]
-        void setStockCore(const StockCore& p)
+        void setStockCore(const StockCore &p)
         {
             setStockCore(std::make_shared<StockCore>(p));
         }
@@ -73,7 +73,7 @@ namespace StockCharts
             m_spDrawing->setStockCore(p);
         }
 
-        void setStockExt(const StockRelyData& p)
+        void setStockExt(const StockRelyData &p)
         {
             setStockExt(std::make_shared<StockRelyData>(p));
         }
@@ -95,7 +95,8 @@ namespace StockCharts
 
             std::vector<std::string> expressions = Utils::splitStr(m_formula.expression, ';');
             int i;
-            for (i = 0; i < expressions.size(); ++i) {
+            for (i = 0; i < expressions.size(); ++i)
+            {
                 m_expression = Utils::to8bitStr(expressions[i]) + ";";
                 if (Utils::checkEmpty(m_expression))
                     continue;
@@ -110,7 +111,8 @@ namespace StockCharts
                 m_expInfo = ExpInfo();
                 m_expDrawing = ExpDrawingType();
 
-                try {
+                try
+                {
                     parseTokenValue();
                     NumberCore core = parseFormula();
                     if (m_bParseError)
@@ -127,7 +129,8 @@ namespace StockCharts
                     exp.drawingType = std::move(m_expDrawing);
                     m_result.exps.push_back(std::move(exp));
                 }
-                catch (...) {
+                catch (...)
+                {
                     goto RunErr;
                 }
             }
@@ -141,17 +144,17 @@ namespace StockCharts
         }
 
         // [3]
-        const IndexCore& getResult()
+        const IndexCore &getResult()
         {
             return m_result;
         }
 
-        const IndexFormula& getFormula()
+        const IndexFormula &getFormula()
         {
             return m_formula;
         }
 
-        const std::set<EnStockRely>& getStockRely()
+        const std::set<EnStockRely> &getStockRely()
         {
             return m_stockRely;
         }
@@ -164,7 +167,8 @@ namespace StockCharts
             if (m_bParseError)
                 return coreLeft;
 
-            for (;;) {
+            for (;;)
+            {
                 switch (m_eToken)
                 {
                 case EnParseToken::TokenAnd:
@@ -195,19 +199,23 @@ namespace StockCharts
             if (!*m_iteCurrent)
                 return expColor;
 
-            for (;;) {
+            for (;;)
+            {
                 parseTokenValue();
-                if (m_eToken != EnParseToken::String) {
+                if (m_eToken != EnParseToken::String)
+                {
                     m_bParseError = true;
                     return expColor;
                 }
 
                 std::string name = std::move(m_sValue);
-                if (m_spColor->check(name)) {
+                if (m_spColor->check(name))
+                {
                     bool ok;
                     ExpColorType expTemp;
                     std::tie(ok, expTemp) = m_spColor->process(name);
-                    if (!ok) {
+                    if (!ok)
+                    {
                         m_bParseError = true;
                         m_errWord = name;
                         return expColor;
@@ -220,7 +228,8 @@ namespace StockCharts
                     if (!expTemp.color.empty())
                         expColor.color = expTemp.color;
                 }
-                else {
+                else
+                {
                     m_bParseError = true;
                     m_errWord = name;
                     return expColor;
@@ -244,7 +253,8 @@ namespace StockCharts
             if (m_bParseError)
                 return coreLeft;
 
-            for (;;) {
+            for (;;)
+            {
                 switch (m_eToken)
                 {
                 case EnParseToken::TokenLT:
@@ -305,7 +315,8 @@ namespace StockCharts
             if (m_bParseError)
                 return coreLeft;
 
-            for (;;) {
+            for (;;)
+            {
                 switch (m_eToken)
                 {
                 case EnParseToken::TokenPlus:
@@ -333,7 +344,8 @@ namespace StockCharts
                 return coreLeft;
 
             NumberCore coreTemp;
-            for (;;) {
+            for (;;)
+            {
                 switch (m_eToken)
                 {
                 case EnParseToken::TokenMul:
@@ -378,20 +390,24 @@ namespace StockCharts
             case EnParseToken::String:
                 parseTokenValue();
 
-                if (m_eToken == EnParseToken::Rename || m_eToken == EnParseToken::RenameAssign) {
+                if (m_eToken == EnParseToken::Rename || m_eToken == EnParseToken::RenameAssign)
+                {
                     if (m_eToken == EnParseToken::RenameAssign)
                         m_expInfo.renameAssign = true;
                     m_expInfo.rename = name;
                     parseTokenValue();
                     return parseFormula();
                 }
-                else if (checkAssign(name)) {
+                else if (checkAssign(name))
+                {
                     return getAssign(name);
                 }
-                else if (checkInputParam(name)) {
+                else if (checkInputParam(name))
+                {
                     return getInputParam(name);
                 }
-                else if (m_spKeyword->check(name)) {
+                else if (m_spKeyword->check(name))
+                {
                     auto rely = m_spKeyword->stockRely(name);
                     if (!rely.empty())
                         m_stockRely.insert(rely.begin(), rely.end());
@@ -399,23 +415,27 @@ namespace StockCharts
                     bool ok;
                     NumberCore coreResult;
                     std::tie(ok, coreResult) = m_spKeyword->process(name);
-                    if (!ok) {
+                    if (!ok)
+                    {
                         m_bParseError = true;
                         m_errWord = name;
                         return coreResult;
                     }
                     return coreResult;
                 }
-                else if (m_spFunction->check(name)) {
+                else if (m_spFunction->check(name))
+                {
                     NumberCore coreResult;
-                    if (m_eToken == EnParseToken::TokenLP) {
+                    if (m_eToken == EnParseToken::TokenLP)
+                    {
                         std::vector<NumberCore> params;
                         parseTokenValue();
                         params.push_back(parseFormula());
                         while (m_eToken == EnParseToken::TokenComma)
                             params.push_back(parseFormula());
 
-                        if (m_eToken != EnParseToken::TokenRP) {
+                        if (m_eToken != EnParseToken::TokenRP)
+                        {
                             m_bParseError = true;
                             m_errWord = name;
                             return coreResult;
@@ -423,31 +443,37 @@ namespace StockCharts
 
                         bool ok;
                         std::tie(ok, coreResult) = m_spFunction->process(name, params);
-                        if (!ok) {
+                        if (!ok)
+                        {
                             m_bParseError = true;
                             m_errWord = name;
                             return coreResult;
                         }
 
-                        if (*m_iteCurrent) {
+                        if (*m_iteCurrent)
+                        {
                             parseTokenValue();
                         }
                         return coreResult;
                     }
-                    else {
+                    else
+                    {
                         return coreResult;
                     }
                 }
-                else if (m_spDrawing->check(name)) {
+                else if (m_spDrawing->check(name))
+                {
                     NumberCore coreResult;
-                    if (m_eToken == EnParseToken::TokenLP) {
+                    if (m_eToken == EnParseToken::TokenLP)
+                    {
                         std::vector<NumberCore> params;
                         parseTokenValue();
                         params.push_back(parseFormula());
                         while (m_eToken == EnParseToken::TokenComma)
                             params.push_back(parseFormula());
 
-                        if (m_eToken != EnParseToken::TokenRP) {
+                        if (m_eToken != EnParseToken::TokenRP)
+                        {
                             m_bParseError = true;
                             m_errWord = name;
                             return coreResult;
@@ -456,23 +482,27 @@ namespace StockCharts
                         bool ok;
                         ExpDrawingType drawingType;
                         std::tie(ok, drawingType, coreResult) = m_spDrawing->process(name, params);
-                        if (!ok) {
+                        if (!ok)
+                        {
                             m_bParseError = true;
                             m_errWord = name;
                             return coreResult;
                         }
                         m_expDrawing = drawingType;
 
-                        if (*m_iteCurrent) {
+                        if (*m_iteCurrent)
+                        {
                             parseTokenValue();
                         }
                         return coreResult;
                     }
-                    else {
+                    else
+                    {
                         return coreResult;
                     }
                 }
-                else {
+                else
+                {
                     m_bParseError = true;
                     m_errWord = name;
                     return NumberCore();
@@ -498,7 +528,8 @@ namespace StockCharts
             {
                 parseTokenValue();
                 NumberCore coreResult = parseFormula();
-                if (m_eToken != EnParseToken::TokenRP) {
+                if (m_eToken != EnParseToken::TokenRP)
+                {
                     return coreResult;
                 }
                 parseTokenValue();
@@ -525,7 +556,8 @@ namespace StockCharts
 
             case ':':
                 m_iteCurrent++;
-                if (*m_iteCurrent == '=') {
+                if (*m_iteCurrent == '=')
+                {
                     m_iteCurrent++;
                     return m_eToken = EnParseToken::RenameAssign;
                 }
@@ -566,21 +598,24 @@ namespace StockCharts
 
             case '<':
                 m_iteCurrent++;
-                if (*m_iteCurrent == '=') {
+                if (*m_iteCurrent == '=')
+                {
                     m_iteCurrent++;
                     return m_eToken = EnParseToken::TokenLE;
                 }
                 return m_eToken = EnParseToken::TokenLT;
             case '>':
                 m_iteCurrent++;
-                if (*m_iteCurrent == '=') {
+                if (*m_iteCurrent == '=')
+                {
                     m_iteCurrent++;
                     return m_eToken = EnParseToken::TokenGE;
                 }
                 return m_eToken = EnParseToken::TokenGT;
             case '=':
                 m_iteCurrent++;
-                if (*m_iteCurrent == '=') {
+                if (*m_iteCurrent == '=')
+                {
                     m_iteCurrent++;
                     return m_eToken = EnParseToken::TokenEQ;
                 }
@@ -588,21 +623,24 @@ namespace StockCharts
 
             case '&':
                 m_iteCurrent++;
-                if (*m_iteCurrent == '&') {
+                if (*m_iteCurrent == '&')
+                {
                     m_iteCurrent++;
                     return m_eToken = EnParseToken::TokenAnd;
                 }
                 return m_eToken = EnParseToken::TokenAnd;
             case '|':
                 m_iteCurrent++;
-                if (*m_iteCurrent == '|') {
+                if (*m_iteCurrent == '|')
+                {
                     m_iteCurrent++;
                     return m_eToken = EnParseToken::TokenOr;
                 }
                 return m_eToken = EnParseToken::TokenOr;
             case '!':
                 m_iteCurrent++;
-                if (*m_iteCurrent == '=') {
+                if (*m_iteCurrent == '=')
+                {
                     m_iteCurrent++;
                     return m_eToken = EnParseToken::TokenNEQ;
                 }
@@ -622,28 +660,34 @@ namespace StockCharts
                 return m_eToken = EnParseToken::Number;
 
             default:
-                if (std::isalpha(*m_iteCurrent) || *m_iteCurrent == '_') {
+                if (std::isalpha(*m_iteCurrent) || *m_iteCurrent == '_')
+                {
                     m_sValue.clear();
-                    while (std::isalpha(*m_iteCurrent) || std::isdigit(*m_iteCurrent) || *m_iteCurrent == '_') {
+                    while (std::isalpha(*m_iteCurrent) || std::isdigit(*m_iteCurrent) || *m_iteCurrent == '_')
+                    {
                         m_sValue += *m_iteCurrent++;
                     }
 
-                    if (m_sValue == "AND") {
+                    if (m_sValue == "AND")
+                    {
                         m_sValue.clear();
                         return m_eToken = EnParseToken::TokenAnd;
                     }
-                    else if (m_sValue == "OR") {
+                    else if (m_sValue == "OR")
+                    {
                         m_sValue.clear();
                         return m_eToken = EnParseToken::TokenOr;
                     }
-                    else if (m_sValue == "NOT") {
+                    else if (m_sValue == "NOT")
+                    {
                         m_sValue.clear();
                         return m_eToken = EnParseToken::TokenNOT;
                     }
 
                     return m_eToken = EnParseToken::String;
                 }
-                else if (!*m_iteCurrent) {
+                else if (!*m_iteCurrent)
+                {
                     return m_eToken = EnParseToken::TokenFinal;
                 }
                 m_bParseError = true;
@@ -660,29 +704,31 @@ namespace StockCharts
             return dValue;
         }
 
-        bool checkAssign(const std::string& name)
+        bool checkAssign(const std::string &name)
         {
-            for (auto& result : m_result.exps) {
+            for (auto &result : m_result.exps)
+            {
                 if (result.info.rename == name)
                     return true;
             }
             return false;
         }
-        NumberCore getAssign(const std::string& name)
+        NumberCore getAssign(const std::string &name)
         {
-            for (auto& result : m_result.exps) {
+            for (auto &result : m_result.exps)
+            {
                 if (result.info.rename == name)
                     return result.core;
             }
             return NumberCore();
         }
 
-        bool checkInputParam(const std::string& name)
+        bool checkInputParam(const std::string &name)
         {
             auto ite = m_formula.params.find(name);
             return (ite != m_formula.params.end());
         }
-        NumberCore getInputParam(const std::string& name)
+        NumberCore getInputParam(const std::string &name)
         {
             NumberCore coreResult;
             auto ite = m_formula.params.find(name);
@@ -692,24 +738,24 @@ namespace StockCharts
         }
 
     private:
-        IndexFormula    m_formula;
+        IndexFormula m_formula;
 
-        std::unique_ptr<class FunctionParser>	m_spFunction;
-        std::unique_ptr<class KeywordParser>	m_spKeyword;
-        std::unique_ptr<class ColorParser>		m_spColor;
-        std::unique_ptr<class DrawingParser>	m_spDrawing;
+        std::unique_ptr<class FunctionParser> m_spFunction;
+        std::unique_ptr<class KeywordParser> m_spKeyword;
+        std::unique_ptr<class ColorParser> m_spColor;
+        std::unique_ptr<class DrawingParser> m_spDrawing;
 
-        IndexCore				m_result;
-        std::set<EnStockRely>	m_stockRely;
-        bool					m_bParseError = false;
-        std::string				m_errWord;
+        IndexCore m_result;
+        std::set<EnStockRely> m_stockRely;
+        bool m_bParseError = false;
+        std::string m_errWord;
 
-        std::string				m_expression;
-        std::string::iterator	m_iteCurrent, m_iteEnd;
-        EnParseToken		    m_eToken = EnParseToken::ParseInit;
-        Number				    m_dValue = NumberNull;
-        std::string				m_sValue;
-        ExpInfo				    m_expInfo;
-        ExpDrawingType			m_expDrawing;
+        std::string m_expression;
+        std::string::iterator m_iteCurrent, m_iteEnd;
+        EnParseToken m_eToken = EnParseToken::ParseInit;
+        Number m_dValue = NumberNull;
+        std::string m_sValue;
+        ExpInfo m_expInfo;
+        ExpDrawingType m_expDrawing;
     };
 }

@@ -9,7 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 FORMS += \
-    app/mainwindow.ui
+    demo/mainwindow.ui
 
 HEADERS += \
     lib-chart/Core/DataBinding.h \
@@ -24,31 +24,30 @@ HEADERS += \
     lib-chart/Model/ChartPlugin.h \
     lib-chart/Model/Indicator/Core/ExpCore.h \
     lib-chart/Model/Indicator/Core/IndexCore.h \
-    lib-chart/Model/Indicator/IndicatorParser.h \
     lib-chart/Model/Indicator/Parser/ColorParser.h \
     lib-chart/Model/Indicator/Parser/DrawingParser.h \
     lib-chart/Model/Indicator/Parser/FunctionParser.h \
     lib-chart/Model/Indicator/Parser/KeywordParser.h \
     lib-chart/Model/Indicator/Parser/SubParser.h \
+    lib-chart/Model/Indicator/IndicatorParser.h \
     lib-chart/Model/Indicator/PluginIndicator.h \
-    lib-chart/View/BG/LayerBG.h \
-    lib-chart/View/ChartContext.h \
-    lib-chart/View/ChartCoordinate.h \
-    lib-chart/View/ChartLayer.h \
-    lib-chart/View/ChartProps.h \
-    lib-chart/View/ChartView.h \
-    lib-chart/View/CrossLine/LayerCrossLine.h \
-    lib-chart/View/Indicator/LayerIndicator.h \
-    lib-chart/View/Stock/LayerStock.h \
-    lib-chart/View/Title/LayerTitle.h \
-    app/chartwidget.h \
-    app/mainwindow.h \
-    app/version.h
+    lib-chart/View/ChartViewQt.h \
+    lib-chart/ViewModel/BG/LayerBG.h \
+    lib-chart/ViewModel/CrossLine/LayerCrossLine.h \
+    lib-chart/ViewModel/Indicator/LayerIndicator.h \
+    lib-chart/ViewModel/Stock/LayerStock.h \
+    lib-chart/ViewModel/Title/LayerTitle.h \
+    lib-chart/ViewModel/ChartContext.h \
+    lib-chart/ViewModel/ChartCoordinate.h \
+    lib-chart/ViewModel/ChartLayer.h \
+    lib-chart/ViewModel/ChartProps.h \
+    lib-chart/ViewModel/ChartViewModel.h \
+    lib-chart/Version.h \
+    demo/mainwindow.h
 
 SOURCES += \
-    app/chartwidget.cpp \
-    app/main.cpp \
-    app/mainwindow.cpp
+    demo/main.cpp \
+    demo/mainwindow.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

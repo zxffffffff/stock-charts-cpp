@@ -34,4 +34,3 @@ namespace StockCharts
         std::shared_ptr<const StockCore> m_stockCore;
     };
 }
-

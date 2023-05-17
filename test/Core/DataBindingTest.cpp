@@ -12,12 +12,14 @@ using namespace testing;
 #include "lib-chart/Core/DataBinding.h"
 using namespace StockCharts;
 
-class MockDataBinding : public DataBinding {
+class MockDataBinding : public DataBinding
+{
 public:
-    MOCK_METHOD(void, on, (DataBinding* sender, const std::string& id), (override));
+    MOCK_METHOD(void, on, (DataBinding * sender, const std::string &id), (override));
 };
 
-TEST(DataBindingTest, BindAndUnbind) {
+TEST(DataBindingTest, BindAndUnbind)
+{
     MockDataBinding listener1;
     MockDataBinding listener2;
     MockDataBinding sender;
@@ -39,7 +41,8 @@ TEST(DataBindingTest, BindAndUnbind) {
     sender.fire("test1");
 }
 
-TEST(DataBindingTest, FireWithoutListeners) {
+TEST(DataBindingTest, FireWithoutListeners)
+{
     MockDataBinding sender;
 
     EXPECT_CALL(sender, on(_, _)).Times(0);
@@ -47,7 +50,8 @@ TEST(DataBindingTest, FireWithoutListeners) {
     sender.fire("test");
 }
 
-TEST(DataBindingTest, UnbindNotBoundListener) {
+TEST(DataBindingTest, UnbindNotBoundListener)
+{
     MockDataBinding listener;
     MockDataBinding sender;
 

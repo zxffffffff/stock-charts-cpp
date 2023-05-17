@@ -12,8 +12,8 @@ namespace StockCharts
 {
     struct ExpInfo
     {
-        std::string	rename;
-        bool		renameAssign = false;
+        std::string rename;
+        bool renameAssign = false;
     };
 
     enum class EnExpLineType
@@ -41,9 +41,9 @@ namespace StockCharts
 
     struct ExpColorType
     {
-        EnExpLineType	type = EnExpLineType::None;
-        EnExpLineThick	thick = EnExpLineThick::None;
-        std::string		color;
+        EnExpLineType type = EnExpLineType::None;
+        EnExpLineThick thick = EnExpLineThick::None;
+        std::string color;
     };
 
     enum class EnDrawingType
@@ -56,16 +56,16 @@ namespace StockCharts
 
     struct ExpDrawingType
     {
-        EnDrawingType	type = EnDrawingType::None;
-        Number			stickWidth = 0.0;
-        Number			stickEmpty = 0.0;
+        EnDrawingType type = EnDrawingType::None;
+        Number stickWidth = 0.0;
+        Number stickEmpty = 0.0;
     };
 
     struct ExpCore
     {
-        NumberCore		core;
-        ExpInfo			info;
-        ExpColorType	colorType;
-        ExpDrawingType	drawingType;
+        NumberCore core;
+        ExpInfo info;
+        ExpColorType colorType;
+        ExpDrawingType drawingType;
     };
 }

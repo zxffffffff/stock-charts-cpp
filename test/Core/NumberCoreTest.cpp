@@ -165,7 +165,7 @@ TEST(NumberCoreTest, At)
     EXPECT_EQ(nc.at(1), 42.0);
 
     // Test const version
-    const NumberCore& cnc = nc;
+    const NumberCore &cnc = nc;
     EXPECT_EQ(cnc.at(0), 1.0);
     EXPECT_EQ(cnc.at(1), 42.0);
     EXPECT_EQ(cnc.at(2), 3.0);
@@ -185,7 +185,7 @@ TEST(NumberCoreTest, SafeAt)
     EXPECT_EQ(nc.safeAt(1), 42.0);
 
     // Test const version
-    const NumberCore& cnc = nc;
+    const NumberCore &cnc = nc;
     EXPECT_EQ(cnc.safeAt(0), 1.0);
     EXPECT_EQ(cnc.safeAt(1), 42.0);
     EXPECT_EQ(cnc.safeAt(2), 3.0);
@@ -203,7 +203,7 @@ TEST(NumberCoreTest, Front)
     EXPECT_EQ(nc.front(), 42.0);
 
     // Test const version
-    const NumberCore& cnc = nc;
+    const NumberCore &cnc = nc;
     EXPECT_EQ(cnc.front(), 42.0);
 }
 
@@ -217,11 +217,12 @@ TEST(NumberCoreTest, Back)
     EXPECT_EQ(nc.back(), 42.0);
 
     // Test const version
-    const NumberCore& cnc = nc;
+    const NumberCore &cnc = nc;
     EXPECT_EQ(cnc.back(), 42.0);
 }
 
-TEST(NumberCoreTest, FillBeginTest) {
+TEST(NumberCoreTest, FillBeginTest)
+{
     NumberCore nc({1, 2, 3, 4, 5});
     nc.fillBegin(2, 6);
     EXPECT_EQ(nc[0], 6);
@@ -231,7 +232,8 @@ TEST(NumberCoreTest, FillBeginTest) {
     EXPECT_EQ(nc[4], 5);
 }
 
-TEST(NumberCoreTest, FillEndTest) {
+TEST(NumberCoreTest, FillEndTest)
+{
     NumberCore nc({1, 2, 3, 4, 5});
     nc.fillEnd(2, 6);
     EXPECT_EQ(nc[0], 1);
@@ -241,7 +243,8 @@ TEST(NumberCoreTest, FillEndTest) {
     EXPECT_EQ(nc[4], 6);
 }
 
-TEST(NumberCoreTest, FillTest) {
+TEST(NumberCoreTest, FillTest)
+{
     NumberCore nc({1, 2, 3, 4, 5});
     nc.fill(1, 3, 6);
     EXPECT_EQ(nc[0], 1);
@@ -251,7 +254,8 @@ TEST(NumberCoreTest, FillTest) {
     EXPECT_EQ(nc[4], 5);
 }
 
-TEST(NumberCoreTest, FillOutOfBoundsTest) {
+TEST(NumberCoreTest, FillOutOfBoundsTest)
+{
     NumberCore nc({1, 2, 3, 4, 5});
     nc.fill(-1, 2, 6);
     nc.fill(4, 2, 6);
@@ -262,7 +266,8 @@ TEST(NumberCoreTest, FillOutOfBoundsTest) {
     EXPECT_EQ(nc[4], 6);
 }
 
-TEST(NumberCoreTest, ReplaceTest) {
+TEST(NumberCoreTest, ReplaceTest)
+{
     NumberCore nc{1, 2, 3, 4, 5};
     nc.replace(3, 8);
     EXPECT_EQ(nc[2], 8);
@@ -270,7 +275,8 @@ TEST(NumberCoreTest, ReplaceTest) {
     EXPECT_EQ(nc[2], 8);
 }
 
-TEST(NumberCoreTest, ReplaceNotNumberTest) {
+TEST(NumberCoreTest, ReplaceNotNumberTest)
+{
     NumberCore nc{1.0, 2.0, std::nan(""), 4.0, std::numeric_limits<Number>::infinity()};
     nc.replaceNotNumber(10);
     EXPECT_EQ(nc[2], 10);
@@ -278,7 +284,8 @@ TEST(NumberCoreTest, ReplaceNotNumberTest) {
     EXPECT_EQ(nc[0], 1);
 }
 
-TEST(NumberCoreTest, ReplaceEmptyValueTest) {
+TEST(NumberCoreTest, ReplaceEmptyValueTest)
+{
     NumberCore nc{1, 2, NumberNull, 4, NumberNull};
     nc.replaceEmptyValue(5);
     EXPECT_EQ(nc[2], 5);
@@ -286,7 +293,8 @@ TEST(NumberCoreTest, ReplaceEmptyValueTest) {
     EXPECT_EQ(nc[1], 2);
 }
 
-TEST(NumberCoreTest, SwapTest) {
+TEST(NumberCoreTest, SwapTest)
+{
     NumberCore nc1{1, 2, 3};
     NumberCore nc2{4, 5, 6};
     nc1.swap(nc2);
@@ -298,7 +306,8 @@ TEST(NumberCoreTest, SwapTest) {
     EXPECT_EQ(nc2[2], 3);
 }
 
-TEST(NumberCoreTest, ReverseTest) {
+TEST(NumberCoreTest, ReverseTest)
+{
     NumberCore nc{1, 2, 3, 4, 5};
     nc.reverse();
     EXPECT_EQ(nc[0], 5);
@@ -308,13 +317,14 @@ TEST(NumberCoreTest, ReverseTest) {
     EXPECT_EQ(nc[4], 1);
 }
 
-TEST(NumberCoreTest, GetMinMaxTest) {
+TEST(NumberCoreTest, GetMinMaxTest)
+{
     // Test an empty NumberCore
     NumberCore nc1;
     EXPECT_EQ(std::make_pair(NumberNull, NumberNull), nc1.getMinMax(0, 0));
 
     // Test with beginIndex and endIndex out of range
-    NumberCore nc2{ 1.0, 2.0, 3.0 };
+    NumberCore nc2{1.0, 2.0, 3.0};
     EXPECT_EQ(std::make_pair(NumberNull, NumberNull), nc2.getMinMax(-1, 4));
 
     // Test with beginIndex == endIndex
@@ -324,11 +334,12 @@ TEST(NumberCoreTest, GetMinMaxTest) {
     EXPECT_EQ(std::make_pair(2.0, 3.0), nc2.getMinMax(1, 3));
 
     // Test with reverse order NumberCore
-    NumberCore nc3{ 3.0, 2.0, 1.0 };
+    NumberCore nc3{3.0, 2.0, 1.0};
     EXPECT_EQ(std::make_pair(1.0, 3.0), nc3.getMinMax(0, 3));
 }
 
-TEST(NumberCoreTest, MaxTest) {
+TEST(NumberCoreTest, MaxTest)
+{
     EXPECT_EQ(NumberCore::max(1.1, 2.2), 2.2);
     EXPECT_EQ(NumberCore::max(2.2, 3.3), 3.3);
     EXPECT_EQ(NumberCore::max(1.1, 3.3), 3.3);
@@ -337,7 +348,8 @@ TEST(NumberCoreTest, MaxTest) {
     EXPECT_EQ(NumberCore::max(NumberNull, NumberNull), NumberNull);
 }
 
-TEST(NumberCoreTest, MinTest) {
+TEST(NumberCoreTest, MinTest)
+{
     EXPECT_EQ(NumberCore::min(1.1, 2.2), 1.1);
     EXPECT_EQ(NumberCore::min(2.2, 3.3), 2.2);
     EXPECT_EQ(NumberCore::min(1.1, 3.3), 1.1);
@@ -346,115 +358,118 @@ TEST(NumberCoreTest, MinTest) {
     EXPECT_EQ(NumberCore::min(NumberNull, NumberNull), NumberNull);
 }
 
-TEST(NumberCoreTest, AbsTest) {
+TEST(NumberCoreTest, AbsTest)
+{
     EXPECT_DOUBLE_EQ(NumberCore::abs(1.1), 1.1);
     EXPECT_DOUBLE_EQ(NumberCore::abs(-2.2), 2.2);
     EXPECT_DOUBLE_EQ(NumberCore::abs(3.3), 3.3);
     EXPECT_DOUBLE_EQ(NumberCore::abs(NumberNull), NumberNull);
 }
 
-TEST(NumberCoreTest, MaxTest2) {
-  // Test with two NumberCore objects of equal size
-  NumberCore nc1({1, 2, 3, 4, 5});
-  NumberCore nc2({6, 7, 8, 9, 10});
-  NumberCore result = NumberCore::max(nc1, nc2);
-  EXPECT_EQ(result.size(), 5);
-  EXPECT_EQ(result[0], 6);
-  EXPECT_EQ(result[1], 7);
-  EXPECT_EQ(result[2], 8);
-  EXPECT_EQ(result[3], 9);
-  EXPECT_EQ(result[4], 10);
+TEST(NumberCoreTest, MaxTest2)
+{
+    // Test with two NumberCore objects of equal size
+    NumberCore nc1({1, 2, 3, 4, 5});
+    NumberCore nc2({6, 7, 8, 9, 10});
+    NumberCore result = NumberCore::max(nc1, nc2);
+    EXPECT_EQ(result.size(), 5);
+    EXPECT_EQ(result[0], 6);
+    EXPECT_EQ(result[1], 7);
+    EXPECT_EQ(result[2], 8);
+    EXPECT_EQ(result[3], 9);
+    EXPECT_EQ(result[4], 10);
 
-  // Test with two NumberCore objects of different sizes
-  NumberCore nc3({1, 2, 3, 4, 5});
-  NumberCore nc4({6, 7});
-  NumberCore result2 = NumberCore::max(nc3, nc4);
-  EXPECT_EQ(result2.size(), 5);
-  EXPECT_EQ(result2[0], 6);
-  EXPECT_EQ(result2[1], 7);
-  EXPECT_EQ(result2[2], NumberNull);
-  EXPECT_EQ(result2[3], NumberNull);
-  EXPECT_EQ(result2[4], NumberNull);
+    // Test with two NumberCore objects of different sizes
+    NumberCore nc3({1, 2, 3, 4, 5});
+    NumberCore nc4({6, 7});
+    NumberCore result2 = NumberCore::max(nc3, nc4);
+    EXPECT_EQ(result2.size(), 5);
+    EXPECT_EQ(result2[0], 6);
+    EXPECT_EQ(result2[1], 7);
+    EXPECT_EQ(result2[2], NumberNull);
+    EXPECT_EQ(result2[3], NumberNull);
+    EXPECT_EQ(result2[4], NumberNull);
 
-  // Test with one empty NumberCore object
-  NumberCore nc5({1, 2, 3, 4, 5});
-  NumberCore nc6({});
-  NumberCore result3 = NumberCore::max(nc5, nc6);
-  EXPECT_EQ(result3.size(), 5);
-  EXPECT_EQ(result3[0], 1);
-  EXPECT_EQ(result3[1], 2);
-  EXPECT_EQ(result3[2], 3);
-  EXPECT_EQ(result3[3], 4);
-  EXPECT_EQ(result3[4], 5);
+    // Test with one empty NumberCore object
+    NumberCore nc5({1, 2, 3, 4, 5});
+    NumberCore nc6({});
+    NumberCore result3 = NumberCore::max(nc5, nc6);
+    EXPECT_EQ(result3.size(), 5);
+    EXPECT_EQ(result3[0], 1);
+    EXPECT_EQ(result3[1], 2);
+    EXPECT_EQ(result3[2], 3);
+    EXPECT_EQ(result3[3], 4);
+    EXPECT_EQ(result3[4], 5);
 
-  // Test with both empty NumberCore objects
-  NumberCore nc7({});
-  NumberCore nc8({});
-  NumberCore result4 = NumberCore::max(nc7, nc8);
-  EXPECT_TRUE(result4.empty());
+    // Test with both empty NumberCore objects
+    NumberCore nc7({});
+    NumberCore nc8({});
+    NumberCore result4 = NumberCore::max(nc7, nc8);
+    EXPECT_TRUE(result4.empty());
 
-  // Test with one NumberCore object with single value
-  NumberCore nc9({3});
-  NumberCore nc10({1, 2, 3, 4, 5});
-  NumberCore result5 = NumberCore::max(nc9, nc10);
-  EXPECT_EQ(result5.size(), 5);
-  EXPECT_EQ(result5[0], 3);
-  EXPECT_EQ(result5[1], 3);
-  EXPECT_EQ(result5[2], 3);
-  EXPECT_EQ(result5[3], 4);
-  EXPECT_EQ(result5[4], 5);
+    // Test with one NumberCore object with single value
+    NumberCore nc9({3});
+    NumberCore nc10({1, 2, 3, 4, 5});
+    NumberCore result5 = NumberCore::max(nc9, nc10);
+    EXPECT_EQ(result5.size(), 5);
+    EXPECT_EQ(result5[0], 3);
+    EXPECT_EQ(result5[1], 3);
+    EXPECT_EQ(result5[2], 3);
+    EXPECT_EQ(result5[3], 4);
+    EXPECT_EQ(result5[4], 5);
 }
 
-TEST(NumberCoreTest, MinTest2) {
-  // Test with two NumberCore objects of equal size
-  NumberCore nc1({1, 2, 3, 4, 5});
-  NumberCore nc2({6, 7, 8, 9, 10});
-  NumberCore result = NumberCore::min(nc1, nc2);
-  EXPECT_EQ(result.size(), 5);
-  EXPECT_EQ(result[0], 1);
-  EXPECT_EQ(result[1], 2);
-  EXPECT_EQ(result[2], 3);
-  EXPECT_EQ(result[3], 4);
-  EXPECT_EQ(result[4], 5);
+TEST(NumberCoreTest, MinTest2)
+{
+    // Test with two NumberCore objects of equal size
+    NumberCore nc1({1, 2, 3, 4, 5});
+    NumberCore nc2({6, 7, 8, 9, 10});
+    NumberCore result = NumberCore::min(nc1, nc2);
+    EXPECT_EQ(result.size(), 5);
+    EXPECT_EQ(result[0], 1);
+    EXPECT_EQ(result[1], 2);
+    EXPECT_EQ(result[2], 3);
+    EXPECT_EQ(result[3], 4);
+    EXPECT_EQ(result[4], 5);
 
-  // Test with two NumberCore objects of different sizes
-  NumberCore nc3({6, 7, 3, 4, 5});
-  NumberCore nc4({1, 2});
-  NumberCore result2 = NumberCore::min(nc3, nc4);
-  EXPECT_EQ(result2.size(), 5);
-  EXPECT_EQ(result2[0], 1);
-  EXPECT_EQ(result2[1], 2);
-  EXPECT_EQ(result2[2], NumberNull);
-  EXPECT_EQ(result2[3], NumberNull);
-  EXPECT_EQ(result2[4], NumberNull);
+    // Test with two NumberCore objects of different sizes
+    NumberCore nc3({6, 7, 3, 4, 5});
+    NumberCore nc4({1, 2});
+    NumberCore result2 = NumberCore::min(nc3, nc4);
+    EXPECT_EQ(result2.size(), 5);
+    EXPECT_EQ(result2[0], 1);
+    EXPECT_EQ(result2[1], 2);
+    EXPECT_EQ(result2[2], NumberNull);
+    EXPECT_EQ(result2[3], NumberNull);
+    EXPECT_EQ(result2[4], NumberNull);
 
-  // Test with one empty NumberCore object
-  NumberCore nc5({1, 2, 3, 4, 5});
-  NumberCore nc6({});
-  NumberCore result3 = NumberCore::min(nc5, nc6);
-  EXPECT_EQ(result3.size(), 5);
-  EXPECT_EQ(result3[0], 1);
-  EXPECT_EQ(result3[1], 2);
-  EXPECT_EQ(result3[2], 3);
-  EXPECT_EQ(result3[3], 4);
-  EXPECT_EQ(result3[4], 5);
+    // Test with one empty NumberCore object
+    NumberCore nc5({1, 2, 3, 4, 5});
+    NumberCore nc6({});
+    NumberCore result3 = NumberCore::min(nc5, nc6);
+    EXPECT_EQ(result3.size(), 5);
+    EXPECT_EQ(result3[0], 1);
+    EXPECT_EQ(result3[1], 2);
+    EXPECT_EQ(result3[2], 3);
+    EXPECT_EQ(result3[3], 4);
+    EXPECT_EQ(result3[4], 5);
 
-  // Test with both empty NumberCore objects
-  NumberCore nc7({});
-  NumberCore nc8({});
-  NumberCore result4 = NumberCore::min(nc7, nc8);
-  EXPECT_TRUE(result4.empty());
+    // Test with both empty NumberCore objects
+    NumberCore nc7({});
+    NumberCore nc8({});
+    NumberCore result4 = NumberCore::min(nc7, nc8);
+    EXPECT_TRUE(result4.empty());
 
-  // Test with one NumberCore object with single value
-  NumberCore nc9({3});
-  NumberCore nc10({1, 2, 3, 4, 5});
-  NumberCore result5 = NumberCore::min(nc9, nc10);
-  EXPECT_EQ(result5.size(), 5);
-  EXPECT_EQ(result5[0], 1);
-  EXPECT_EQ(result5[1], 2);
-  EXPECT_EQ(result5[2], 3);
-  EXPECT_EQ(result5[3], 3);
-  EXPECT_EQ(result5[4], 3);
+    // Test with one NumberCore object with single value
+    NumberCore nc9({3});
+    NumberCore nc10({1, 2, 3, 4, 5});
+    NumberCore result5 = NumberCore::min(nc9, nc10);
+    EXPECT_EQ(result5.size(), 5);
+    EXPECT_EQ(result5[0], 1);
+    EXPECT_EQ(result5[1], 2);
+    EXPECT_EQ(result5[2], 3);
+    EXPECT_EQ(result5[3], 3);
+    EXPECT_EQ(result5[4], 3);
 }
 
 TEST(NumberCoreTest, OperatorAddEqual)
@@ -511,134 +526,147 @@ TEST(NumberCoreTest, OperatorNot)
     EXPECT_EQ(v1[2], v3[2]);
 }
 
-TEST(NumberCoreTest, Addition) {
-  NumberCore a{1.0, 2.0, 3.0};
-  NumberCore b{3.0, 2.0, 1.0};
-  NumberCore c = a + b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_EQ(c[0], 4.0);
-  EXPECT_EQ(c[1], 4.0);
-  EXPECT_EQ(c[2], 4.0);
+TEST(NumberCoreTest, Addition)
+{
+    NumberCore a{1.0, 2.0, 3.0};
+    NumberCore b{3.0, 2.0, 1.0};
+    NumberCore c = a + b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_EQ(c[0], 4.0);
+    EXPECT_EQ(c[1], 4.0);
+    EXPECT_EQ(c[2], 4.0);
 }
 
-TEST(NumberCoreTest, Subtraction) {
-  NumberCore a{1.0, 2.0, 3.0};
-  NumberCore b{3.0, 2.0, 1.0};
-  NumberCore c = a - b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_EQ(c[0], -2.0);
-  EXPECT_EQ(c[1], 0.0);
-  EXPECT_EQ(c[2], 2.0);
+TEST(NumberCoreTest, Subtraction)
+{
+    NumberCore a{1.0, 2.0, 3.0};
+    NumberCore b{3.0, 2.0, 1.0};
+    NumberCore c = a - b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_EQ(c[0], -2.0);
+    EXPECT_EQ(c[1], 0.0);
+    EXPECT_EQ(c[2], 2.0);
 }
 
-TEST(NumberCoreTest, Multiplication) {
-  NumberCore a{1.0, 2.0, 3.0};
-  NumberCore b{3.0, 2.0, 1.0};
-  NumberCore c = a * b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_EQ(c[0], 3.0);
-  EXPECT_EQ(c[1], 4.0);
-  EXPECT_EQ(c[2], 3.0);
+TEST(NumberCoreTest, Multiplication)
+{
+    NumberCore a{1.0, 2.0, 3.0};
+    NumberCore b{3.0, 2.0, 1.0};
+    NumberCore c = a * b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_EQ(c[0], 3.0);
+    EXPECT_EQ(c[1], 4.0);
+    EXPECT_EQ(c[2], 3.0);
 }
 
-TEST(NumberCoreTest, Division) {
-  NumberCore a{1.0, 2.0, 3.0};
-  NumberCore b{3.0, 2.0, 1.0};
-  NumberCore c = a / b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_DOUBLE_EQ(c[0], 1.0 / 3.0);
-  EXPECT_DOUBLE_EQ(c[1], 1.0);
-  EXPECT_DOUBLE_EQ(c[2], 3.0);
+TEST(NumberCoreTest, Division)
+{
+    NumberCore a{1.0, 2.0, 3.0};
+    NumberCore b{3.0, 2.0, 1.0};
+    NumberCore c = a / b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_DOUBLE_EQ(c[0], 1.0 / 3.0);
+    EXPECT_DOUBLE_EQ(c[1], 1.0);
+    EXPECT_DOUBLE_EQ(c[2], 3.0);
 }
 
-TEST(NumberCoreTest, Modulo) {
-  NumberCore a{7.0, 8.0, 9.0};
-  NumberCore b{2.0, 3.0, 4.0};
-  NumberCore c = a % b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_EQ(c[0], 1.0);
-  EXPECT_EQ(c[1], 2.0);
-  EXPECT_EQ(c[2], 1.0);
+TEST(NumberCoreTest, Modulo)
+{
+    NumberCore a{7.0, 8.0, 9.0};
+    NumberCore b{2.0, 3.0, 4.0};
+    NumberCore c = a % b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_EQ(c[0], 1.0);
+    EXPECT_EQ(c[1], 2.0);
+    EXPECT_EQ(c[2], 1.0);
 }
 
-TEST(NumberCoreTest, LogicalAnd) {
-  NumberCore a{1, 1, 0};
-  NumberCore b{0, 1, 1};
-  NumberCore c = a && b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_EQ(c[0], 0);
-  EXPECT_EQ(c[1], 1);
-  EXPECT_EQ(c[2], 0);
+TEST(NumberCoreTest, LogicalAnd)
+{
+    NumberCore a{1, 1, 0};
+    NumberCore b{0, 1, 1};
+    NumberCore c = a && b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_EQ(c[0], 0);
+    EXPECT_EQ(c[1], 1);
+    EXPECT_EQ(c[2], 0);
 }
 
-TEST(NumberCoreTest, LogicalOr) {
-  NumberCore a{1, 1, 0};
-  NumberCore b{0, 1, 1};
-  NumberCore c = a || b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_EQ(c[0], 1);
-  EXPECT_EQ(c[1], 1);
-  EXPECT_EQ(c[2], 1);
+TEST(NumberCoreTest, LogicalOr)
+{
+    NumberCore a{1, 1, 0};
+    NumberCore b{0, 1, 1};
+    NumberCore c = a || b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_EQ(c[0], 1);
+    EXPECT_EQ(c[1], 1);
+    EXPECT_EQ(c[2], 1);
 }
 
-TEST(NumberCoreTest, LessThan) {
-  NumberCore a{1, 2, 3};
-  NumberCore b{0, 2, 4};
-  NumberCore c = a < b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_EQ(c[0], 0);
-  EXPECT_EQ(c[1], 0);
-  EXPECT_EQ(c[2], 1);
+TEST(NumberCoreTest, LessThan)
+{
+    NumberCore a{1, 2, 3};
+    NumberCore b{0, 2, 4};
+    NumberCore c = a < b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_EQ(c[0], 0);
+    EXPECT_EQ(c[1], 0);
+    EXPECT_EQ(c[2], 1);
 }
 
-TEST(NumberCoreTest, LessThanOrEqualTo) {
-  NumberCore a{1, 2, 3};
-  NumberCore b{0, 2, 4};
-  NumberCore c = a <= b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_EQ(c[0], 0);
-  EXPECT_EQ(c[1], 1);
-  EXPECT_EQ(c[2], 1);
+TEST(NumberCoreTest, LessThanOrEqualTo)
+{
+    NumberCore a{1, 2, 3};
+    NumberCore b{0, 2, 4};
+    NumberCore c = a <= b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_EQ(c[0], 0);
+    EXPECT_EQ(c[1], 1);
+    EXPECT_EQ(c[2], 1);
 }
 
-TEST(NumberCoreTest, GreaterThan) {
-  NumberCore a{1, 2, 3};
-  NumberCore b{0, 2, 4};
-  NumberCore c = a > b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_EQ(c[0], 1);
-  EXPECT_EQ(c[1], 0);
-  EXPECT_EQ(c[2], 0);
+TEST(NumberCoreTest, GreaterThan)
+{
+    NumberCore a{1, 2, 3};
+    NumberCore b{0, 2, 4};
+    NumberCore c = a > b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_EQ(c[0], 1);
+    EXPECT_EQ(c[1], 0);
+    EXPECT_EQ(c[2], 0);
 }
 
-TEST(NumberCoreTest, GreaterThanOrEqualTo) {
-  NumberCore a{1, 2, 3};
-  NumberCore b{0, 2, 4};
-  NumberCore c = a >= b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_EQ(c[0], 1);
-  EXPECT_EQ(c[1], 1);
-  EXPECT_EQ(c[2], 0);
+TEST(NumberCoreTest, GreaterThanOrEqualTo)
+{
+    NumberCore a{1, 2, 3};
+    NumberCore b{0, 2, 4};
+    NumberCore c = a >= b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_EQ(c[0], 1);
+    EXPECT_EQ(c[1], 1);
+    EXPECT_EQ(c[2], 0);
 }
 
-TEST(NumberCoreTest, EqualTo) {
-  NumberCore a{1, 2, 3};
-  NumberCore b{0, 2, 4};
-  NumberCore c = a == b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_EQ(c[0], 0);
-  EXPECT_EQ(c[1], 1);
-  EXPECT_EQ(c[2], 0);
+TEST(NumberCoreTest, EqualTo)
+{
+    NumberCore a{1, 2, 3};
+    NumberCore b{0, 2, 4};
+    NumberCore c = a == b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_EQ(c[0], 0);
+    EXPECT_EQ(c[1], 1);
+    EXPECT_EQ(c[2], 0);
 }
 
-TEST(NumberCoreTest, NotEqualTo) {
-  NumberCore a{1, 2, 3};
-  NumberCore b{0, 2, 4};
-  NumberCore c = a != b;
-  EXPECT_EQ(c.size(), 3);
-  EXPECT_EQ(c[0], 1);
-  EXPECT_EQ(c[1], 0);
-  EXPECT_EQ(c[2], 1);
+TEST(NumberCoreTest, NotEqualTo)
+{
+    NumberCore a{1, 2, 3};
+    NumberCore b{0, 2, 4};
+    NumberCore c = a != b;
+    EXPECT_EQ(c.size(), 3);
+    EXPECT_EQ(c[0], 1);
+    EXPECT_EQ(c[1], 0);
+    EXPECT_EQ(c[2], 1);
 }
 
 TEST(NumberCoreTest, SetOtherAndGetOther)

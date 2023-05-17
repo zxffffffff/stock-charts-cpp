@@ -22,8 +22,8 @@ namespace StockCharts
         virtual void onContextChanged() override
         {
             auto stockCore = *m_model->getStockCore();
-            const auto& props = *m_props;
-            auto& ctx = *m_context;
+            const auto &props = *m_props;
+            auto &ctx = *m_context;
             ChartCoordinate coordinate(m_props, m_context);
 
             // x
@@ -36,9 +36,11 @@ namespace StockCharts
             {
             case EnXAxisType::yyyyMM:
             default:
-                for (int index = ctx.beginIndex; index < ctx.endIndex; index++) {
+                for (int index = ctx.beginIndex; index < ctx.endIndex; index++)
+                {
                     std::string dt = NumberUtils::toTimestamp(stockCore.timestamp[index], "%Y-%m");
-                    if (!xAxisPos.empty()) {
+                    if (!xAxisPos.empty())
+                    {
                         if (dt == xAxisDate.back())
                             continue;
                     }
@@ -48,33 +50,38 @@ namespace StockCharts
                     xAxisRect.back().moveInside(ctx.rectXAxis);
                     xAxisDate.push_back(dt);
                 }
-                if (xAxisPos.size() >= 2) {
+                if (xAxisPos.size() >= 2)
+                {
                     xAxisPos.erase(xAxisPos.begin());
                     xAxisRect.erase(xAxisRect.begin());
                     xAxisDate.erase(xAxisDate.begin());
                 }
-                for (int i = xAxisPos.size() - 1; i >= 1; i--) {
-                    auto& pre = xAxisDate[i - 1];
-                    auto& cur = xAxisDate[i];
+                for (int i = xAxisPos.size() - 1; i >= 1; i--)
+                {
+                    auto &pre = xAxisDate[i - 1];
+                    auto &cur = xAxisDate[i];
                     if (cur.substr(0, 4) == pre.substr(0, 4))
                         cur = cur.substr(5);
                 }
                 break;
             }
-            for (int i = 1; i < xAxisPos.size(); ) {
-                auto& rect0 = xAxisRect[i - 1];
-                auto& rect1 = xAxisRect[i];
-                if (rect0.right() >= rect1.left()) {
+            for (int i = 1; i < xAxisPos.size();)
+            {
+                auto &rect0 = xAxisRect[i - 1];
+                auto &rect1 = xAxisRect[i];
+                if (rect0.right() >= rect1.left())
+                {
                     xAxisPos.erase(xAxisPos.begin() + i);
                     xAxisRect.erase(xAxisRect.begin() + i);
                     xAxisDate.erase(xAxisDate.begin() + i);
                 }
-                else {
+                else
+                {
                     i++;
                 }
             }
 
-            //y
+            // y
             yAxisPos.clear();
             ylAxisRect.clear();
             yrAxisRect.clear();
@@ -82,7 +89,8 @@ namespace StockCharts
             yrAxisPrice.clear();
             const Real stepHeight = props.yAxisGridStepHeight;
             const Real stepHalfHeight = stepHeight / 2;
-            for (Real y = ctx.rectChart.bottom() - props.yAxisGridStart; y >= ctx.rectChart.top() + stepHalfHeight; y -= stepHeight) {
+            for (Real y = ctx.rectChart.bottom() - props.yAxisGridStart; y >= ctx.rectChart.top() + stepHalfHeight; y -= stepHeight)
+            {
                 yAxisPos.push_back(y);
                 ylAxisRect.push_back(Rect(ctx.rectYLAxis.left() + 1, y - stepHalfHeight, ctx.rectYLAxis.width() - 2, stepHeight));
                 yrAxisRect.push_back(Rect(ctx.rectYRAxis.left() + 1, y - stepHalfHeight, ctx.rectYRAxis.width() - 2, stepHeight));
@@ -93,10 +101,10 @@ namespace StockCharts
             }
         }
 
-        virtual void onPaint(Painter& painter) override
+        virtual void onPaint(Painter &painter) override
         {
-            const auto& props = *m_props;
-            const auto& ctx = *m_context;
+            const auto &props = *m_props;
+            const auto &ctx = *m_context;
 
             painter.fillRect(ctx.rectView, props.colorViewBG);
             painter.fillRect(ctx.rectXAxis, props.colorXAxisBG);
@@ -106,55 +114,52 @@ namespace StockCharts
             painter.fillRect(ctx.rectInnerChart, props.colorInnerChartBG);
 
             // x
-            for (int i = 0; i < xAxisPos.size(); i++) {
-                const auto& x = xAxisPos[i];
+            for (int i = 0; i < xAxisPos.size(); i++)
+            {
+                const auto &x = xAxisPos[i];
                 painter.drawLine(
                     Line(x, ctx.rectChart.top(), x, ctx.rectChart.bottom()),
-                    props.axisGridStyle
-                );
+                    props.axisGridStyle);
             }
-            for (int i = 0; i < xAxisDate.size(); i++) {
+            for (int i = 0; i < xAxisDate.size(); i++)
+            {
                 painter.drawString(
                     xAxisRect[i],
                     xAxisDate[i],
-                    props.xAxisTextFont
-                );
+                    props.xAxisTextFont);
             }
             painter.drawLine(
                 Line(ctx.rectXAxis.topLeft(), ctx.rectXAxis.topRight()),
-                props.axisLineStyle
-            );
+                props.axisLineStyle);
 
             // y
-            for (int i = 0; i < yAxisPos.size(); i++) {
-                const auto& y = yAxisPos[i];
+            for (int i = 0; i < yAxisPos.size(); i++)
+            {
+                const auto &y = yAxisPos[i];
                 painter.drawLine(
                     Line(ctx.rectChart.left(), y, ctx.rectChart.right(), y),
-                    props.axisGridStyle
-                );
+                    props.axisGridStyle);
             }
-            for (int i = 0; i < ylAxisPrice.size(); i++) {
+            for (int i = 0; i < ylAxisPrice.size(); i++)
+            {
                 painter.drawString(
                     ylAxisRect[i],
                     ylAxisPrice[i],
-                    props.ylAxisTextFont
-                );
+                    props.ylAxisTextFont);
             }
-            for (int i = 0; i < yrAxisPrice.size(); i++) {
+            for (int i = 0; i < yrAxisPrice.size(); i++)
+            {
                 painter.drawString(
                     yrAxisRect[i],
                     yrAxisPrice[i],
-                    props.yrAxisTextFont
-                );
+                    props.yrAxisTextFont);
             }
             painter.drawLine(
                 Line(ctx.rectYLAxis.topRight(), ctx.rectYLAxis.bottomRight()),
-                props.axisLineStyle
-            );
+                props.axisLineStyle);
             painter.drawLine(
                 Line(ctx.rectYRAxis.topLeft(), ctx.rectYRAxis.bottomLeft()),
-                props.axisLineStyle
-            );
+                props.axisLineStyle);
         }
 
     private:
@@ -170,4 +175,3 @@ namespace StockCharts
         std::vector<std::string> yrAxisPrice;
     };
 }
-

@@ -14,14 +14,11 @@ namespace StockCharts
     {
         std::shared_ptr<const ChartProps> m_props;
         std::shared_ptr<const ChartContext> m_context;
-        const ChartProps& props;
-        const ChartContext& ctx;
+        const ChartProps &props;
+        const ChartContext &ctx;
 
         ChartCoordinate(std::shared_ptr<const ChartProps> props, std::shared_ptr<const ChartContext> context)
-            : m_props(props)
-            , m_context(context)
-            , props(*props)
-            , ctx(*context)
+            : m_props(props), m_context(context), props(*props), ctx(*context)
         {
         }
 
@@ -100,4 +97,3 @@ namespace StockCharts
         }
     };
 }
-

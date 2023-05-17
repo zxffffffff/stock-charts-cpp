@@ -39,15 +39,12 @@ namespace StockCharts
         {
         }
 
-        Widget(const std::string& _text, const Rect& _rect, const WidgetBG& _bg, const Font& _font)
-            : text(_text)
-            , rect(_rect)
-            , bg(_bg)
-            , font(_font)
+        Widget(const std::string &_text, const Rect &_rect, const WidgetBG &_bg, const Font &_font)
+            : text(_text), rect(_rect), bg(_bg), font(_font)
         {
         }
 
-        void paint(Painter& painter)
+        void paint(Painter &painter)
         {
             // todo
             painter.fillRect(rect, bg.normal.colorBG);
@@ -56,4 +53,3 @@ namespace StockCharts
         }
     };
 }
-

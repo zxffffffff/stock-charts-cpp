@@ -30,7 +30,7 @@ namespace StockCharts
 
         // [1] x
         int viewCount = 0;
-        int endIndex = 0; // lastIndex = (endIndex - 1)
+        int endIndex = 0;   // lastIndex = (endIndex - 1)
         int beginIndex = 0; // = (endIndex - viewCount)
         Real nodeWidth = 7;
         Real stickWidth = 5;
@@ -46,4 +46,3 @@ namespace StockCharts
         bool crossLineVisible = true;
     };
 }
-

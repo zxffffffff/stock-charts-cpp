@@ -29,8 +29,8 @@ namespace StockCharts
         virtual void onContextChanged() override
         {
             auto stockCore = *m_model->getStockCore();
-            const auto& ctx = *m_context;
-            const auto& props = *m_props;
+            const auto &ctx = *m_context;
+            const auto &props = *m_props;
             m_areaIndexs.resize(1);
             m_areaIndexs[0].exps.resize(1);
 
@@ -47,13 +47,13 @@ namespace StockCharts
             }
         }
 
-        virtual void onPaint(Painter& painter) override
+        virtual void onPaint(Painter &painter) override
         {
-            const auto& props = *m_props;
+            const auto &props = *m_props;
 
             if (m_areaIndexs.size() != 1 || m_areaIndexs[0].exps.size() != 1)
                 return;
-            auto& exp = m_areaIndexs[0].exps[0];
+            auto &exp = m_areaIndexs[0].exps[0];
 
             switch (props.lineType)
             {
@@ -73,4 +73,3 @@ namespace StockCharts
         }
     };
 }
-

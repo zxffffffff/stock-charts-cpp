@@ -24,7 +24,7 @@ namespace StockCharts
         }
         virtual ~ChartModel() = default;
 
-        virtual void on(DataBinding* sender, const std::string& id) override
+        virtual void on(DataBinding *sender, const std::string &id) override
         {
             if (id == ID_ChartPluginChanged)
                 fire(id);
@@ -36,15 +36,15 @@ namespace StockCharts
             return m_stockCore;
         }
 
-        void setStockCore(const StockCore& stockCore)
+        void setStockCore(const StockCore &stockCore)
         {
             *m_stockCore = stockCore;
             fire(ID_StockCoreChanged);
         }
 
         // [1]
-        template<typename T = ChartPlugin, typename... Args>
-        std::shared_ptr<T> addPlugin(Args&&... args)
+        template <typename T = ChartPlugin, typename... Args>
+        std::shared_ptr<T> addPlugin(Args &&...args)
         {
             assert(!getPlugin<T>());
             auto plugin = std::make_shared<T>(m_stockCore, args...);
@@ -53,10 +53,11 @@ namespace StockCharts
             return getPlugin<T>();
         }
 
-        template<typename T = ChartPlugin>
+        template <typename T = ChartPlugin>
         std::shared_ptr<T> getPlugin()
         {
-            for (auto& plugin : m_plugins) {
+            for (auto &plugin : m_plugins)
+            {
                 // RTTI
                 auto derived = std::dynamic_pointer_cast<T>(plugin);
                 if (derived)
@@ -65,10 +66,11 @@ namespace StockCharts
             return nullptr;
         }
 
-        template<typename T = ChartPlugin>
+        template <typename T = ChartPlugin>
         std::shared_ptr<const T> getPlugin() const
         {
-            for (auto& plugin : m_plugins) {
+            for (auto &plugin : m_plugins)
+            {
                 // RTTI
                 auto derived = std::dynamic_pointer_cast<const T>(plugin);
                 if (derived)
@@ -77,7 +79,7 @@ namespace StockCharts
             return nullptr;
         }
 
-        const std::vector<std::shared_ptr<ChartPlugin>>& getPlugins()
+        const std::vector<std::shared_ptr<ChartPlugin>> &getPlugins()
         {
             return m_plugins;
         }
@@ -90,4 +92,3 @@ namespace StockCharts
         std::vector<std::shared_ptr<ChartPlugin>> m_plugins;
     };
 }
-
