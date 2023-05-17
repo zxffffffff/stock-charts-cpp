@@ -25,7 +25,7 @@ namespace StockCharts
         ChartViewModel(std::shared_ptr<ChartModel> model)
             : m_model(model), m_props(std::make_shared<ChartProps>()), m_context(std::make_shared<ChartContext>())
         {
-            bind(m_model.get());
+            listen(m_model.get());
         }
         virtual ~ChartViewModel() = default;
 
@@ -86,7 +86,7 @@ namespace StockCharts
             assert(!getLayer<T>());
             auto layer = std::make_shared<T>(m_model, m_props, m_context, args...);
             m_layers.push_back(layer);
-            bind(layer.get());
+            listen(layer.get());
             return getLayer<T>();
         }
 
@@ -381,7 +381,7 @@ namespace StockCharts
 
         void setSyncOther(ChartViewModel *other)
         {
-            bind(other);
+            listen(other);
         }
 
         void syncViewCount(int viewCount, int beginIndex, int endIndex, Real nodeWidth, Real stickWidth)

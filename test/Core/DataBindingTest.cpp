@@ -18,7 +18,7 @@ public:
     MOCK_METHOD(void, on, (DataBinding * sender, const std::string &id), (override));
 };
 
-TEST(DataBindingTest, BindAndUnbind)
+TEST(DataBindingTest, BindAndunlisten)
 {
     MockDataBinding listener1;
     MockDataBinding listener2;
@@ -28,16 +28,16 @@ TEST(DataBindingTest, BindAndUnbind)
     EXPECT_CALL(listener1, on(&sender, "test"));
     EXPECT_CALL(listener2, on(&sender, "test"));
 
-    listener1.bind(&sender);
-    listener2.bind(&sender);
+    listener1.listen(&sender);
+    listener2.listen(&sender);
     sender.fire("test");
 
     // 确保on()函数不再被调用
     EXPECT_CALL(listener1, on(&sender, "test")).Times(0);
     EXPECT_CALL(listener2, on(&sender, "test")).Times(0);
 
-    listener1.unbind(&sender);
-    listener2.unbind(&sender);
+    listener1.unlisten(&sender);
+    listener2.unlisten(&sender);
     sender.fire("test1");
 }
 
@@ -50,12 +50,12 @@ TEST(DataBindingTest, FireWithoutListeners)
     sender.fire("test");
 }
 
-TEST(DataBindingTest, UnbindNotBoundListener)
+TEST(DataBindingTest, unlistenNotBoundListener)
 {
     MockDataBinding listener;
     MockDataBinding sender;
 
     EXPECT_CALL(listener, on(_, _)).Times(0);
 
-    sender.unbind(&listener);
+    sender.unlisten(&listener);
 }

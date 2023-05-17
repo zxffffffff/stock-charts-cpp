@@ -36,7 +36,7 @@ namespace StockCharts
         void init(std::shared_ptr<ChartViewModel> vm)
         {
             m_vm = vm;
-            bind(m_vm.get());
+            listen(m_vm.get());
         }
 
         void syncSubChart(ChartViewQt *otherChart)

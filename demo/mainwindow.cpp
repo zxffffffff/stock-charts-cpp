@@ -163,7 +163,7 @@ MainWindow::MainWindow(QWidget *parent)
             view->syncSubChart(m_kcharts[j].view);
             m_kcharts[j].view->syncSubChart(view);
         }
-        bind(view);
+        listen(view);
 
         m_kcharts.push_back({main, view, vm, model});
     }
@@ -200,7 +200,7 @@ MainWindow::MainWindow(QWidget *parent)
             view->syncSubChart(m_tcharts[j].view);
             m_tcharts[j].view->syncSubChart(view);
         }
-        bind(view);
+        listen(view);
 
         m_tcharts.push_back({main, view, vm, model});
     }

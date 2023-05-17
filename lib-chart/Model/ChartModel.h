@@ -49,7 +49,7 @@ namespace StockCharts
             assert(!getPlugin<T>());
             auto plugin = std::make_shared<T>(m_stockCore, args...);
             m_plugins.push_back(plugin);
-            bind(plugin.get());
+            listen(plugin.get());
             return getPlugin<T>();
         }
 

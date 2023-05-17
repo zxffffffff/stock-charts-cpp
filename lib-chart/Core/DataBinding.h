@@ -26,13 +26,13 @@ namespace StockCharts
                 (*it)->listeners.erase(this);
         }
 
-        void bind(DataBinding *sender)
+        void listen(DataBinding *sender)
         {
             sender->listeners.insert(this);
             this->senders.insert(sender);
         }
 
-        void unbind(DataBinding *sender)
+        void unlisten(DataBinding *sender)
         {
             sender->listeners.erase(this);
             this->senders.erase(sender);
