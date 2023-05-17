@@ -13,19 +13,22 @@ namespace StockCharts
 {
     class PluginIndicator : public ChartPlugin
     {
+    private:
+        std::weak_ptr<const StockCore> m_stockCore;
+        std::vector<std::shared_ptr<StIndicator>> m_indicators;
+
     public:
-        virtual void init(std::weak_ptr<const StockCore> stockCore) override
+        virtual void init(std::shared_ptr<const StockCore> stockCore) override
         {
             m_stockCore = stockCore;
         }
 
-        virtual void onStockCoreChanged(std::weak_ptr<const StockCore> stockCore) override
+        virtual void onStockCoreChanged(std::shared_ptr<const StockCore> stockCore) override
         {
             m_stockCore = stockCore;
             calcIndicators();
         }
 
-    public:
         std::shared_ptr<const StIndicator> addIndicator(IndexFormula formular)
         {
             std::shared_ptr<StIndicator> indicator = std::make_shared<StIndicator>();
@@ -83,9 +86,5 @@ namespace StockCharts
 
             fire(ID_ChartPluginChanged);
         }
-
-    private:
-        std::weak_ptr<const StockCore> m_stockCore;
-        std::vector<std::shared_ptr<StIndicator>> m_indicators;
     };
 }

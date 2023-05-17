@@ -41,7 +41,7 @@ namespace StockCharts
 
         // mouse & keyboard
         StMouseHover hoverNormal;
-        StMouseHover hoverSync; // 其他Chart联动
+        StMouseHover hoverSync; // 鍏朵粬Chart鑱斿姩
 
         bool crossLineVisible = true;
     };

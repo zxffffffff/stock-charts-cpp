@@ -27,23 +27,26 @@ namespace StockCharts
     class LayerCrossLine : public ChartLayer
     {
     public:
-        LayerCrossLine(std::shared_ptr<const ChartModel> model, std::shared_ptr<const ChartProps> props, std::shared_ptr<const ChartContext> context)
-            : ChartLayer(model, props, context)
-        {
-        }
-        virtual ~LayerCrossLine() = default;
+        virtual void init(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) override {}
 
-        virtual void onContextChanged() override
+        virtual void onContextChanged(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) override
         {
-            onMouseMove();
+            onMouseMove(model, props, context);
         }
 
-        virtual void onMouseMove() override
+        virtual void onMouseMove(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) override
         {
-            auto stockCore = *m_model->getStockCore();
-            const auto &props = *m_props;
-            const auto &ctx = *m_context;
-            ChartCoordinate coordinate(m_props, m_context);
+            auto stockCore = *model->getStockCore();
+            ChartCoordinate coordinate(props, context);
 
             auto calcCross = [&](const StMouseHover &mouseHover, StCrossLine &crossLine)
             {
@@ -65,27 +68,27 @@ namespace StockCharts
 
                 bool xCross = false;
                 bool yCross = false;
-                if (mouseHover.point.x >= ctx.rectInnerChart.left() &&
-                    mouseHover.point.x < ctx.rectInnerChart.right())
+                if (mouseHover.point.x >= context.rectInnerChart.left() &&
+                    mouseHover.point.x < context.rectInnerChart.right())
                     xCross = true;
-                if (mouseHover.point.y >= ctx.rectInnerChart.top() &&
-                    mouseHover.point.y < ctx.rectInnerChart.bottom())
+                if (mouseHover.point.y >= context.rectInnerChart.top() &&
+                    mouseHover.point.y < context.rectInnerChart.bottom())
                     yCross = true;
 
                 if (xCross)
                 {
                     crossLine.xLine.set(
                         x,
-                        ctx.rectChart.top() + 1,
+                        context.rectChart.top() + 1,
                         x,
-                        ctx.rectChart.bottom() - 1);
+                        context.rectChart.bottom() - 1);
 
                     crossLine.xBG.set(
                                      x - bgHalfWidth,
-                                     ctx.rectXAxis.top() + 1,
+                                     context.rectXAxis.top() + 1,
                                      bgWidth,
-                                     ctx.rectXAxis.height() - 2)
-                        .moveInside(ctx.rectXAxis);
+                                     context.rectXAxis.height() - 2)
+                        .moveInside(context.rectXAxis);
                     switch (props.xAxisHoverType)
                     {
                     case EnXAxisType::yyyyMMdd:
@@ -97,42 +100,43 @@ namespace StockCharts
                 if (yCross)
                 {
                     crossLine.yLine.set(
-                        ctx.rectChart.left() + 1,
+                        context.rectChart.left() + 1,
                         mouseHover.point.y,
-                        ctx.rectChart.right() - 1,
+                        context.rectChart.right() - 1,
                         mouseHover.point.y);
 
                     crossLine.ylBG.set(
-                                      ctx.rectYLAxis.left() + 1,
+                                      context.rectYLAxis.left() + 1,
                                       mouseHover.point.y - bgHalfHeight,
-                                      ctx.rectYLAxis.width() - 2,
+                                      context.rectYLAxis.width() - 2,
                                       bgHeight)
-                        .moveInside(ctx.rectYLAxis);
+                        .moveInside(context.rectYLAxis);
                     crossLine.ylText = NumberUtils::toString(mouseHover.price, props.precision);
 
                     crossLine.yrBG.set(
-                                      ctx.rectYRAxis.left() + 1,
+                                      context.rectYRAxis.left() + 1,
                                       mouseHover.point.y - bgHalfHeight,
-                                      ctx.rectYRAxis.width() - 2,
+                                      context.rectYRAxis.width() - 2,
                                       bgHeight)
-                        .moveInside(ctx.rectYRAxis);
+                        .moveInside(context.rectYRAxis);
                     crossLine.yrText = NumberUtils::toString(mouseHover.price, props.precision);
                 }
             };
 
-            calcCross(ctx.hoverNormal, crossNormal);
-            calcCross(ctx.hoverSync, crossSync);
+            calcCross(context.hoverNormal, crossNormal);
+            calcCross(context.hoverSync, crossSync);
         }
 
-        virtual void onPaint(Painter &painter) override
+        virtual void onPaint(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context,
+            Painter &painter) override
         {
-            const auto &props = *m_props;
-            const auto &ctx = *m_context;
-
             auto paintCross = [&](const StCrossLine &crossLine)
             {
                 // x
-                if (ctx.crossLineVisible)
+                if (context.crossLineVisible)
                     painter.drawLine(crossLine.xLine, props.crossLineStyle);
 
                 painter.fillRect(crossLine.xBG, props.crossTextBGStyle);
@@ -142,7 +146,7 @@ namespace StockCharts
                     props.xAxisHoverTextFont);
 
                 // y
-                if (ctx.crossLineVisible)
+                if (context.crossLineVisible)
                     painter.drawLine(crossLine.yLine, props.crossLineStyle);
 
                 painter.fillRect(crossLine.ylBG, props.crossTextBGStyle);

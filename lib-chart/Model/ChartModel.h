@@ -16,6 +16,13 @@ namespace StockCharts
 
     class ChartModel : public DataBinding
     {
+    private:
+        // [0]
+        std::shared_ptr<StockCore> m_stockCore;
+
+        // [1]
+        std::vector<std::shared_ptr<ChartPlugin>> m_plugins;
+
     public:
         ChartModel(std::shared_ptr<StockCore> stockCore)
             : m_stockCore(stockCore)
@@ -86,12 +93,5 @@ namespace StockCharts
         {
             return m_plugins;
         }
-
-    private:
-        // [0]
-        std::shared_ptr<StockCore> m_stockCore;
-
-        // [1]
-        std::vector<std::shared_ptr<ChartPlugin>> m_plugins;
     };
 }

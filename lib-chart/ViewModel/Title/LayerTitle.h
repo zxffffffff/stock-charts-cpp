@@ -8,6 +8,7 @@
 #pragma once
 #include "../ChartLayer.h"
 #include "../../Graphics/Widget.h"
+#include "../../Model/Indicator/PluginIndicator.h"
 #include <vector>
 
 namespace StockCharts
@@ -30,28 +31,35 @@ namespace StockCharts
     class LayerTitle : public ChartLayer
     {
     public:
-        LayerTitle(std::shared_ptr<const ChartModel> model, std::shared_ptr<const ChartProps> props, std::shared_ptr<const ChartContext> context,
-                   ChartTitleItemFlags flags)
-            : ChartLayer(model, props, context), m_flags(flags)
+        LayerTitle(ChartTitleItemFlags flags)
+            : m_flags(flags)
         {
         }
-        virtual ~LayerTitle() = default;
 
-        virtual void onContextChanged() override
+        virtual void init(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) override {}
+
+        virtual void onContextChanged(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) override
         {
-            onMouseMove();
+            onMouseMove(model, props, context);
         }
 
-        virtual void onMouseMove() override
+        virtual void onMouseMove(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) override
         {
-            auto stockCore = *m_model->getStockCore();
-            auto pluginIndicator = m_model->getPlugin<PluginIndicator>();
-            const auto &ctx = *m_context;
-            const auto &props = *m_props;
+            auto stockCore = *model->getStockCore();
+            auto pluginIndicator = model->getPlugin<PluginIndicator>();
 
-            int index = ctx.hoverNormal.index;
+            int index = context.hoverNormal.index;
             if (index < 0)
-                index = ctx.hoverSync.index;
+                index = context.hoverSync.index;
             if (index < 0)
                 index = stockCore.getSize() - 1;
             if (index < 0)
@@ -87,11 +95,11 @@ namespace StockCharts
                     }
                     item.font.dir = PaintDirection::CenterLeft;
                     item.rect.set(
-                        ctx.rectChart.left() + 1 + (i * itemWidth),
-                        ctx.rectChart.top() + 1,
+                        context.rectChart.left() + 1 + (i * itemWidth),
+                        context.rectChart.top() + 1,
                         itemWidth - 1,
                         rowHeight);
-                    item.rect.clipInside(ctx.rectChart);
+                    item.rect.clipInside(context.rectChart);
                     item.bg.normal.colorBorder = rise ? props.riseColor : props.fallColor;
                     item.bg.normal.colorBG = item.bg.normal.colorBorder;
                     item.bg.normal.colorBG.a = 25;
@@ -111,11 +119,11 @@ namespace StockCharts
                         item.text = indicator->formula.name;
                         item.font.dir = PaintDirection::CenterLeft;
                         item.rect.set(
-                            ctx.rectChart.left() + 1,
-                            ctx.rectChart.top() + 1 + (m_rows.size() * rowHeight),
+                            context.rectChart.left() + 1,
+                            context.rectChart.top() + 1 + (m_rows.size() * rowHeight),
                             itemWidth - 1,
                             rowHeight);
-                        item.rect.clipInside(ctx.rectChart);
+                        item.rect.clipInside(context.rectChart);
                         item.bg.normal.colorBorder = ColorDarkGray;
                         item.bg.normal.colorBG = item.bg.normal.colorBorder;
                         item.bg.normal.colorBG.a = 25;
@@ -128,11 +136,11 @@ namespace StockCharts
                         item.text = exp.info.rename + ":" + NumberUtils::toString(exp.core[index], props.precision);
                         item.font.dir = PaintDirection::CenterLeft;
                         item.rect.set(
-                            ctx.rectChart.left() + 1 + (iItem * itemWidth),
-                            ctx.rectChart.top() + 1 + (m_rows.size() * rowHeight),
+                            context.rectChart.left() + 1 + (iItem * itemWidth),
+                            context.rectChart.top() + 1 + (m_rows.size() * rowHeight),
                             itemWidth - 1,
                             rowHeight);
-                        item.rect.clipInside(ctx.rectChart);
+                        item.rect.clipInside(context.rectChart);
                         item.bg.normal.colorBorder = Color(exp.colorType.color.c_str());
                         item.bg.normal.colorBG = item.bg.normal.colorBorder;
                         item.bg.normal.colorBG.a = 25;
@@ -142,7 +150,11 @@ namespace StockCharts
             }
         }
 
-        virtual void onPaint(Painter &painter) override
+        virtual void onPaint(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context,
+            Painter &painter) override
         {
             for (auto &row : m_rows)
             {

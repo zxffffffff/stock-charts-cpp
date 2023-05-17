@@ -15,6 +15,10 @@ namespace StockCharts
 {
     class DataBinding
     {
+    private:
+        std::set<DataBinding *> listeners;
+        std::set<DataBinding *> senders;
+
     public:
         DataBinding() = default;
 
@@ -58,9 +62,5 @@ namespace StockCharts
         {
             return senders;
         }
-
-    private:
-        std::set<DataBinding *> listeners;
-        std::set<DataBinding *> senders;
     };
 }

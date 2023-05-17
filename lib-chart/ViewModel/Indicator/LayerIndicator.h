@@ -14,15 +14,17 @@ namespace StockCharts
     class LayerIndicator : public ChartLayer
     {
     public:
-        LayerIndicator(std::shared_ptr<const ChartModel> model, std::shared_ptr<const ChartProps> props, std::shared_ptr<const ChartContext> context)
-            : ChartLayer(model, props, context)
-        {
-        }
-        virtual ~LayerIndicator() = default;
+        virtual void init(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) override {}
 
-        virtual std::pair<Number, Number> getMinMax(int beginIndex, int endIndex) override
+        virtual std::pair<Number, Number> getMinMax(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) override
         {
-            auto plugin = m_model->getPlugin<PluginIndicator>();
+            auto plugin = model->getPlugin<PluginIndicator>();
             auto indicators = plugin->getIndicators();
 
             auto minmax = std::pair<Number, Number>{NumberNull, NumberNull};
@@ -30,7 +32,7 @@ namespace StockCharts
             {
                 for (auto &exp : indicator->indexCore.exps)
                 {
-                    auto minmax2 = exp.core.getMinMax(beginIndex, endIndex);
+                    auto minmax2 = exp.core.getMinMax(context.beginIndex, context.endIndex);
                     minmax.first = NumberCore::min(minmax.first, minmax2.first);
                     minmax.second = NumberCore::max(minmax.second, minmax2.second);
                 }
@@ -38,9 +40,12 @@ namespace StockCharts
             return minmax;
         }
 
-        virtual void onContextChanged() override
+        virtual void onContextChanged(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) override
         {
-            auto plugin = m_model->getPlugin<PluginIndicator>();
+            auto plugin = model->getPlugin<PluginIndicator>();
             auto indicators = plugin->getIndicators();
 
             const int indexCnt = indicators.size();
@@ -60,7 +65,11 @@ namespace StockCharts
                     case EnDrawingType::None:
                     case EnDrawingType::Number:
                     case EnDrawingType::Text:
-                        exp = createLineExp(indicatorExp.core);
+                        exp = createLineExp(
+                            model,
+                            props,
+                            context,
+                            indicatorExp.core);
                         break;
                     case EnDrawingType::Candlestick:
                         // zxf todo
@@ -71,10 +80,12 @@ namespace StockCharts
             }
         }
 
-        virtual void onPaint(Painter &painter) override
+        virtual void onPaint(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context,
+            Painter &painter) override
         {
-            const auto &props = *m_props;
-
             for (auto &index : m_areaIndexs)
             {
                 for (auto &exp : index.exps)

@@ -21,6 +21,10 @@ namespace StockCharts
 
     class NumberCore
     {
+    private:
+        std::vector<Number> data;
+        std::vector<std::string> other;
+
     public:
         NumberCore() = default;
         NumberCore(const NumberCore &) = default;
@@ -538,10 +542,6 @@ namespace StockCharts
             return NumberCore::operatorFunc(lhs, rhs, comp);
         }
 
-    private:
-        std::vector<Number> data;
-
-    public:
         void setOther(int i, const std::string &other)
         {
             int sz = this->data.size();
@@ -559,8 +559,5 @@ namespace StockCharts
                 return std::string();
             return this->other[i];
         }
-
-    private:
-        std::vector<std::string> other;
     };
 }

@@ -38,40 +38,60 @@ namespace StockCharts
     class ChartLayer : public DataBinding
     {
     public:
-        ChartLayer(std::shared_ptr<const ChartModel> model, std::shared_ptr<const ChartProps> props, std::shared_ptr<const ChartContext> context)
-            : m_model(model), m_props(props), m_context(context)
-        {
-        }
-        virtual ~ChartLayer() = default;
+        virtual void init(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) = 0;
 
-    public:
         // [1]
-        virtual std::pair<Number, Number> getMinMax(int beginIndex, int endIndex)
+        virtual std::pair<Number, Number> getMinMax(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context)
         {
             return {NumberNull, NumberNull};
         }
 
         // [2]
-        virtual void onContextChanged() {}
+        virtual void onContextChanged(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) {}
 
-        virtual void onMouseMove() {}
+        virtual void onMouseMove(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) {}
 
-        virtual void onMouseLeave() {}
+        virtual void onMouseLeave(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) {}
 
-        virtual void onPaint(Painter &painter) {}
+        virtual void onPaint(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context,
+            Painter &painter) {}
 
-        StChartAreaExp createStickExp(const NumberCore &open, const NumberCore &high, const NumberCore &low, const NumberCore &close)
+        // [3]
+        StChartAreaExp createStickExp(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context,
+            const NumberCore &open,
+            const NumberCore &high,
+            const NumberCore &low,
+            const NumberCore &close)
         {
-            const auto &ctx = *m_context;
-            const auto &props = *m_props;
-            ChartCoordinate coordinate(m_props, m_context);
+            ChartCoordinate coordinate(props, context);
 
             StChartAreaExp exp;
             exp.type = EnChartAreaExpType::Stick;
-            exp.sticks.resize(ctx.viewCount);
-            for (int index = ctx.beginIndex; index < ctx.endIndex; index++)
+            exp.sticks.resize(context.viewCount);
+            for (int index = context.beginIndex; index < context.endIndex; index++)
             {
-                int i = index - ctx.beginIndex;
+                int i = index - context.beginIndex;
 
                 const Real xPos = coordinate.index2pos(index);
                 const Number o = open[index];
@@ -82,9 +102,9 @@ namespace StockCharts
                 const Real cPos = coordinate.price2pos(c);
 
                 exp.sticks[i].set(
-                    xPos - ctx.stickWidth / 2,
+                    xPos - context.stickWidth / 2,
                     std::min(oPos, cPos),
-                    ctx.stickWidth,
+                    context.stickWidth,
                     std::abs(oPos - cPos),
                     hPos,
                     lPos,
@@ -93,17 +113,20 @@ namespace StockCharts
             return exp;
         }
 
-        StChartAreaExp createLineExp(const NumberCore &price)
+        StChartAreaExp createLineExp(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context,
+            const NumberCore &price)
         {
-            const auto &ctx = *m_context;
-            ChartCoordinate coordinate(m_props, m_context);
+            ChartCoordinate coordinate(props, context);
 
             StChartAreaExp exp;
             exp.type = EnChartAreaExpType::Line;
-            exp.lines.resize(ctx.viewCount);
-            for (int index = ctx.beginIndex; index < ctx.endIndex; index++)
+            exp.lines.resize(context.viewCount);
+            for (int index = context.beginIndex; index < context.endIndex; index++)
             {
-                int i = index - ctx.beginIndex;
+                int i = index - context.beginIndex;
 
                 const Real xPos = coordinate.index2pos(index);
                 const Real yPos = coordinate.price2pos(price[index]);
@@ -114,12 +137,7 @@ namespace StockCharts
         }
 
     protected:
-        // [0]
-        std::shared_ptr<const ChartModel> m_model;
-        std::shared_ptr<const ChartProps> m_props;
-        std::shared_ptr<const ChartContext> m_context;
-
-        // [1] layers-indexs-exps
+        // layers-indexs-exps
         std::vector<StChartAreaIndex> m_areaIndexs;
     };
 }

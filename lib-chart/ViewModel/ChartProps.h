@@ -13,26 +13,26 @@ namespace StockCharts
 {
     enum class EnStockLineType
     {
-        CandlestickHollow, // À¯ÖòÍ¼£¨¿ÕÐÄ£©
-        Candlestick,       // À¯ÖòÍ¼
-        BAR,               // ÃÀ¹úÏß
-        Line,              // ÊÕÅÌ¼ÛÏß£¬·ÖÊ±Ïß
+        CandlestickHollow, // èœ¡çƒ›å›¾ï¼ˆç©ºå¿ƒï¼‰
+        Candlestick,       // èœ¡çƒ›å›¾
+        BAR,               // ç¾Žå›½çº¿
+        Line,              // æ”¶ç›˜ä»·çº¿ï¼Œåˆ†æ—¶çº¿
     };
 
     enum class EnXCoordinateType
     {
-        Fill,  // Ìî³ä
-        Cover, // x¹ö¶¯yËõ·Å
+        Fill,  // å¡«å……
+        Cover, // xæ»šåŠ¨yç¼©æ”¾
     };
 
     enum class EnYCoordinateType
     {
-        Linear,          // µÈ²î
-        Proportional,    // µÈ±È
-        Percentage,      // °Ù·Ö±È
-        LogLinear,       // µÈ²î£¨¶ÔÊý£©
-        LogProportional, // µÈ±È£¨¶ÔÊý£©
-        LogPercentage,   // °Ù·Ö±È£¨¶ÔÊý£©
+        Linear,          // ç­‰å·®
+        Proportional,    // ç­‰æ¯”
+        Percentage,      // ç™¾åˆ†æ¯”
+        LogLinear,       // ç­‰å·®ï¼ˆå¯¹æ•°ï¼‰
+        LogProportional, // ç­‰æ¯”ï¼ˆå¯¹æ•°ï¼‰
+        LogPercentage,   // ç™¾åˆ†æ¯”ï¼ˆå¯¹æ•°ï¼‰
     };
 
     enum class EnXAxisType

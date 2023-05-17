@@ -186,7 +186,7 @@ MainWindow::MainWindow(QWidget *parent)
         vm->addLayer<LayerIndicator>();
         vm->addLayer<LayerCrossLine>();
 
-        auto props = *vm->getProps();
+        auto props = vm->getProps();
         props.lineType = EnStockLineType::Line;
         props.xCoordType = EnXCoordinateType::Fill;
         props.yCoordType = EnYCoordinateType::Linear;
@@ -288,8 +288,8 @@ void MainWindow::clearIndicators()
 
 void MainWindow::updateUI()
 {
-    const auto &props = *m_kcharts[0].vm->getProps();
-    const auto &ctx = *m_kcharts[0].vm->getContext();
+    const auto &props = m_kcharts[0].vm->getProps();
+    const auto &ctx = m_kcharts[0].vm->getContext();
 
     if (ui.generalDrawingType->currentIndex() != (int)props.lineType)
         ui.generalDrawingType->setCurrentIndex((int)props.lineType);

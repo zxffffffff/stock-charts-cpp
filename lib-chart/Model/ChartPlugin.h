@@ -17,8 +17,8 @@ namespace StockCharts
     class ChartPlugin : public DataBinding
     {
     public:
-        virtual void init(std::weak_ptr<const StockCore> stockCore) {}
+        virtual void init(std::shared_ptr<const StockCore> stockCore) = 0;
 
-        virtual void onStockCoreChanged(std::weak_ptr<const StockCore> stockCore) {}
+        virtual void onStockCoreChanged(std::shared_ptr<const StockCore> stockCore) {}
     };
 }

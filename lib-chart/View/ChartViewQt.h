@@ -54,12 +54,12 @@ namespace StockCharts
         }
 
     protected:
-        std::shared_ptr<const ChartProps> getProps() const
+        const ChartProps &getProps() const
         {
             return m_vm->getProps();
         }
 
-        std::shared_ptr<const ChartContext> getContext() const
+        const ChartContext &getContext() const
         {
             return m_vm->getContext();
         }
@@ -67,7 +67,7 @@ namespace StockCharts
     public slots:
         void slotDrawingType(int i)
         {
-            auto props = *m_vm->getProps();
+            auto props = m_vm->getProps();
             if (props.lineType == (EnStockLineType)i)
                 return;
             props.lineType = (EnStockLineType)i;
@@ -76,7 +76,7 @@ namespace StockCharts
 
         void slotCorrdinate(int i)
         {
-            auto props = *m_vm->getProps();
+            auto props = m_vm->getProps();
             if (props.yCoordType == (EnYCoordinateType)i)
                 return;
             props.yCoordType = (EnYCoordinateType)i;
@@ -85,7 +85,7 @@ namespace StockCharts
 
         void slotYLWidth(int i)
         {
-            auto props = *m_vm->getProps();
+            auto props = m_vm->getProps();
             if (props.ylAxisWidth == i)
                 return;
             props.ylAxisWidth = i;
@@ -94,7 +94,7 @@ namespace StockCharts
 
         void slotYRWidth(int i)
         {
-            auto props = *m_vm->getProps();
+            auto props = m_vm->getProps();
             if (props.yrAxisWidth == i)
                 return;
             props.yrAxisWidth = i;
@@ -103,7 +103,7 @@ namespace StockCharts
 
         void slotXHeight(int i)
         {
-            auto props = *m_vm->getProps();
+            auto props = m_vm->getProps();
             if (props.xAxisHeight == i)
                 return;
             props.xAxisHeight = i;
@@ -112,7 +112,7 @@ namespace StockCharts
 
         void slotPaddingLeft(int i)
         {
-            auto props = *m_vm->getProps();
+            auto props = m_vm->getProps();
             if (props.paddingLeft == i)
                 return;
             props.paddingLeft = i;
@@ -121,7 +121,7 @@ namespace StockCharts
 
         void slotPaddingTop(int i)
         {
-            auto props = *m_vm->getProps();
+            auto props = m_vm->getProps();
             if (props.paddingTop == i)
                 return;
             props.paddingTop = i;
@@ -130,7 +130,7 @@ namespace StockCharts
 
         void slotPaddingRight(int i)
         {
-            auto props = *m_vm->getProps();
+            auto props = m_vm->getProps();
             if (props.paddingRight == i)
                 return;
             props.paddingRight = i;
@@ -139,7 +139,7 @@ namespace StockCharts
 
         void slotPaddingBottom(int i)
         {
-            auto props = *m_vm->getProps();
+            auto props = m_vm->getProps();
             if (props.paddingBottom == i)
                 return;
             props.paddingBottom = i;
@@ -190,7 +190,7 @@ namespace StockCharts
             int xStep = event->angleDelta().x() / 120;
             if (yStep != 0)
             {
-                auto &ctx = *getContext();
+                auto &ctx = getContext();
                 if (ctx.crossLineVisible)
                     m_vm->onWheelY(yStep);
                 else

@@ -6,6 +6,7 @@
 **
 ****************************************************************************/
 #pragma once
+#include "ChartProps.h"
 #include "ChartContext.h"
 
 namespace StockCharts
@@ -15,8 +16,8 @@ namespace StockCharts
         const ChartProps &props;
         const ChartContext &ctx;
 
-        ChartCoordinate(std::shared_ptr<const ChartProps> props, std::shared_ptr<const ChartContext> context)
-            : props(*props), ctx(*context)
+        ChartCoordinate(const ChartProps &props, const ChartContext &context)
+            : props(props), ctx(context)
         {
         }
 

@@ -13,18 +13,18 @@ namespace StockCharts
     class LayerBG : public ChartLayer
     {
     public:
-        LayerBG(std::shared_ptr<const ChartModel> model, std::shared_ptr<const ChartProps> props, std::shared_ptr<const ChartContext> context)
-            : ChartLayer(model, props, context)
-        {
-        }
-        virtual ~LayerBG() = default;
+        virtual void init(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) override {}
 
-        virtual void onContextChanged() override
+        virtual void onContextChanged(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context) override
         {
-            auto stockCore = *m_model->getStockCore();
-            const auto &props = *m_props;
-            auto &ctx = *m_context;
-            ChartCoordinate coordinate(m_props, m_context);
+            const auto& stockCore = *model->getStockCore();
+            ChartCoordinate coordinate(props, context);
 
             // x
             xAxisPos.clear();
@@ -36,7 +36,7 @@ namespace StockCharts
             {
             case EnXAxisType::yyyyMM:
             default:
-                for (int index = ctx.beginIndex; index < ctx.endIndex; index++)
+                for (int index = context.beginIndex; index < context.endIndex; index++)
                 {
                     std::string dt = NumberUtils::toTimestamp(stockCore.timestamp[index], "%Y-%m");
                     if (!xAxisPos.empty())
@@ -46,8 +46,8 @@ namespace StockCharts
                     }
                     Real x = coordinate.index2pos(index);
                     xAxisPos.push_back(x);
-                    xAxisRect.push_back(Rect(x - textHalfWidth, ctx.rectXAxis.top() + 1, textWidth, ctx.rectXAxis.height() - 2));
-                    xAxisRect.back().moveInside(ctx.rectXAxis);
+                    xAxisRect.push_back(Rect(x - textHalfWidth, context.rectXAxis.top() + 1, textWidth, context.rectXAxis.height() - 2));
+                    xAxisRect.back().moveInside(context.rectXAxis);
                     xAxisDate.push_back(dt);
                 }
                 if (xAxisPos.size() >= 2)
@@ -89,36 +89,37 @@ namespace StockCharts
             yrAxisPrice.clear();
             const Real stepHeight = props.yAxisGridStepHeight;
             const Real stepHalfHeight = stepHeight / 2;
-            for (Real y = ctx.rectChart.bottom() - props.yAxisGridStart; y >= ctx.rectChart.top() + stepHalfHeight; y -= stepHeight)
+            for (Real y = context.rectChart.bottom() - props.yAxisGridStart; y >= context.rectChart.top() + stepHalfHeight; y -= stepHeight)
             {
                 yAxisPos.push_back(y);
-                ylAxisRect.push_back(Rect(ctx.rectYLAxis.left() + 1, y - stepHalfHeight, ctx.rectYLAxis.width() - 2, stepHeight));
-                yrAxisRect.push_back(Rect(ctx.rectYRAxis.left() + 1, y - stepHalfHeight, ctx.rectYRAxis.width() - 2, stepHeight));
-                ylAxisRect.back().moveInside(ctx.rectYLAxis);
-                yrAxisRect.back().moveInside(ctx.rectYRAxis);
+                ylAxisRect.push_back(Rect(context.rectYLAxis.left() + 1, y - stepHalfHeight, context.rectYLAxis.width() - 2, stepHeight));
+                yrAxisRect.push_back(Rect(context.rectYRAxis.left() + 1, y - stepHalfHeight, context.rectYRAxis.width() - 2, stepHeight));
+                ylAxisRect.back().moveInside(context.rectYLAxis);
+                yrAxisRect.back().moveInside(context.rectYRAxis);
                 ylAxisPrice.push_back(NumberUtils::toString(coordinate.pos2price(y), props.precision));
                 yrAxisPrice.push_back(NumberUtils::toString(coordinate.pos2price(y), props.precision));
             }
         }
 
-        virtual void onPaint(Painter &painter) override
+        virtual void onPaint(
+            std::shared_ptr<const ChartModel> model,
+            const ChartProps &props,
+            const ChartContext &context,
+            Painter &painter) override
         {
-            const auto &props = *m_props;
-            const auto &ctx = *m_context;
-
-            painter.fillRect(ctx.rectView, props.colorViewBG);
-            painter.fillRect(ctx.rectXAxis, props.colorXAxisBG);
-            painter.fillRect(ctx.rectYLAxis, props.colorYLAxisBG);
-            painter.fillRect(ctx.rectYRAxis, props.colorYRAxisBG);
-            painter.fillRect(ctx.rectChart, props.colorChartBG);
-            painter.fillRect(ctx.rectInnerChart, props.colorInnerChartBG);
+            painter.fillRect(context.rectView, props.colorViewBG);
+            painter.fillRect(context.rectXAxis, props.colorXAxisBG);
+            painter.fillRect(context.rectYLAxis, props.colorYLAxisBG);
+            painter.fillRect(context.rectYRAxis, props.colorYRAxisBG);
+            painter.fillRect(context.rectChart, props.colorChartBG);
+            painter.fillRect(context.rectInnerChart, props.colorInnerChartBG);
 
             // x
             for (int i = 0; i < xAxisPos.size(); i++)
             {
                 const auto &x = xAxisPos[i];
                 painter.drawLine(
-                    Line(x, ctx.rectChart.top(), x, ctx.rectChart.bottom()),
+                    Line(x, context.rectChart.top(), x, context.rectChart.bottom()),
                     props.axisGridStyle);
             }
             for (int i = 0; i < xAxisDate.size(); i++)
@@ -129,7 +130,7 @@ namespace StockCharts
                     props.xAxisTextFont);
             }
             painter.drawLine(
-                Line(ctx.rectXAxis.topLeft(), ctx.rectXAxis.topRight()),
+                Line(context.rectXAxis.topLeft(), context.rectXAxis.topRight()),
                 props.axisLineStyle);
 
             // y
@@ -137,7 +138,7 @@ namespace StockCharts
             {
                 const auto &y = yAxisPos[i];
                 painter.drawLine(
-                    Line(ctx.rectChart.left(), y, ctx.rectChart.right(), y),
+                    Line(context.rectChart.left(), y, context.rectChart.right(), y),
                     props.axisGridStyle);
             }
             for (int i = 0; i < ylAxisPrice.size(); i++)
@@ -155,10 +156,10 @@ namespace StockCharts
                     props.yrAxisTextFont);
             }
             painter.drawLine(
-                Line(ctx.rectYLAxis.topRight(), ctx.rectYLAxis.bottomRight()),
+                Line(context.rectYLAxis.topRight(), context.rectYLAxis.bottomRight()),
                 props.axisLineStyle);
             painter.drawLine(
-                Line(ctx.rectYRAxis.topLeft(), ctx.rectYRAxis.bottomLeft()),
+                Line(context.rectYRAxis.topLeft(), context.rectYRAxis.bottomLeft()),
                 props.axisLineStyle);
         }
 

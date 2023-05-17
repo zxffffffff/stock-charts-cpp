@@ -13,8 +13,8 @@ namespace StockCharts
     class PluginSuperimposition : public ChartPlugin
     {
     public:
-        virtual void init(std::weak_ptr<const StockCore> stockCore) override {}
+        virtual void init(std::shared_ptr<const StockCore> stockCore) override {}
 
-        virtual void onStockCoreChanged(std::weak_ptr<const StockCore> stockCore) override {}
+        virtual void onStockCoreChanged(std::shared_ptr<const StockCore> stockCore) override {}
     };
 }
