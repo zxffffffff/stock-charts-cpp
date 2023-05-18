@@ -124,7 +124,7 @@ namespace StockCharts
                     std::abs(oPos - cPos),
                     hPos,
                     lPos,
-                    (c - o));
+                    (c > o ? 1 : c < o ? -1 : 0));
             }
             return exp;
         }
