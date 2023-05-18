@@ -49,7 +49,7 @@ namespace StockCharts
 
         virtual void on([[maybe_unused]] DataBinding *sender, [[maybe_unused]] const std::string &id)
         {
-            // inherit
+            // override
         }
 
         const std::set<DataBinding *> &getListeners() const

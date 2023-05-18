@@ -39,44 +39,60 @@ namespace StockCharts
     {
     public:
         virtual void init(
-            std::shared_ptr<const ChartModel> model,
-            const ChartProps &props,
-            const ChartContext &context) = 0;
+            [[maybe_unused]] std::shared_ptr<const ChartModel> model,
+            [[maybe_unused]] const ChartProps &props,
+            [[maybe_unused]] const ChartContext &context)
+        {
+            // override
+        }
 
         // [1]
         virtual std::pair<Number, Number> getMinMax(
-            std::shared_ptr<const ChartModel> model,
-            const ChartProps &props,
-            const ChartContext &context)
+            [[maybe_unused]] std::shared_ptr<const ChartModel> model,
+            [[maybe_unused]] const ChartProps &props,
+            [[maybe_unused]] const ChartContext &context)
         {
+            // override
             return {NumberNull, NumberNull};
         }
 
         // [2]
         virtual void onContextChanged(
-            std::shared_ptr<const ChartModel> model,
-            const ChartProps &props,
-            const ChartContext &context) {}
+            [[maybe_unused]] std::shared_ptr<const ChartModel> model,
+            [[maybe_unused]] const ChartProps &props,
+            [[maybe_unused]] const ChartContext &context)
+        {
+            // override
+        }
 
         virtual void onMouseMove(
-            std::shared_ptr<const ChartModel> model,
-            const ChartProps &props,
-            const ChartContext &context) {}
+            [[maybe_unused]] [[maybe_unused]] std::shared_ptr<const ChartModel> model,
+            [[maybe_unused]] [[maybe_unused]] const ChartProps &props,
+            [[maybe_unused]] [[maybe_unused]] const ChartContext &context)
+        {
+            // override
+        }
 
         virtual void onMouseLeave(
-            std::shared_ptr<const ChartModel> model,
-            const ChartProps &props,
-            const ChartContext &context) {}
+            [[maybe_unused]] std::shared_ptr<const ChartModel> model,
+            [[maybe_unused]] const ChartProps &props,
+            [[maybe_unused]] const ChartContext &context)
+        {
+            // override
+        }
 
         virtual void onPaint(
-            std::shared_ptr<const ChartModel> model,
-            const ChartProps &props,
-            const ChartContext &context,
-            Painter &painter) {}
+            [[maybe_unused]] std::shared_ptr<const ChartModel> model,
+            [[maybe_unused]] const ChartProps &props,
+            [[maybe_unused]] const ChartContext &context,
+            [[maybe_unused]] Painter &painter)
+        {
+            // override
+        }
 
         // [3]
         StChartAreaExp createStickExp(
-            std::shared_ptr<const ChartModel> model,
+            [[maybe_unused]] std::shared_ptr<const ChartModel> model,
             const ChartProps &props,
             const ChartContext &context,
             const NumberCore &open,
@@ -114,7 +130,7 @@ namespace StockCharts
         }
 
         StChartAreaExp createLineExp(
-            std::shared_ptr<const ChartModel> model,
+            [[maybe_unused]] std::shared_ptr<const ChartModel> model,
             const ChartProps &props,
             const ChartContext &context,
             const NumberCore &price)

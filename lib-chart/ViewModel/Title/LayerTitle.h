@@ -39,7 +39,9 @@ namespace StockCharts
         virtual void init(
             std::shared_ptr<const ChartModel> model,
             const ChartProps &props,
-            const ChartContext &context) override {}
+            const ChartContext &context) override
+        {
+        }
 
         virtual void onContextChanged(
             std::shared_ptr<const ChartModel> model,
