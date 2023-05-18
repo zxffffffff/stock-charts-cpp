@@ -6,14 +6,13 @@
 **
 ****************************************************************************/
 #pragma once
-#include <string>
-#include <variant>
-#include <map>
+#include <memory>
 #include <set>
+#include <string>
 
 namespace StockCharts
 {
-    class DataBinding
+    class DataBinding : public std::enable_shared_from_this<DataBinding>
     {
     private:
         std::set<DataBinding *> listeners;
