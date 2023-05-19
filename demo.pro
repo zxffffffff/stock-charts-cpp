@@ -22,21 +22,26 @@ HEADERS += \
     lib-chart/Graphics/Widget.h \
     lib-chart/Model/ChartModel.h \
     lib-chart/Model/ChartPlugin.h \
-    lib-chart/Model/Indicator/Core/ExpCore.h \
-    lib-chart/Model/Indicator/Core/IndexCore.h \
-    lib-chart/Model/Indicator/Parser/ColorParser.h \
-    lib-chart/Model/Indicator/Parser/DrawingParser.h \
-    lib-chart/Model/Indicator/Parser/FunctionParser.h \
-    lib-chart/Model/Indicator/Parser/KeywordParser.h \
-    lib-chart/Model/Indicator/Parser/SubParser.h \
-    lib-chart/Model/Indicator/IndicatorParser.h \
-    lib-chart/Model/Indicator/PluginIndicator.h \
+    lib-chart/Model/Plugin/Indicator/Core/ExpCore.h \
+    lib-chart/Model/Plugin/Indicator/Core/IndexCore.h \
+    lib-chart/Model/Plugin/Indicator/Parser/ColorParser.h \
+    lib-chart/Model/Plugin/Indicator/Parser/DrawingParser.h \
+    lib-chart/Model/Plugin/Indicator/Parser/FunctionParser.h \
+    lib-chart/Model/Plugin/Indicator/Parser/KeywordParser.h \
+    lib-chart/Model/Plugin/Indicator/Parser/SubParser.h \
+    lib-chart/Model/Plugin/Indicator/IndicatorParser.h \
+    lib-chart/Model/Plugin/PluginIndicator.h \
+    lib-chart/Model/Plugin/PluginIndicator.h \
+    lib-chart/Model/Plugin/PluginPainting.h \
+    lib-chart/Model/Plugin/PluginSuperimposition.h \
     lib-chart/View/ChartViewQt.h \
-    lib-chart/ViewModel/BG/LayerBG.h \
-    lib-chart/ViewModel/CrossLine/LayerCrossLine.h \
-    lib-chart/ViewModel/Indicator/LayerIndicator.h \
-    lib-chart/ViewModel/Stock/LayerStock.h \
-    lib-chart/ViewModel/Title/LayerTitle.h \
+    lib-chart/ViewModel/Layer/LayerBG.h \
+    lib-chart/ViewModel/Layer/LayerCrossLine.h \
+    lib-chart/ViewModel/Layer/LayerIndicator.h \
+    lib-chart/ViewModel/Layer/LayerPainting.h \
+    lib-chart/ViewModel/Layer/LayerStock.h \
+    lib-chart/ViewModel/Layer/LayerSuperimposition.h \
+    lib-chart/ViewModel/Layer/LayerTitle.h \
     lib-chart/ViewModel/ChartContext.h \
     lib-chart/ViewModel/ChartCoordinate.h \
     lib-chart/ViewModel/ChartLayer.h \

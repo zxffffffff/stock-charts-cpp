@@ -6,7 +6,7 @@
 **
 ****************************************************************************/
 #pragma once
-#include "../../../Core/NumberCore.h"
+#include "../../../../Core/NumberCore.h"
 
 namespace StockCharts
 {

@@ -8,7 +8,7 @@
 #pragma once
 #include "../ChartLayer.h"
 #include "../../Graphics/Widget.h"
-#include "../../Model/Indicator/PluginIndicator.h"
+#include "../../Model/Plugin/PluginIndicator.h"
 #include <vector>
 
 namespace StockCharts

@@ -7,7 +7,7 @@
 ****************************************************************************/
 #pragma once
 #include "../ChartLayer.h"
-#include "../../Model/Indicator/PluginIndicator.h"
+#include "../../Model/Plugin/PluginIndicator.h"
 
 namespace StockCharts
 {

@@ -7,7 +7,7 @@
 ****************************************************************************/
 #pragma once
 #include "../ChartPlugin.h"
-#include "IndicatorParser.h"
+#include "Indicator/IndicatorParser.h"
 
 namespace StockCharts
 {
