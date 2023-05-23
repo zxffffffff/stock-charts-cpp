@@ -156,8 +156,8 @@ MainWindow::MainWindow(QWidget *parent)
         }
         for (int j = 0; j < i; j++)
         {
-            vm->setSyncOther(m_kcharts[j].vm);
-            m_kcharts[j].vm->setSyncOther(vm);
+            vm->setSyncOther(m_kcharts[j].vm.get());
+            m_kcharts[j].vm->setSyncOther(vm.get());
         }
 
         auto view = new ChartViewQt(ui.kchartWidget);
@@ -185,6 +185,11 @@ MainWindow::MainWindow(QWidget *parent)
         }
         vm->addLayer<LayerIndicator>();
         vm->addLayer<LayerCrossLine>();
+        for (int j = 0; j < i; j++)
+        {
+            vm->setSyncOther(m_tcharts[j].vm.get());
+            m_tcharts[j].vm->setSyncOther(vm.get());
+        }
 
         auto props = vm->getProps();
         props.lineType = EnStockLineType::Line;
@@ -195,11 +200,6 @@ MainWindow::MainWindow(QWidget *parent)
         auto view = new ChartViewQt(ui.tchartWidget);
         ui.tchartLayout->addWidget(view);
         view->init(vm);
-        for (int j = 0; j < i; j++)
-        {
-            view->syncSubChart(m_tcharts[j].view);
-            m_tcharts[j].view->syncSubChart(view);
-        }
         listen(view);
 
         m_tcharts.push_back({main, view, vm, model});
