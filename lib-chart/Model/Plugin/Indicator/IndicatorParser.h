@@ -47,10 +47,10 @@ namespace StockCharts
     public:
         IndicatorParser()
         {
-            m_spFunction = std::make_unique<FunctionParser>();
-            m_spKeyword = std::make_unique<KeywordParser>();
-            m_spColor = std::make_unique<ColorParser>();
-            m_spDrawing = std::make_unique<DrawingParser>();
+            m_functionParser = std::make_unique<FunctionParser>();
+            m_keywordParser = std::make_unique<KeywordParser>();
+            m_colorParser = std::make_unique<ColorParser>();
+            m_drawingParser = std::make_unique<DrawingParser>();
         }
         ~IndicatorParser() = default;
 
@@ -67,10 +67,10 @@ namespace StockCharts
         }
         void setStockCore(std::shared_ptr<const StockCore> p)
         {
-            m_spFunction->setStockCore(p);
-            m_spKeyword->setStockCore(p);
-            m_spColor->setStockCore(p);
-            m_spDrawing->setStockCore(p);
+            m_functionParser->setStockCore(p);
+            m_keywordParser->setStockCore(p);
+            m_colorParser->setStockCore(p);
+            m_drawingParser->setStockCore(p);
         }
 
         void setStockExt(const StockRelyData &p)
@@ -79,10 +79,10 @@ namespace StockCharts
         }
         void setStockExt(std::shared_ptr<StockRelyData> p)
         {
-            m_spFunction->setStockExt(p);
-            m_spKeyword->setStockExt(p);
-            m_spColor->setStockExt(p);
-            m_spDrawing->setStockExt(p);
+            m_functionParser->setStockExt(p);
+            m_keywordParser->setStockExt(p);
+            m_colorParser->setStockExt(p);
+            m_drawingParser->setStockExt(p);
         }
 
         // [2]
@@ -116,11 +116,11 @@ namespace StockCharts
                     parseTokenValue();
                     NumberCore core = parseFormula();
                     if (m_bParseError)
-                        goto RunErr;
+                        throw std::exception();
 
                     ExpColorType expColor = parseColor();
                     if (m_bParseError)
-                        goto RunErr;
+                        throw std::exception();
 
                     ExpCore exp;
                     exp.core = std::move(core);
@@ -131,16 +131,13 @@ namespace StockCharts
                 }
                 catch (...)
                 {
-                    goto RunErr;
+                    m_result.err = true;
+                    m_result.errExpression = expressions[i];
+                    m_result.errWord = m_errWord;
+                    return false;
                 }
             }
             return true;
-
-        RunErr:
-            m_result.err = true;
-            m_result.errExpression = expressions[i];
-            m_result.errWord = m_errWord;
-            return false;
         }
 
         // [3]
@@ -209,11 +206,11 @@ namespace StockCharts
                 }
 
                 std::string name = std::move(m_sValue);
-                if (m_spColor->check(name))
+                if (m_colorParser->check(name))
                 {
                     bool ok;
                     ExpColorType expTemp;
-                    std::tie(ok, expTemp) = m_spColor->process(name);
+                    std::tie(ok, expTemp) = m_colorParser->process(name);
                     if (!ok)
                     {
                         m_bParseError = true;
@@ -406,15 +403,15 @@ namespace StockCharts
                 {
                     return getInputParam(name);
                 }
-                else if (m_spKeyword->check(name))
+                else if (m_keywordParser->check(name))
                 {
-                    auto rely = m_spKeyword->stockRely(name);
+                    auto rely = m_keywordParser->stockRely(name);
                     if (!rely.empty())
                         m_stockRely.insert(rely.begin(), rely.end());
 
                     bool ok;
                     NumberCore coreResult;
-                    std::tie(ok, coreResult) = m_spKeyword->process(name);
+                    std::tie(ok, coreResult) = m_keywordParser->process(name);
                     if (!ok)
                     {
                         m_bParseError = true;
@@ -423,7 +420,7 @@ namespace StockCharts
                     }
                     return coreResult;
                 }
-                else if (m_spFunction->check(name))
+                else if (m_functionParser->check(name))
                 {
                     NumberCore coreResult;
                     if (m_eToken == EnParseToken::TokenLP)
@@ -442,7 +439,7 @@ namespace StockCharts
                         }
 
                         bool ok;
-                        std::tie(ok, coreResult) = m_spFunction->process(name, params);
+                        std::tie(ok, coreResult) = m_functionParser->process(name, params);
                         if (!ok)
                         {
                             m_bParseError = true;
@@ -461,7 +458,7 @@ namespace StockCharts
                         return coreResult;
                     }
                 }
-                else if (m_spDrawing->check(name))
+                else if (m_drawingParser->check(name))
                 {
                     NumberCore coreResult;
                     if (m_eToken == EnParseToken::TokenLP)
@@ -481,7 +478,7 @@ namespace StockCharts
 
                         bool ok;
                         ExpDrawingType drawingType;
-                        std::tie(ok, drawingType, coreResult) = m_spDrawing->process(name, params);
+                        std::tie(ok, drawingType, coreResult) = m_drawingParser->process(name, params);
                         if (!ok)
                         {
                             m_bParseError = true;
@@ -740,10 +737,10 @@ namespace StockCharts
     private:
         IndexFormula m_formula;
 
-        std::unique_ptr<class FunctionParser> m_spFunction;
-        std::unique_ptr<class KeywordParser> m_spKeyword;
-        std::unique_ptr<class ColorParser> m_spColor;
-        std::unique_ptr<class DrawingParser> m_spDrawing;
+        std::unique_ptr<class FunctionParser> m_functionParser;
+        std::unique_ptr<class KeywordParser> m_keywordParser;
+        std::unique_ptr<class ColorParser> m_colorParser;
+        std::unique_ptr<class DrawingParser> m_drawingParser;
 
         IndexCore m_result;
         std::set<EnStockRely> m_stockRely;

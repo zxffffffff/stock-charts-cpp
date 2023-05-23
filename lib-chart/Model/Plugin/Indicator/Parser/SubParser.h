@@ -11,11 +11,11 @@
 
 namespace StockCharts
 {
-    class HSLib
+    class SubParser
     {
     public:
-        HSLib() = default;
-        virtual ~HSLib() = default;
+        SubParser() = default;
+        virtual ~SubParser() = default;
 
         void setStockCore(std::shared_ptr<const StockCore> p)
         {

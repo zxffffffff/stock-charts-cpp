@@ -10,7 +10,7 @@
 
 namespace StockCharts
 {
-    class DrawingParser : public HSLib
+    class DrawingParser : public SubParser
     {
     public:
         DrawingParser()

@@ -39,11 +39,6 @@ namespace StockCharts
             listen(m_vm.get());
         }
 
-        void syncSubChart(ChartViewQt *otherChart)
-        {
-            m_vm->setSyncOther(otherChart->m_vm.get());
-        }
-
         virtual void on(DataBinding *sender, const std::string &id) override
         {
             if (m_vm.get() == sender)

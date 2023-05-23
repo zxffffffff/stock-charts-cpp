@@ -154,15 +154,15 @@ MainWindow::MainWindow(QWidget *parent)
             vm->addLayer<LayerCrossLine>();
             vm->addLayer<LayerTitle>(ChartTitleItemFlagIndicator);
         }
+        for (int j = 0; j < i; j++)
+        {
+            vm->setSyncOther(m_kcharts[j].vm);
+            m_kcharts[j].vm->setSyncOther(vm);
+        }
 
         auto view = new ChartViewQt(ui.kchartWidget);
         ui.kchartLayout->addWidget(view);
         view->init(vm);
-        for (int j = 0; j < i; j++)
-        {
-            view->syncSubChart(m_kcharts[j].view);
-            m_kcharts[j].view->syncSubChart(view);
-        }
         listen(view);
 
         m_kcharts.push_back({main, view, vm, model});

@@ -10,7 +10,7 @@
 
 namespace StockCharts
 {
-    class ColorParser : public HSLib
+    class ColorParser : public SubParser
     {
     public:
         ColorParser()
@@ -133,13 +133,12 @@ namespace StockCharts
             auto ite = m_colors.find(name);
             if (ite == m_colors.end())
             {
-                if (checkCustomColor(name))
-                {
-                    ExpColorType expColor;
-                    expColor.color = name.substr(5);
-                    return {true, std::move(expColor)};
-                }
-                return emptyRet();
+                if (!checkCustomColor(name))
+                    return emptyRet();
+
+                ExpColorType expColor;
+                expColor.color = name.substr(5);
+                return {true, std::move(expColor)};
             }
             ExpColorType expColor;
             expColor.color = ite->second;

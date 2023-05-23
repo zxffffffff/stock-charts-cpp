@@ -10,7 +10,7 @@
 
 namespace StockCharts
 {
-    class KeywordParser : public HSLib
+    class KeywordParser : public SubParser
     {
     public:
         KeywordParser()
