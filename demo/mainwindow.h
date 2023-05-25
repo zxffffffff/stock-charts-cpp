@@ -10,18 +10,18 @@
 
 #include <QMainWindow>
 #include "ui_mainwindow.h"
-#include "lib-chart/Version.h"
-#include "lib-chart/Model/Plugin/PluginIndicator.h"
-#include "lib-chart/Model/Plugin/PluginPainting.h"
-#include "lib-chart/Model/Plugin/PluginSuperimposition.h"
-#include "lib-chart/ViewModel/Layer/LayerBG.h"
-#include "lib-chart/ViewModel/Layer/LayerStock.h"
-#include "lib-chart/ViewModel/Layer/LayerSuperimposition.h"
-#include "lib-chart/ViewModel/Layer/LayerIndicator.h"
-#include "lib-chart/ViewModel/Layer/LayerPainting.h"
-#include "lib-chart/ViewModel/Layer/LayerCrossLine.h"
-#include "lib-chart/ViewModel/Layer/LayerTitle.h"
-#include "lib-chart/View/ChartViewQt.h"
+#include "../lib-chart/Version.h"
+#include "../lib-chart/Model/Plugin/PluginIndicator.h"
+#include "../lib-chart/Model/Plugin/PluginPainting.h"
+#include "../lib-chart/Model/Plugin/PluginSuperimposition.h"
+#include "../lib-chart/ViewModel/Layer/LayerBG.h"
+#include "../lib-chart/ViewModel/Layer/LayerStock.h"
+#include "../lib-chart/ViewModel/Layer/LayerSuperimposition.h"
+#include "../lib-chart/ViewModel/Layer/LayerIndicator.h"
+#include "../lib-chart/ViewModel/Layer/LayerPainting.h"
+#include "../lib-chart/ViewModel/Layer/LayerCrossLine.h"
+#include "../lib-chart/ViewModel/Layer/LayerTitle.h"
+#include "../lib-chart/View/ChartViewQt.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui

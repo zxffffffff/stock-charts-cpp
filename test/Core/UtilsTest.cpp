@@ -9,7 +9,7 @@
 #include <gmock/gmock.h>
 using namespace testing;
 
-#include "lib-chart/Core/Utils.h"
+#include "../lib-chart/Core/Utils.h"
 using namespace StockCharts;
 
 TEST(UtilsTest, toWStr)

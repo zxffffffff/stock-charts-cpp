@@ -9,7 +9,7 @@
 #include <gmock/gmock.h>
 using namespace testing;
 
-#include "lib-chart/Graphics/Painter.h"
+#include "../lib-chart/Graphics/Painter.h"
 using namespace StockCharts;
 
 TEST(ColorTest, Constructor)

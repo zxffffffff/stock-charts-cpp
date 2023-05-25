@@ -9,7 +9,7 @@
 #include <gmock/gmock.h>
 using namespace testing;
 
-#include "lib-chart/Core/NumberCore.h"
+#include "../lib-chart/Core/NumberCore.h"
 using namespace StockCharts;
 
 TEST(NumberCoreConstructorTest, DefaultConstructor)

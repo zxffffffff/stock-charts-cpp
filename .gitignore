@@ -72,4 +72,5 @@ Thumbs.db
 *.exe
 
 # by zxffffffff
+build-*
 .vscode

@@ -9,7 +9,7 @@
 #include <gmock/gmock.h>
 using namespace testing;
 
-#include "lib-chart/Core/DataBinding.h"
+#include "../lib-chart/Core/DataBinding.h"
 using namespace StockCharts;
 
 class MockDataBinding : public DataBinding
