@@ -74,3 +74,5 @@ Thumbs.db
 # by zxffffffff
 build-*
 .vscode
+*.drawio.bkp
+*.drawio.dtmp

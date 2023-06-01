@@ -12,6 +12,30 @@ Implementation of stock charts and technical indicators in pure C++, supporting 
 - Abstract drawing (Graphics/Painter) supports any UI framework and mouse/keyboard interaction.
 - Provides a Qt Widget implementation that can be compiled and run directly for demo/testing purposes.
 
+## 使用(Usage)
+```cpp
+// stock
+kStock = std::make_shared<StockCore>(Candlestick());
+
+// model
+auto model = std::make_shared<ChartModel>(kStock);
+model->addPlugin<PluginIndicator>();
+
+// viewmodel
+auto vm = std::make_shared<ChartViewModel>(model);
+vm->addLayer<LayerBG>();
+vm->addLayer<LayerStock>();
+vm->addLayer<LayerSuperimposition>();
+vm->addLayer<LayerIndicator>();
+vm->addLayer<LayerPainting>();
+vm->addLayer<LayerCrossLine>();
+vm->addLayer<LayerTitle>();
+
+// view(Qt)
+auto view = new ChartViewQt(ui.kchartWidget);
+view->init(vm);
+```
+
 ## 作者说明
 - 精力有限，偶尔维护，有需要可以联系我答疑解惑（zxffffffff@outlook.com, 1337328542@qq.com）。
 - `star >= 100` 可以考虑更新绘图、叠加、复权等功能。
