@@ -363,6 +363,22 @@ namespace StockCharts
             fire(ID_OnWheelY);
         }
 
+        Real onScrollX_pix(Real pix, bool inverted = false)
+        {
+            int quotient = pix / m_context.nodeWidth;
+            Real remainder = fmod(pix, m_context.nodeWidth);
+            onScrollX(inverted ? -quotient : quotient);
+            return remainder;
+        }
+
+        Real onWheelY_pix(Real pix, bool inverted = false)
+        {
+            int quotient = pix / m_props.wheelYStep;
+            Real remainder = fmod(pix, m_props.wheelYStep);
+            onWheelY(inverted ? -quotient : quotient);
+            return remainder;
+        }
+
         void onDBClick(const Point &point)
         {
             m_context.crossLineVisible = !m_context.crossLineVisible;

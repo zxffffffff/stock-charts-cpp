@@ -154,8 +154,77 @@ namespace StockCharts
         virtual void drawLine(const Line &line, const Pen &pen) = 0;
         virtual void drawPath(const std::vector<Point> &points, const Pen &pen) = 0;
 
-        virtual void drawStick(const std::vector<Stick> &sticks, const Color &rise, const Color &fall) = 0;
-        virtual void drawStickHollow(const std::vector<Stick> &sticks, const Color &rise, const Color &fall) = 0;
-        virtual void drawBAR(const std::vector<Stick> &sticks, const Color &rise, const Color &fall) = 0;
+        virtual void drawStick(const std::vector<Stick> &sticks, const Color &rise, const Color &fall)
+        {
+            for (auto &stick : sticks)
+            {
+                if (!stick.valid())
+                    break;
+                const Color &color = stick.flag >= 0 ? rise : fall;
+                if (stick.width() == 1)
+                {
+                    drawLine(stick.line, color);
+                    continue;
+                }
+                fillRect(stick.rect, color);
+                drawLine(stick.line, color);
+            }
+        }
+
+        virtual void drawStickHollow(const std::vector<Stick> &sticks, const Color &rise, const Color &fall)
+        {
+            for (auto &stick : sticks)
+            {
+                if (!stick.valid())
+                    break;
+                const Color &color = stick.flag >= 0 ? rise : fall;
+                if (stick.width() == 1)
+                {
+                    drawLine(stick.line, color);
+                    continue;
+                }
+                if (stick.flag >= 0)
+                {
+                    drawRect(stick.rect, color);
+                    drawLine(Line(stick.centerX(), stick.top() - 1, stick.centerX(), stick.line.first.y), color);
+                    drawLine(Line(stick.centerX(), stick.bottom() + 1, stick.centerX(), stick.line.second.y), color);
+                }
+                else
+                {
+                    fillRect(stick.rect, color);
+                    drawLine(stick.line, color);
+                }
+            }
+        }
+
+        virtual void drawBAR(const std::vector<Stick> &sticks, const Color &rise, const Color &fall)
+        {
+            for (auto &stick : sticks)
+            {
+                if (!stick.valid())
+                    break;
+                const Color &color = stick.flag >= 0 ? rise : fall;
+                if (stick.width() == 1)
+                {
+                    drawLine(stick.line, color);
+                    continue;
+                }
+                int openY;
+                int closeY;
+                if (stick.flag >= 0)
+                {
+                    closeY = stick.top();
+                    openY = stick.bottom();
+                }
+                else
+                {
+                    openY = stick.top();
+                    closeY = stick.bottom();
+                }
+                drawLine(stick.line, color);
+                drawLine(Line(stick.left(), openY, stick.centerX(), openY), color);
+                drawLine(Line(stick.right(), closeY, stick.centerX(), closeY), color);
+            }
+        }
     };
 }

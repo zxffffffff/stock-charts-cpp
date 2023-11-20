@@ -155,7 +155,57 @@ namespace StockCharts
 
         virtual void mouseMoveEvent(QMouseEvent *event) override
         {
-            m_vm->onMouseMove(Point(event->pos().x(), event->pos().y()));
+            int x = event->pos().x();
+            int y = event->pos().y();
+            m_vm->onMouseMove(Point(x, y));
+            if (c_drag_flag == 'x')
+            {
+                double x_offset = x - x_drag_last;
+                double x_remainder = m_vm->onScrollX_pix(x_offset, true);
+                x_drag_last = x - x_remainder;
+            }
+            else if (c_drag_flag == 'y')
+            {
+                double y_offset = y - y_drag_last;
+                double y_remainder = m_vm->onWheelY_pix(y_offset, true);
+                y_drag_last = y - y_remainder;
+            }
+        }
+
+        virtual void mousePressEvent(QMouseEvent *event) override
+        {
+            Point point(event->pos().x(), event->pos().y());
+            if (m_vm->getContext().rectChart.contains(point) || m_vm->getContext().rectXAxis.contains(point))
+            {
+                c_drag_flag = 'x';
+                x_drag_last = point.x;
+                setCursor(Qt::SizeHorCursor);
+            }
+            else
+            {
+                c_drag_flag = 'y';
+                y_drag_last = point.y;
+                setCursor(Qt::SizeVerCursor);
+            }
+        }
+
+        virtual void mouseReleaseEvent(QMouseEvent *event) override
+        {
+            if (c_drag_flag != '\0')
+            {
+                setCursor(Qt::ArrowCursor);
+            }
+            c_drag_flag = '\0';
+        }
+
+        virtual void leaveEvent(QEvent *event) override
+        {
+            m_vm->onMouseLeave();
+        }
+
+        virtual void mouseDoubleClickEvent(QMouseEvent *event) override
+        {
+            m_vm->onDBClick(Point(event->pos().x(), event->pos().y()));
         }
 
         virtual void keyPressEvent(QKeyEvent *event) override
@@ -181,33 +231,41 @@ namespace StockCharts
 
         virtual void wheelEvent(QWheelEvent *event) override
         {
-            int yStep = event->angleDelta().y() / 120;
-            int xStep = event->angleDelta().x() / 120;
-            if (yStep != 0)
+            QPoint numPixels = event->pixelDelta();
+            QPoint numDegrees = event->angleDelta() / 8;
+            int xStep = 0;
+            int yStep = 0;
+            if (!numPixels.isNull())
+            {
+                xStep = numPixels.x();
+                yStep = numPixels.y();
+            }
+            else if (!numDegrees.isNull())
+            {
+                QPoint numSteps = numDegrees / 15;
+                xStep = numSteps.x();
+                yStep = numSteps.y();
+            }
+
+            if (qAbs(xStep) > qAbs(yStep) && xStep != 0)
+            {
+                m_vm->onScrollX_pix(xStep, event->inverted());
+            }
+            else if (yStep != 0)
             {
                 auto &ctx = getContext();
                 if (ctx.crossLineVisible)
-                    m_vm->onWheelY(yStep);
+                    m_vm->onWheelY_pix(yStep, event->inverted());
                 else
-                    m_vm->onScrollX(-yStep);
+                    m_vm->onScrollX_pix(-yStep, event->inverted());
             }
-            if (xStep != 0)
-            {
-                m_vm->onScrollX(xStep);
-            }
-        }
-
-        virtual void leaveEvent(QEvent *event) override
-        {
-            m_vm->onMouseLeave();
-        }
-
-        virtual void mouseDoubleClickEvent(QMouseEvent *event) override
-        {
-            m_vm->onDBClick(Point(event->pos().x(), event->pos().y()));
         }
 
     private:
         std::shared_ptr<ChartViewModel> m_vm;
+
+        char c_drag_flag = '\0';
+        double x_drag_last = 0;
+        double y_drag_last = 0;
     };
 }
