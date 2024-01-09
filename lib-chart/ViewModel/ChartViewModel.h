@@ -265,6 +265,11 @@ namespace StockCharts
                 m_context.hoverNormal.price = NumberNull;
             }
 
+            // mouse event
+            m_context.hoverSync.point.clear();
+            m_context.hoverSync.index = -1;
+            m_context.hoverSync.price = NumberNull;
+
             for (const auto &layer : m_layers)
             {
                 layer->onMouseMove(m_model, m_props, m_context);
@@ -417,6 +422,11 @@ namespace StockCharts
                 return;
 
             ChartCoordinate coordinate(m_props, m_context);
+
+            // mouse event
+            m_context.hoverNormal.point.clear();
+            m_context.hoverNormal.index = -1;
+            m_context.hoverNormal.price = NumberNull;
 
             // mouse event
             m_context.hoverSync.point = Point(
